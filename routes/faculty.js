@@ -6,7 +6,7 @@ var mongo = require('mongodb').MongoClient
 var months = ["january","february","march"]
 var d = new Date()
 
-router.get('/requestClassData',function(req,res){
+router.get('/requestFacultyData/:faculty',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
     console.log(err)
@@ -22,11 +22,8 @@ router.get('/requestClassData',function(req,res){
             console.log(err)
             db.close()
           } else {
-            db.collection("batch14").findOne({_id:"EC-A"},function(err,item){
-              var students = item.students
-              students.forEach(function(student,i){
-                db.collection("batch14").update({_id:"EC-A"},{$push:{"attendance.IE":{"name":student.name,"enroll_number":student.enroll_number}}})
-              })
+            db.collection("faculty").findOne({_id:req.params.faculty},function(err,item){
+              res.json(item)
             })
           }
         })
@@ -35,7 +32,7 @@ router.get('/requestClassData',function(req,res){
   }
 })
 
-router.get('/getStudentList/:class',function(req,res){
+router.get('/getStudentList/:batch/:branch',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
     console.log(err)
@@ -51,7 +48,7 @@ router.get('/getStudentList/:class',function(req,res){
             console.log(err)
             db.close()
           } else {
-            db.collection("batch14").findOne({_id:req.params.class},function(err,item){
+            db.collection(req.params.batch).findOne({_id:req.params.branch},function(err,item){
               if(err){
                 console.log(err)
                 db.close()
@@ -67,7 +64,7 @@ router.get('/getStudentList/:class',function(req,res){
   }
 })
 
-router.post('/submitData',function(req,res){
+router.post('/submitData/:batch/:branch',function(req,res){
   console.log(req.body)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
@@ -87,19 +84,46 @@ router.post('/submitData',function(req,res){
               data = req.body
               console.log(data)
               data.students.forEach(function(name,x){
-                console.log(name)
                 var query = {}
-                query._id = "ec-a"
-                var x = "attendance." + req.body.subject + ".name"
+                query._id = req.params.branch.toUpperCase()
+                var x = "attendance.name"
                 query[x] = name
                 var final = {}
-                var y = "attendance." + req.body.subject + ".$." + months[req.body.month]
+                var y = "attendance.$." + req.body.subject + "." + months[req.body.month]
                 final[y] = req.body.date
-                console.log(query)
-                console.log(final)
-                db.collection("batch14").update(query,{$addToSet:final})
+                db.collection(req.params.batch).update(query,{$addToSet:final})
+                db.collection(req.params.batch).update(query,{$inc:{"attendance.$.IE.count":1}})
+                db.close
               })
+              db.collection("faculty").update({"_id":decoded.name,"current_classes.batch":req.params.batch,"current_classes.branch":req.params.branch},{$addToSet:{"current_classes.$.classes_held": req.body.date + "," + months[req.body.month]}})
+              db.close()
             }
+          })
+        }
+    })
+  }
+})
+
+router.get('/report/:batch/:branch',function(req,res){
+  var cookies = cookie.parse(req.headers.cookie || '')
+  if(!cookies){
+    console.log(err)
+    db.close()
+  } else {
+    jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+      if(err){
+        console.log(err)
+        db.close()
+      } else {
+        mongo.connect('mongodb://localhost:27018/data',function(err,db){
+          if(err){
+            console.log(err)
+            db.close()
+          } else {
+            db.collection(req.params.batch).findOne({_id:req.params.branch},{"attendance":1},function(err,item){
+              res.json(item)
+            })
+          }
           })
         }
     })

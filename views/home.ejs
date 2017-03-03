@@ -76,7 +76,7 @@
 			}
 
 			.panel_dept_info {
-				height: 25%;
+				height: 28%;
 				min-height: 100px;
 				overflow-x: auto;
 			}
@@ -114,11 +114,14 @@
 		<script type='text/javascript'>
 
 		var view ={
-					updateClassData: function(){
+					showReport:function(x){
+						document.getElementById("showReport").innerHTML = x;
+					},
+
+					updateFacultyData: function(){
 						console.log(model);
 							for(var i=0;i<1;i++){
-									document.getElementsByClassName('classHead'+i)[0].innerHTML = model.classX.batch;
-									document.getElementsByClassName('classHead'+i)[1].innerHTML = model.classX.batch;
+									document.getElementsByClassName('classHead'+i)[0].innerHTML = model.classX.semester + "th, " + model.classX.branch ;
 									document.getElementById('subject'+i).innerHTML = model.classX.subject;
 									document.getElementById('strength'+i).innerHTML = model.classX.strength;
 									document.getElementById('classesHeld'+i).innerHTML = model.classX.classesHeld;
@@ -137,6 +140,7 @@
 		};
 
 		var model = {
+			user:"<%= user %>",
 			students: [],
 
 				classX: {
@@ -167,19 +171,20 @@
 
 		var controller = {
 			present: {students:[]},
-			classData: function(){
-				var requestClassData = new XMLHttpRequest();
 
-				if(!requestClassData){
+			facultyData: function(){
+				var requestFacultyData = new XMLHttpRequest();
+
+				if(!requestFacultyData){
 					alert('error')
 				}
 
-				requestClassData.open('GET','http://localhost:3000/faculty/requestClassData',true);
-				requestClassData.send(null)
+				requestFacultyData.open('GET','http://localhost:3000/faculty/requestFacultyData/' + model.user,true);
+				requestFacultyData.send(null)
 
-				requestClassData.onreadystatechange = function(){
-					var response = requestClassData.response;
-					if( requestClassData.status === 200 && requestClassData.readyState === XMLHttpRequest.DONE){
+				requestFacultyData.onreadystatechange = function(){
+					var response = requestFacultyData.response;
+					if( requestFacultyData.status === 200 && requestFacultyData.readyState === XMLHttpRequest.DONE){
 						if(response == '0' ){
 							document.getElementById('notification_box').innerHTML = 'no notifications'
 						} else {
@@ -192,17 +197,19 @@
 							model.personalInfo.subjectA = response.current_classes[0].subject;
 
 							response.current_classes.forEach(function(x,i){
-									model.classX.batch = x.branch.toUpperCase() + ', ' + x.semester + 'th Sem';
-									model.classX.branch = x.branch.toUpperCase() + ', ' + x.semester + 'th Sem';
+									model.classX.batch = x.batch.toLowerCase();
+									model.classX.branch = x.branch.toUpperCase();
+									model.classX.semester = x.semester;
 									model.personalInfo.classes = x.branch + ', ' + x.semester + 'th Sem';
 									model.classX.subject = x.subject.toUpperCase();
 									model.classX.strength = x.strength;
-									model.classX.classesHeld = x.classes_held;
-									model.classX.firstClass = x.firstClass;
+									model.classX.classesHeld = x.classes_held.length;
+									model.classX.firstClass = x.classes_held[0];
 							})
-							view.updateClassData();
+							view.updateFacultyData();
 							view.updatePersonalInfo();
 							document.getElementById('classX').onclick = controller.getStudentList;
+							document.getElementById('classX_report').onclick = controller.getReport;
 
 						}
 					}
@@ -267,6 +274,7 @@
 
 		submitData: function(){
 			this.present.subject = model.classX.subject
+			this.present.user = model.user
 			this.present.month = (new Date()).getMonth();
 			this.present.date = (new Date()).getDate();
 			console.log(JSON.stringify(this.present))
@@ -276,17 +284,39 @@
 				if(SAD.readyState == 4 || SAD.status == 200){
 					alert("sent");
 				} else {
-					alert('sending data');
+					console.log("sending data");
 				}
 			}
 
-			SAD.open("POST","http://localhost:3000/faculty/submitData",true)
+			SAD.open("POST","http://localhost:3000/faculty/submitData/batch14/EC-A",true)
 			SAD.setRequestHeader('Content-Type','application/json');
 			SAD.send(JSON.stringify(this.present))
+		},
+
+		getReport: function(){
+			var requestReport = new XMLHttpRequest();
+
+			requestReport.onreadystatechange = function(){
+				if(requestReport.readyState == 4 || requestReport.status == 200){
+					var reportData = JSON.parse(requestReport.response);
+					console.log(reportData);
+					var x = "<tr class='row' style='font-size:20px;'><th class='col-xs-4 text-center'>Name</th><th class='col-xs-4 text-center'>Attendance</th><th class='col-xs-4 text-center'>Percentage</th></tr>";
+					reportData.attendance.forEach(function(student){
+						if(student.IE.count == undefined){ student.IE.count = 0 }
+						x += "<tr class='row'><td class='col-xs-4 text-center'>" + student.name + "</td><td class='col-xs-4 text-center'>" + student.IE.count + "</td><td class='col-xs-4 text-center'>" + (student.IE.count/model.classX.classesHeld)*100 + "</td></tr>";
+					})
+					view.showReport(x);
+				} else {
+
+				}
+			}
+
+			requestReport.open("GET","http://localhost:3000/faculty/report/batch14/EC-A",true);
+			requestReport.send(null);
 		}
 	};
 
-		window.onload = controller.classData;
+		window.onload = controller.facultyData;
 
 		</script>
 
@@ -307,13 +337,40 @@
 							<div class='row'  id='nextSection'>
 								<div class='col-md-9 col-xs-10 col-xs-12 left'>
 									<div class='row'>
+										<div style='background-color:rgba(96,157,232,.9);' class='col-md-5 col-xs-12 col-xs-offset-1 panel panel2 text-center'>
+											<h5 style='color:black;display:block;margin-top:0;font-weight:bold' class='classHead0'>Class X</h5>
+											<div class='row class_info' style='display:block;background-color:white;font-size:16px;'>
+												<div class='col-xs-6 text-center'>Subject:</div><div class='col-xs-6 text-danger' id='subject0'></div><br><br>
+												<div class='col-xs-6 text-center'>Strength:</div><div class='col-xs-6' id='strength0'></div><br><br>
+												<div class='col-xs-6 text-center'>Classes held:</div><div class='col-xs-6' id='classesHeld0'></div><br><br>
+												<div class='col-xs-6 text-center'>First Class:</div><div class='col-xs-6' id='firstClass0'></div>
+											</div>
+											<div style="position:relative;top:4%;font-size:16px">
+												<div style='border-radius:2px;cursor:pointer;' class='col-xs-6' id='classX'>attendance</div>
+												<div style='border-radius:2px;cursor:pointer;' class='col-xs-offset-1 col-xs-4' id="classX_report">report</div>
+											</div>
+										</div>
+
+										<div style='background-color:rgba(96,157,232,.9);' class='col-md-5 col-xs-12 col-xs-offset-1 panel panel2 text-center'>
+											<h5 style='color:black;display:block;margin-top:0;font-weight:bold' class='classHead0'>Class X</h5>
+											<div class='row class_info' style='display:block;background-color:white;font-size:16px;'>
+												<div class='col-xs-6 text-center'>Subject:</div><div class='col-xs-6 text-danger' id='subject0'></div><br><br>
+												<div class='col-xs-6 text-center'>Strength:</div><div class='col-xs-6' id='strength0'></div><br><br>
+												<div class='col-xs-6 text-center'>Classes held:</div><div class='col-xs-6' id='classesHeld0'></div><br><br>
+												<div class='col-xs-6 text-center'>First Class:</div><div class='col-xs-6' id='firstClass0'></div>
+											</div>
+											<div style="position:relative;top:4%;font-size:16px">
+												<div style='border-radius:2px;cursor:pointer;' class='col-xs-6' id='classX_attendance'>attendance</div>
+												<div style='border-radius:2px;cursor:pointer;' class='col-xs-offset-1 col-xs-4' id="classX_report">report</div>
+											</div>
+										</div>
 
 										<div style='background-color:rgba(96,157,232,.8);' class='col-md-3 col-xs-12 col-xs-offset-1 panel panel_setting text-center'>
-											<h4 style='color:white'>Setting</h4>
+											<h4 style='color:black;font-weight:bold'>Setting</h4>
 											<hr style='box-shadow: 5px .5px 10px lightgrey'>
-											<div style='background-color:white;' class="row">
+											<div style='background-color:white;font-size:16px' class="row">
 												<p>
-													<div style='color:rgb(91,216,158)' class='setting col-xs-12' id='add_staff'>Add Student</div>
+													<div style='color:rgb(91,216,158)' class='setting' id='add_staff'>Add Student</div>
 												</p>
 												<p>
 													<div style='color:rgb(91,216,158)' class='setting' id='remove_staff'>Remove Student</div>
@@ -331,41 +388,9 @@
 										</div>
 
 										<div style='background-color:rgba(96,157,232,.8);' class='col-md-7 col-md-offset-1 col-xs-12 col-xs-offset-1 panel panel_setting text-center'>
-											<h4 style='color:white'>Reports</h4>
-											<hr style='box-shadow: 5px .5px 10px lightgrey'>
-												<div style='background-color:white;height:70%;' class='row'>
-													<div class='col-xs-10 col-xs-offset-1 col-md-3 col-md-offset-0'>
-														<p style='color:rgb(91,216,158)' class='classHead0'>Class X</p>
-														<p style='color:rgb(91,216,158)'>Class Y</p>
-													</div>
-
-													<div class='col-xs-10 col-xs-offset-1 col-md-7 col-md-offset-1'></div>
-												</div>
-										</div>
-
-										<div style='background-color:rgba(96,157,232,.9);' class='col-md-5 col-xs-12 col-xs-offset-1 panel panel2 text-center'>
-											<h5 style='color:white;display:block;margin-top:0' class='classHead0'>Class X</h5>
-											<div class='row class_info' style='display:block;background-color:white;'>
-												<div class='col-xs-6 text-center'>Subject:</div><div class='col-xs-6 text-danger' id='subject0'></div><br><br>
-												<div class='col-xs-6 text-center'>Strength:</div><div class='col-xs-6' id='strength0'></div><br><br>
-												<div class='col-xs-6 text-center'>Classes held:</div><div class='col-xs-6' id='classesHeld0'></div><br><br>
-												<div class='col-xs-6 text-center'>First Class:</div><div class='col-xs-6' id='firstClass0'></div>
-											</div>
-											<div>
-												<button style='background-color:rgb(91,216,158);border-radius:5px;border-color:rgb(91,216,158);color:white;' id='classX'>Take Attendance</button>
-											</div>
-										</div>
-
-										<div style='background-color:rgba(96,157,232,.9);' class='col-md-5 col-xs-12 col-xs-offset-1 panel panel2 text-center'>
-											<h5 style='color:white;display:block;margin-top:0' id='classHead0'>Class X</h5>
-											<div class='row class_info' style='display:block;background-color:white;'>
-												<div class='col-xs-6 text-center'>Subject:</div><div class='col-xs-6 text-danger' id='subject0'></div><br><br><br>
-												<div class='col-xs-6 text-center'>Strength:</div><div class='col-xs-6' id='strength0'></div><br><br>
-												<div class='col-xs-6 text-center'>Classes held:</div><div class='col-xs-6' id='classesHeld0'></div><br><br>
-												<div class='col-xs-6 text-center'>First Class:</div><div class='col-xs-6' id='firstClass0'></div>
-											</div>
-											<div>
-												<button style='background-color:rgb(91,216,158);border-radius:5px;border-color:rgb(91,216,158);color:white;'>Take Attendance</button>
+											<div class="row" style='color:black;font-size:24px;font-weight:bold' class="col-xs-12"><div class="col-xs-12">Reports</div></div>
+											<div class='row' style='background-color:white;height:80%;overflow-y:auto;'>
+												<table class="table-responsive table-striped" id="showReport" class="col-xs-12"></table>
 											</div>
 										</div>
 
@@ -377,7 +402,7 @@
 									<div style='background-color:rgba(96,157,232,.8);' class='col-md-12 panel text-center col-xs-12'>
 										<h4 style='color:white;'>Name <small class='text-danger'>Personal Info</small></h4>
 										<hr style='box-shadow: 5px .5px 10px lightgrey'>
-										<div style='background-color:white;' class='row panel_dept_info'>
+										<div style='background-color:white;font-size:16px' class='row panel_dept_info'>
 											<div class='col-xs-5 text-center'>Department</div><div class='col-xs-7 text-danger' id='department'></div><br><br>
 											<div class='col-xs-5 text-center'>Joined:</div><div class='col-xs-7' id='joined'></div><br><br>
 											<div class='col-xs-5 text-center'>Classes:</div><div class='col-xs-7' id='classes'></div><br><br>
@@ -388,7 +413,7 @@
 									</div>
 
 									<div style='background-color:rgba(96,157,232,.8);' class='col-md-12 panel text-center col-xs-12'>
-										<h4 style='color:rgba(96,157,232,1);'>Time Table</h4>
+										<h4 style='color:black;font-weight:bold'>Time Table</h4>
 										<div style='background-color:white;' class='row panel_dept_info'>
 										</div>
 									</div>

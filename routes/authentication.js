@@ -25,10 +25,10 @@ router.get('/',function(req,res){
             console.log("connected to mongodb for authentication using JWT")
             db.collection(decoded.name).findOne({_id:"metadata"},function(err,item){
               if(err){
-                res.render('index',{message:""})
+                res.render('index',{message:"Interval Server Error"})
                 db.close()
               } else {
-                res.render('home',{title:""})
+                res.render('home',{title:"",user:decoded.name})
                 db.close()
               }
             })
