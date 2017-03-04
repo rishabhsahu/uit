@@ -15,7 +15,7 @@ router.post('/',function(req,res){
       db.close()
     } else {
       console.log("connected to mongodb for authentication")
-      db.collection("faculty").findOne({_id:username},function(err,item){
+      db.collection("uit.faculty").findOne({_id:username},function(err,item){
         if(err){
           console.log(err)
           db.close()

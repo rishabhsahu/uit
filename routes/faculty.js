@@ -22,7 +22,7 @@ router.get('/requestFacultyData/:faculty',function(req,res){
             console.log(err)
             db.close()
           } else {
-            db.collection("faculty").findOne({_id:req.params.faculty},function(err,item){
+            db.collection("uit.faculty").findOne({_id:req.params.faculty},function(err,item){
               res.json(item)
             })
           }
@@ -48,7 +48,7 @@ router.get('/getStudentList/:batch/:branch',function(req,res){
             console.log(err)
             db.close()
           } else {
-            db.collection(req.params.batch).findOne({_id:req.params.branch},function(err,item){
+            db.collection("uit." + req.params.batch).findOne({_id:req.params.branch},function(err,item){
               if(err){
                 console.log(err)
                 db.close()
@@ -88,14 +88,14 @@ router.post('/submitData/:batch/:branch',function(req,res){
                 query._id = req.params.branch.toUpperCase()
                 var x = "attendance.name"
                 query[x] = name
-                var final = {}
-                var y = "attendance.$." + req.body.subject + "." + months[req.body.month]
-                final[y] = req.body.date
-                db.collection(req.params.batch).update(query,{$addToSet:final})
-                db.collection(req.params.batch).update(query,{$inc:{"attendance.$.IE.count":1}})
-                db.close
+                var final1 = {}
+                var final2 = {}
+                var y1 = "attendance.$." + req.body.subject + "." + months[req.body.month]
+                final1[y1] = req.body.date
+                db.collection("uit." + req.params.batch).update(query,{$addToSet:final1})
+                db.close()
               })
-              db.collection("faculty").update({"_id":decoded.name,"current_classes.batch":req.params.batch,"current_classes.branch":req.params.branch},{$addToSet:{"current_classes.$.classes_held": req.body.date + "," + months[req.body.month]}})
+              db.collection("uit.faculty").update({"_id":decoded.name,"current_classes.batch":req.params.batch,"current_classes.branch":req.params.branch},{$addToSet:{"current_classes.$.classes_held": req.body.date + "," + months[req.body.month]}})
               db.close()
             }
           })
@@ -104,7 +104,7 @@ router.post('/submitData/:batch/:branch',function(req,res){
   }
 })
 
-router.get('/report/:batch/:branch',function(req,res){
+router.get('/report/:batch/:branch/:subject',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
     console.log(err)
@@ -120,7 +120,13 @@ router.get('/report/:batch/:branch',function(req,res){
             console.log(err)
             db.close()
           } else {
-            db.collection(req.params.batch).findOne({_id:req.params.branch},{"attendance":1},function(err,item){
+            var obj = {}
+            var str = "attendance." + req.params.subject
+            obj[str] = 1
+            obj['attendance.name'] = 1
+            console.log(obj)
+            db.collection("uit." + req.params.batch).findOne({_id:req.params.branch},obj,function(err,item){
+              console.log(item)
               res.json(item)
             })
           }
@@ -136,7 +142,7 @@ module.exports = router
 
 /*
 var std = []
-fs.readFile("student_list.txt",function(err,data){
+fs.readFile("student_list2.txt",function(err,data){
   data = data.toString()
   var list = data.split("\n")
   console.log(list)
@@ -146,7 +152,7 @@ fs.readFile("student_list.txt",function(err,data){
     obj.name = list[i+1].replace("\r","")
     std.push(obj)
   }
-  db.collection("batch14").update({_id:"ec-a"},{$set:{"students":std}})
+  db.collection("uit.batch14").update({_id:"ec-a"},{$set:{"students":std}})
   console.log(std)
 })
 */
@@ -155,10 +161,10 @@ fs.readFile("student_list.txt",function(err,data){
 
 /*
 
-  db.collection("batch14").findOne({_id:"ec-a"},function(err,item){
+  db.collection("uit.batch14").findOne({_id:"ec-a"},function(err,item){
     var students = item.students
     students.forEach(function(student,i){
-      db.collection("batch14").update({_id:"ec-a"},{$push:{"attendance.IE":{"name":student.name}}})
+      db.collection("uit.batch14").update({_id:"ec-a"},{$push:{"attendance.IE":{"name":student.name}}})
     })
   })
 */
