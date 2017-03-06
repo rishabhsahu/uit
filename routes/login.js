@@ -15,7 +15,7 @@ router.post('/',function(req,res){
       db.close()
     } else {
       console.log("connected to mongodb for authentication")
-      db.collection("uit.faculty").findOne({_id:username},function(err,item){
+      db.collection("rgpv.faculty").findOne({_id:username},function(err,item){
         if(err){
           console.log(err)
           db.close()
@@ -27,7 +27,7 @@ router.post('/',function(req,res){
             console.log(item)
             if(item.password == req.body.password){
               res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
-              res.render('home',{title:""})
+              res.render('home',{title:"",user:username})
               db.close()
             } else {
               res.send("invalid login")

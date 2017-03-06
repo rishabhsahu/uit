@@ -79,23 +79,6 @@
 		</style>
 
 		<script>
-			function homeRequest(){
-				var username = document.getElementById("username").value;
-				var password = document.getElementById("password").value;
-				console.log(username);
-				var loginRequest = new XMLHttpRequest();
-				loginRequest.onreadystatechange = renderMessage;
-				loginRequest.open('POST','http://localhost:3000/login',true);
-				loginRequest.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-				loginRequest.send("username=" + username + "&password=" + password);
-
-				function renderMessage(){
-					if(loginRequest.status === 200 && loginRequest.readyState === XMLHttpRequest.DONE){
-						console.log(loginRequest.responseText);
-						document.getElementById("messageFolder").innerHTML = loginRequest.responseText;
-					}
-				}
-			}
 
 		</script>
 	</head>
@@ -110,7 +93,7 @@
 				</div>
 
 		<div class='container-fluid'>
-			<div class="form">
+			<form action="http://localhost:3000/login" method="POST" class="form">
 				<br>
 				<div class='row'>
 					<div class='col-xs-12 col-md-12 text-center' style="color:red" id="messageFolder"></div><br>
@@ -119,10 +102,10 @@
 					<div class='col-xs-12 col-md-4 col-md-offset-4' id='login'><br>
 						<p class='text-center'>username : <input type='text' name='username' id='username'></p>
 						<p class='text-center'>password : <input type='password' name='password' id='password'></p>
-						<p class='text-center'><button onClick="homeRequest()" id='submit'>Submit</button></p>
+						<p class='text-center'><button id='submit'>Submit</button></p>
 					</div>
 				</div>
-			</div>
+			</form>
 		</div>
 
 		</div>

@@ -7,6 +7,7 @@ var mongo = require('mongodb').MongoClient
 //main logic of the route//
 router.get('/',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
+  console.log(cookies)
   if(!cookies){
     res.render('index',{message:""})
     db.close()
@@ -19,11 +20,11 @@ router.get('/',function(req,res){
         mongo.connect("mongodb://localhost:27018/uit",function(err,db){
           if(err){
             console.log(err)
-            res.render('index',{message:""})
+            res.render('index',{message:"Internal Server Error"})
             db.close()
           } else {
             console.log("connected to mongodb for authentication using JWT")
-            db.collection(decoded.name).findOne({_id:"metadata"},function(err,item){
+            db.collection("rgpv.faculty").findOne({_id:decoded.name},function(err,item){
               if(err){
                 res.render('index',{message:"Interval Server Error"})
                 db.close()

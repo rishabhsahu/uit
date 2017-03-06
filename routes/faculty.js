@@ -6,7 +6,7 @@ var mongo = require('mongodb').MongoClient
 var months = ["january","february","march"]
 var d = new Date()
 
-router.get('/requestFacultyData/:faculty',function(req,res){
+router.get('/requestFacultyData',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
     console.log(err)
@@ -17,12 +17,13 @@ router.get('/requestFacultyData/:faculty',function(req,res){
         console.log(err)
         db.close()
       } else {
+        console.log(decoded.name)
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
             console.log(err)
             db.close()
           } else {
-            db.collection("uit.faculty").findOne({_id:req.params.faculty},function(err,item){
+            db.collection("rgpv.faculty").findOne({_id:decoded.name},function(err,item){
               res.json(item)
             })
           }
@@ -32,7 +33,7 @@ router.get('/requestFacultyData/:faculty',function(req,res){
   }
 })
 
-router.get('/getStudentList/:batch/:branch',function(req,res){
+router.get('/getStudentList/:college/:branch/:batch',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
     console.log(err)
@@ -48,7 +49,7 @@ router.get('/getStudentList/:batch/:branch',function(req,res){
             console.log(err)
             db.close()
           } else {
-            db.collection("uit." + req.params.batch).findOne({_id:req.params.branch},function(err,item){
+            db.collection("rgpv.classes").findOne({_id:req.params.college + "/" + req.params.batch + "/" + req.params.branch},function(err,item){
               if(err){
                 console.log(err)
                 db.close()
@@ -64,8 +65,7 @@ router.get('/getStudentList/:batch/:branch',function(req,res){
   }
 })
 
-router.post('/submitData/:batch/:branch',function(req,res){
-  console.log(req.body)
+router.post('/submitData/:college/:batch/:branch',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
     console.log(err)
@@ -85,17 +85,17 @@ router.post('/submitData/:batch/:branch',function(req,res){
               console.log(data)
               data.students.forEach(function(name,x){
                 var query = {}
-                query._id = req.params.branch.toUpperCase()
+                query._id = req.params.college + "/" + req.params.batch + "/" + req.params.branch.toLowerCase()
                 var x = "attendance.name"
                 query[x] = name
                 var final1 = {}
-                var final2 = {}
                 var y1 = "attendance.$." + req.body.subject + "." + months[req.body.month]
                 final1[y1] = req.body.date
-                db.collection("uit." + req.params.batch).update(query,{$addToSet:final1})
-                db.close()
+                console.log(query)
+                console.log(final1)
+                db.collection("rgpv.classes").update(query,{$addToSet:final1})
               })
-              db.collection("uit.faculty").update({"_id":decoded.name,"current_classes.batch":req.params.batch,"current_classes.branch":req.params.branch},{$addToSet:{"current_classes.$.classes_held": req.body.date + "," + months[req.body.month]}})
+              db.collection("rgpv.faculty").update({"_id":decoded.name,"current_classes.batch":req.params.batch,"current_classes.branch":req.params.branch.toUpperCase()},{$addToSet:{"current_classes.$.classes_held": req.body.date + "," + months[req.body.month]}})
               db.close()
             }
           })
@@ -104,7 +104,7 @@ router.post('/submitData/:batch/:branch',function(req,res){
   }
 })
 
-router.get('/report/:batch/:branch/:subject',function(req,res){
+router.get('/report/:college/:branch/:batch/:subject',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
     console.log(err)
@@ -125,7 +125,7 @@ router.get('/report/:batch/:branch/:subject',function(req,res){
             obj[str] = 1
             obj['attendance.name'] = 1
             console.log(obj)
-            db.collection("uit." + req.params.batch).findOne({_id:req.params.branch},obj,function(err,item){
+            db.collection("rgpv.classes").findOne({_id:req.params.college + "/" + req.params.branch + "/" + req.params.batch},obj,function(err,item){
               console.log(item)
               res.json(item)
             })
