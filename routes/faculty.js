@@ -95,8 +95,10 @@ router.post('/submitData/:college/:batch/:branch',function(req,res){
                 console.log(final1)
                 db.collection("rgpv.classes").update(query,{$addToSet:final1})
               })
-              db.collection("rgpv.faculty").update({"_id":decoded.name,"current_classes.batch":req.params.batch,"current_classes.branch":req.params.branch.toUpperCase()},{$addToSet:{"current_classes.$.classes_held": req.body.date + "," + months[req.body.month]}})
+              db.collection("rgpv.faculty").update({"_id":req.params.user,"current_classes.batch":req.params.batch,"current_classes.branch":req.params.branch.toUpperCase()},{$addToSet:{"current_classes.$.classes_held": req.body.date + "," + months[req.body.month]}})
               db.close()
+              res.writeHead(200)
+              res.end()
             }
           })
         }
@@ -142,7 +144,7 @@ module.exports = router
 
 /*
 var std = []
-fs.readFile("student_list2.txt",function(err,data){
+fs.readFile("student_list1.txt",function(err,data){
   data = data.toString()
   var list = data.split("\n")
   console.log(list)
@@ -152,8 +154,10 @@ fs.readFile("student_list2.txt",function(err,data){
     obj.name = list[i+1].replace("\r","")
     std.push(obj)
   }
-  db.collection("uit.batch14").update({_id:"ec-a"},{$set:{"students":std}})
+  mongo.connect("mongodb://localhost:27018/data",function(err,db){
+    db.collection("uit.batch14").update({_id:"ec-a"},{$set:{"students":std}})
   console.log(std)
+})
 })
 */
 
@@ -161,10 +165,10 @@ fs.readFile("student_list2.txt",function(err,data){
 
 /*
 
-  db.collection("uit.batch14").findOne({_id:"ec-a"},function(err,item){
+  db.collection("rgpv.classes").findOne({_id:"uit-rgpv/ec-a/14"},function(err,item){
     var students = item.students
     students.forEach(function(student,i){
-      db.collection("uit.batch14").update({_id:"ec-a"},{$push:{"attendance.IE":{"name":student.name}}})
+      db.collection("rgpv.classes").update({_id:"uit-rgpv/ec-a/14"},{$addToSet:{"attendance.IE":{"name":student.name}}})
     })
   })
 */
