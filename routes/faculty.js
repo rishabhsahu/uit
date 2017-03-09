@@ -15,7 +15,6 @@ router.get('/requestFacultyData',function(req,res){
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
         console.log(err)
-        db.close()
       } else {
         console.log(decoded.name)
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
@@ -23,7 +22,7 @@ router.get('/requestFacultyData',function(req,res){
             console.log(err)
             db.close()
           } else {
-            db.collection("rgpv.faculty").findOne({_id:decoded.name},function(err,item){
+            db.collection("faculty").findOne({_id:decoded.name},function(err,item){
               res.json(item)
             })
           }
@@ -49,7 +48,7 @@ router.get('/getStudentList/:college/:branch/:batch',function(req,res){
             console.log(err)
             db.close()
           } else {
-            db.collection("rgpv.classes").findOne({_id:req.params.college + "/" + req.params.batch + "/" + req.params.branch},function(err,item){
+            db.collection("classes").findOne({_id:req.params.college + "/" + req.params.batch + "/" + req.params.branch},function(err,item){
               if(err){
                 console.log(err)
                 db.close()
@@ -93,9 +92,9 @@ router.post('/submitData/:college/:batch/:branch',function(req,res){
                 final1[y1] = req.body.date
                 console.log(query)
                 console.log(final1)
-                db.collection("rgpv.classes").update(query,{$addToSet:final1})
+                db.collection("classes").update(query,{$addToSet:final1})
               })
-              db.collection("rgpv.faculty").update({"_id":req.params.user,"current_classes.batch":req.params.batch,"current_classes.branch":req.params.branch.toUpperCase()},{$addToSet:{"current_classes.$.classes_held": req.body.date + "," + months[req.body.month]}})
+              db.collection("faculty").update({"_id":req.params.user,"current_classes.batch":req.params.batch,"current_classes.branch":req.params.branch.toUpperCase()},{$addToSet:{"current_classes.$.classes_held": req.body.date + "," + months[req.body.month]}})
               db.close()
               res.writeHead(200)
               res.end()
@@ -127,7 +126,7 @@ router.get('/report/:college/:branch/:batch/:subject',function(req,res){
             obj[str] = 1
             obj['attendance.name'] = 1
             console.log(obj)
-            db.collection("rgpv.classes").findOne({_id:req.params.college + "/" + req.params.branch + "/" + req.params.batch},obj,function(err,item){
+            db.collection("classes").findOne({_id:req.params.college + "/" + req.params.branch + "/" + req.params.batch},obj,function(err,item){
               console.log(item)
               res.json(item)
             })
@@ -165,10 +164,10 @@ fs.readFile("student_list1.txt",function(err,data){
 
 /*
 
-  db.collection("rgpv.classes").findOne({_id:"uit-rgpv/ec-a/14"},function(err,item){
+  db.collection("classes").findOne({_id:"uit-rgpv/ec-a/14"},function(err,item){
     var students = item.students
     students.forEach(function(student,i){
-      db.collection("rgpv.classes").update({_id:"uit-rgpv/ec-a/14"},{$addToSet:{"attendance.IE":{"name":student.name}}})
+      db.collection("classes").update({_id:"uit-rgpv/ec-a/14"},{$addToSet:{"attendance.IE":{"name":student.name}}})
     })
   })
 */

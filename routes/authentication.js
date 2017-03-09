@@ -24,15 +24,27 @@ router.get('/',function(req,res){
             db.close()
           } else {
             console.log("connected to mongodb for authentication using JWT")
-            db.collection("rgpv.faculty").findOne({_id:decoded.name},function(err,item){
-              if(err){
-                res.render('index',{message:"Interval Server Error"})
-                db.close()
-              } else {
-                res.render('home',{title:"",user:decoded.name})
-                db.close()
-              }
-            })
+            if(decoded.name.indexOf(".admin") === -1){
+              db.collection("faculty").findOne({_id:decoded.name},function(err,item){
+                if(err){
+                  res.render('index',{message:"Interval Server Error"})
+                  db.close()
+                } else {
+                  res.render('faculty_home',{title:"",user:decoded.name})
+                  db.close()
+                }
+              })
+            } else {
+              db.collection("admin").findOne({_id:decoded.name},function(err,item){
+                if(err){
+                  res.render('index',{message:"Interval Server Error"})
+                  db.close()
+                } else {
+                  res.render('admin_home',{title:"",user:decoded.name})
+                  db.close()
+                }
+              })
+            }
           }
         })
       }

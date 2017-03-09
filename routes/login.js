@@ -15,27 +15,51 @@ router.post('/',function(req,res){
       db.close()
     } else {
       console.log("connected to mongodb for authentication")
-      db.collection("rgpv.faculty").findOne({_id:username},function(err,item){
-        if(err){
-          console.log(err)
-          db.close()
-        } else {
-          if(item == null || item == undefined){
-            res.send("invalid login")
+      if(req.body.username.indexOf(".admin") === -1){
+        db.collection("faculty").findOne({_id:username},function(err,item){
+          if(err){
+            console.log(err)
             db.close()
           } else {
-            console.log(item)
-            if(item.password == req.body.password){
-              res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
-              res.render('home',{title:"",user:username})
-              db.close()
-            } else {
+            if(item == null || item == undefined){
               res.send("invalid login")
               db.close()
+            } else {
+              console.log(item)
+              if(item.password == req.body.password){
+                res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
+                res.render('faculty_home',{title:"",user:username})
+                db.close()
+              } else {
+                res.send("invalid login")
+                db.close()
+              }
             }
           }
-        }
-      })
+        })
+      } else {
+        db.collection("admin").findOne({_id:username},function(err,item){
+          if(err){
+            console.log(err)
+            db.close()
+          } else {
+            if(item == null || item == undefined){
+              res.send("invalid login")
+              db.close()
+            } else {
+              console.log(item)
+              if(item.password == req.body.password){
+                res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
+                res.render('admin_home',{title:"",user:username})
+                db.close()
+              } else {
+                res.send("invalid login")
+                db.close()
+              }
+            }
+          }
+        })
+      }
 
     }
   })

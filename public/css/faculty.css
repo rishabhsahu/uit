@@ -1,0 +1,152 @@
+@font-face {
+  font-family: Poppins;
+  src: url(../fonts/Poppins-Regular.ttf);
+}
+
+@font-face {
+  font-family: notosans;
+  src: url(../fonts/NotoSans-Regular.ttf);
+}
+
+* {
+  font-family: notosans;
+}
+
+body {
+  background-color:rgba(231,228,230,.5)
+}
+
+#navbar {
+  width: 100%;
+  position:fixed;
+  height: 50px;
+  background-color: rgba(2,62,53,1);
+  opacity: .8;
+  border-color: white;
+  z-index: 1;
+}
+
+
+#company {
+  margin-top: 18px;
+  border-radius: 5px;
+}
+
+.panel {
+  color: grey;
+  position: relative;
+  top: 80px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-radius: 3px;
+  background-color: rgba(2,62,53,.9);
+  box-shadow: 0px 2px 10px grey;
+  margin-right: -7%;
+}
+
+
+a:hover {
+  cursor: pointer;
+}
+
+.circle {
+  position: relative;
+  top: 25px;
+  padding: 20px;
+  display: inline;
+  border-color: rgba(214,78,189,.5);
+  border-radius: 50% 50% 50%;
+  border-style: solid;
+}
+
+.panel1 {
+  margin-left: 6.5%;
+}
+
+.panel2 {
+  height: 35%;
+  min-height: 205px;
+  overflow-x: auto;
+  overflow-y:hidden;
+  background-color: rgba(2,62,53,.9);
+}
+
+.panel_dept_info {
+  background-color: white;
+  min-height: 250px;
+  overflow-x: auto;
+}
+
+div.panel_dept_info > div {
+  margin-top: 4%;
+}
+
+.time_table {
+height: 13%;
+background-color: white;
+}
+
+.panel_staff {
+  height: 50%;
+  min-height: 200px;
+  overflow-x: auto;
+}
+
+
+.class_info {
+  height: 65%;
+  overflow-x: auto;
+  display:block;
+  background-color:white;
+  font-size:110%;
+}
+
+.setting_list {
+  overflow-x: auto;
+  display:block;
+  background-color:white;
+  font-size:110%;
+}
+
+div.setting_list > div {
+   color:rgb(91,216,158);
+   margin-top: 4%;
+}
+
+.student_list {
+  overflow-x: auto;
+}
+
+.left {
+  margin-right: -2%;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+.names:hover {
+  cursor: pointer;
+}
+
+.classHead0 {
+  color:black;
+  display:block;
+  margin-top:0;
+  font-weight:bold;
+  font-size:22px;
+}
+
+.classes_buttons {
+  font-size:110%;
+  font-weight:bold;
+  margin-top:1.5%;
+}
+
+div.class_info > div {
+  margin-top: 2%;
+}
+
+td > div {
+  margin-top: 2%;
+}

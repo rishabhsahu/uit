@@ -1,0 +1,53 @@
+
+		@font-face {
+			font-family: Poppins;
+			src: url(../fonts/Poppins-Regular.ttf);
+		}
+
+		@font-face {
+			font-family: notosans;
+			src: url(../fonts/NotoSans-Regular.ttf);
+		}
+			* {
+				font-family: notosans;
+			}
+
+			#navbar {
+				height: 50px;
+				background-color: white;
+				border-bottom: solid 1px lightgrey;
+				padding-top: 10px;
+			}
+
+			#company {
+				font-family: notosans;
+				margin-top: auto;
+			}
+
+			#first_section {
+				height: 92%;
+				border: solid 1px lightgrey;
+				border-top: none;
+			}
+
+			#faculty_list_box {
+				height: 75%;
+				border-top: solid 1px black;
+				border-bottom: solid 1px black;
+			}
+
+			#batch_list_box {
+				height: 30%;
+				border-top: solid 1px black;
+				border-bottom: solid 1px black;
+			}
+
+			#third_section {
+				height: 92%;
+				border: solid 1px lightgrey;
+				border-top: none;
+			}
+
+			#report_section {
+				height: 92%;
+			}
