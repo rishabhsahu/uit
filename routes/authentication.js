@@ -16,7 +16,7 @@ router.get('/',function(req,res){
       if(err){
         res.render('index',{message:""})
       } else {
-        console.log("JWT decoded:" + decoded)
+        console.log("JWT decoded:" + decoded.name)
         mongo.connect("mongodb://localhost:27018/uit",function(err,db){
           if(err){
             console.log(err)
@@ -41,6 +41,7 @@ router.get('/',function(req,res){
                   db.close()
                 } else {
                   res.render('admin_home',{title:"",user:decoded.name})
+                  console.log("admin verified")
                   db.close()
                 }
               })

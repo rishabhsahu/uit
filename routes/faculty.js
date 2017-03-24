@@ -2,6 +2,7 @@ var router = require('express').Router()
 var cookie = require('cookie')
 var jwt = require('jsonwebtoken')
 var mongo = require('mongodb').MongoClient
+var ObjectId = require('mongodb').ObjectId
 
 var months = ["january","february","march"]
 var d = new Date()
@@ -11,16 +12,22 @@ router.get('/requestFacultyData',function(req,res){
   if(!cookies){
     console.log(err)
     db.close()
+    res.status(401)
+    res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
         console.log(err)
+        res.status(401)
+        res.end()
       } else {
         console.log(decoded.name)
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
             console.log(err)
             db.close()
+            res.status(500)
+            res.end()
           } else {
             db.collection("faculty").findOne({_id:decoded.name},function(err,item){
               res.json(item)
@@ -32,26 +39,34 @@ router.get('/requestFacultyData',function(req,res){
   }
 })
 
-router.get('/getStudentList/:college/:branch/:batch',function(req,res){
+router.get('/getStudentList/:college/:department/:batch',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
     console.log(err)
     db.close()
+    res.status(401)
+    res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
         console.log(err)
         db.close()
+        res.status(401)
+        res.end()
       } else {
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
             console.log(err)
             db.close()
+            res.status(500)
+            res.end()
           } else {
-            db.collection("classes").findOne({_id:req.params.college + "/" + req.params.batch + "/" + req.params.branch},function(err,item){
+            db.collection("classes").findOne({_id:req.params.college + '/' + req.params.department + '/' + req.params.batch},function(err,item){
               if(err){
                 console.log(err)
                 db.close()
+                res.status(404)
+                res.end()
               } else {
                 res.json(item.students)
                 db.close()
@@ -64,37 +79,39 @@ router.get('/getStudentList/:college/:branch/:batch',function(req,res){
   }
 })
 
-router.post('/submitData/:college/:batch/:branch',function(req,res){
+router.post('/submitData/:college/:department/:batch',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
     console.log(err)
     db.close()
+    res.status(401)
+    res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
         console.log(err)
         db.close()
+        res.status(401)
+        res.end()
       } else {
+        console.log('report submission')
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
             console.log(err)
             db.close()
+            res.status(500)
+            res.end()
           } else {
               data = req.body
               console.log(data)
               data.students.forEach(function(name,x){
-                var query = {}
-                query._id = req.params.college + "/" + req.params.batch + "/" + req.params.branch.toLowerCase()
-                var x = "attendance.name"
-                query[x] = name
                 var final1 = {}
                 var y1 = "attendance.$." + req.body.subject + "." + months[req.body.month]
                 final1[y1] = req.body.date
-                console.log(query)
                 console.log(final1)
-                db.collection("classes").update(query,{$addToSet:final1})
+                db.collection("classes").update({_id:req.params.college + '/' + req.params.department + '/' + req.params.batch,"attendance.enroll_number":name},{$addToSet:final1})
               })
-              db.collection("faculty").update({"_id":req.params.user,"current_classes.batch":req.params.batch,"current_classes.branch":req.params.branch.toUpperCase()},{$addToSet:{"current_classes.$.classes_held": req.body.date + "," + months[req.body.month]}})
+              db.collection("faculty").update({_id:decoded.name,"current_classes._id": req.params.college + '/' + req.params.department + '/' + req.params.batch},{$addToSet:{"current_classes.$.classes_held":req.body.date + ", " + months[req.body.month]}})
               db.close()
               res.writeHead(200)
               res.end()
@@ -105,28 +122,34 @@ router.post('/submitData/:college/:batch/:branch',function(req,res){
   }
 })
 
-router.get('/report/:college/:branch/:batch/:subject',function(req,res){
+router.get('/report/:college/:department/:batch/:subject',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
     console.log(err)
     db.close()
+    res.status(401)
+    res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
         console.log(err)
         db.close()
+        res.status(401)
+        res.end()
       } else {
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
             console.log(err)
             db.close()
+            res.status(500)
+            res.end()
           } else {
             var obj = {}
             var str = "attendance." + req.params.subject
             obj[str] = 1
             obj['attendance.name'] = 1
             console.log(obj)
-            db.collection("classes").findOne({_id:req.params.college + "/" + req.params.branch + "/" + req.params.batch},obj,function(err,item){
+            db.collection("classes").findOne({_id:req.params.college + '/' + req.params.department + '/' + req.params.batch},obj,function(err,item){
               console.log(item)
               res.json(item)
             })

@@ -11,8 +11,8 @@ router.post('/',function(req,res){
   var password = req.body.password
   mongo.connect('mongodb://localhost:27018/data',function(err,db){
     if(err){
+      console.log("err hai bc")
       console.log(err)
-      db.close()
     } else {
       console.log("connected to mongodb for authentication")
       if(req.body.username.indexOf(".admin") === -1){
@@ -63,6 +63,14 @@ router.post('/',function(req,res){
 
     }
   })
+})
+
+
+router.get('/logout',function(req,res){
+  console.log('logout')
+  res.setHeader('Set-cookie',cookie.serialize('user','',{expires: new Date(1),httpOnly:true}))
+  res.status(200)
+  res.end()
 })
 
 module.exports = router
