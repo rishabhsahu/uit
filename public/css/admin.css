@@ -87,8 +87,7 @@
 			}
 
 			#studentDataReport {
-				  height: 35%;
-				  max-height: 300px;
+				  height: 65%;
 				  overflow-y: scroll;
 					background-color: white;
 				}
@@ -96,8 +95,7 @@
 				#studentData {
 						position: relative;
 						top: 5%;
-					  height: 35%;
-					  max-height: 300px;
+					  height: 5%;
 					}
 
 					#date {

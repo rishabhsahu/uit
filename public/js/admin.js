@@ -64,10 +64,12 @@ var view = {
     var e;
     model.selectedFaculty.current_classes.forEach(function(x,n){
       if(x._id === id){
+        model.selectedBatch = x;
         e = n;
       }
     })
-    var x = "<div class='col-xs-12'><h3 class='text-center text-danger' style='margin-top:0'>" + model.selectedFaculty.current_classes[e].subject + "</h3></div><div id='studentDataReport' class='col-xs-12'><table class='table-responsive table-striped'><tr class='row' style='font-size:18px;'><div id='historyModal' class='modal'><div class='modal-content'><span class='close' onclick='controller.modalCloses()' id='close'>&times;</span><div class='studentData row'></div></div></div><th class='col-xs-6 text-center'>Name</th><th class='col-xs-3 text-center'>Attendance</th><th class='col-xs-3 text-center'>Percentage</th></tr>";
+    console.log(model);
+    var x = "<div class='col-xs-6'><h3 class='text-right text-danger' style='margin-top:0'>" + model.selectedFaculty.current_classes[e].subject + "</h3></div><div class='col-xs-6 text-right'><div class='btn btn-default' onclick='view.showFilterModal()'>Filter</div></div><div id='studentDataReport' class='col-xs-12'><table class='table-responsive table-striped'><tr class='row' style='font-size:18px;'><div id='historyModal' class='modal'><div class='modal-content'><span class='close' onclick='controller.modalCloses()' id='close'>&times;</span><div class='studentData row'></div></div></div><th class='col-xs-6 text-center'>Name</th><th class='col-xs-3 text-center'>Attendance</th><th class='col-xs-3 text-center'>Percentage</th></tr><div class='col-xs-12 modal' id='batchData'><div class='row'><div class='col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-4 modal-content text-center' id='modalContent'></div></div></div>";
     model.studentAttendanceData = response;
     model.studentAttendanceData.forEach(function(student,i){
       var max = 1;
@@ -93,9 +95,49 @@ var view = {
     });
     x += "</table></div><div style='padding-top:5px;padding-bottom:5px;border-bottom: 3px solid lightgrey;' class='col-xs-12 text-right'><div style='margin-right:10px' class='btn btn-default'>Download Attendance Report</div><div class='btn btn-default'>Download Scoresheet</div></div>";
     document.getElementById("reportSection").innerHTML = x;
-    model.studentAttendanceData.forEach(function(student,i){
-      document.getElementsByClassName("student_name")[i].onclick = controller.showStudentData;
-    });
+  },
+
+  showCustomReport: function(){
+    document.getElementById('batchData').style.display = "none";
+    var reportData = model.reportData;
+    var cuttoff = document.getElementById('cuttoff').value;
+    var selectedYear = document.getElementById('selectedYear').value;
+    var selectedMonth = document.getElementById('selectedMonth').value;
+    var selectedDate = document.getElementById('selectedDate').value;
+    var completeDate = model.months.indexOf(selectedMonth) + "/" + selectedDate + "/" + selectedYear;
+    var dateSelected = Date.parse(completeDate);
+    var afterDateData = {};
+    max = 1;
+    if(cuttoff === undefined || cuttoff === ""){
+      cuttoff = 75;
+    }
+    console.log(cuttoff);
+    var reportData = model.studentAttendanceData;
+    var x = "<div class='col-xs-6'><h3 class='text-right text-danger' style='margin-top:0'>" + model.selectedBatch.subject + "</h3></div><div class='col-xs-6 text-right'><div class='btn btn-default' onclick='view.showFilterModal()'>Filter</div></div><div id='studentDataReport' class='col-xs-12'><table class='table-responsive table-striped'><tr class='row' style='font-size:18px;'><div id='historyModal' class='modal'><div class='modal-content'><span class='close' onclick='controller.modalCloses()' id='close'>&times;</span><div class='studentData row'></div></div></div><th class='col-xs-6 text-center'>Name</th><th class='col-xs-3 text-center'>Attendance</th><th class='col-xs-3 text-center'>Percentage</th></tr><div class='col-xs-12 modal' id='batchData'><div class='row'><div class='col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-4 modal-content text-center' id='modalContent'></div></div></div>";
+    reportData.forEach(function(student,i){
+      if(student[model.selectedBatch.subject] === undefined){
+         student[model.selectedBatch.subject] = {};
+       }
+
+       if(student[model.selectedBatch.subject].attendance === undefined){
+          student[model.selectedBatch.subject].attendance = [];
+        }
+        var presentDates = [];
+        student[model.selectedBatch.subject].attendance.forEach(function(x,i){
+          var dt = Date.parse(x);
+          if(dt >= dateSelected){
+            presentDates.push(dt);
+          }
+        })
+        var count = presentDates.length;
+        if( (count/max)*100 < cuttoff ){
+          x += "<tr style='font-family:notosans;' class='row'><td class='col-xs-6 text-left'><div class='btn btn-danger' style='margin-top: 5px;margin-bottom: 5px;'>" + student.name + "</div></td><td class='col-xs-3 text-center'>" + count + "</td><td class='col-xs-3 text-center'>" + Math.ceil((count/max)*100) + "</td></tr>";
+        } else {
+          x += "<tr style='font-family:notosans;' class='row'><td class='col-xs-4 text-left'><div class='btn btn-success' style='margin-top: 5px;margin-bottom: 5px;'>" + student.name + "</div></td><td class='col-xs-4 text-center'>" + count + "</td><td class='col-xs-4 text-center'>" + (count/max)*100 + "</td></tr>";
+        }
+    })
+    x += "</table>";
+    document.getElementById("reportSection").innerHTML = x;
   },
 
   showStudentData: function(e){
@@ -114,6 +156,35 @@ var view = {
 
   showAddBatchModal: function(){
     document.getElementById("addBatchModal").style.display = "block" ;
+  },
+
+  showFilterModal: function(){
+    var classes_held = {};
+    model.selectedBatch.classes_held.forEach(function(d,i){
+      var x = new Date(Date.parse(d));
+      classes_held[model.months[x.getMonth()]] = [];
+      classes_held[model.months[x.getMonth()]].push(x.getDate());
+      classes_held.year = [];
+      classes_held.year.push(x.getFullYear()) ;
+    })
+    var yearList = "";
+    var monthList = "";
+    var dateList = "";
+    for(var name in classes_held){
+      if(name != "year"){
+        monthList += "<option id='" + name + "'>" + name + "</option>"
+        classes_held[name].forEach(function(dt,i){
+          dateList += "<option id='" + dt + "'>" + dt + "</option>";
+        })
+      } else {
+        classes_held[name].forEach(function(yr){
+          yearList += "<option id='" + yr + "'>" + yr + "</option>";
+        })
+      }
+    }
+
+    document.getElementById('modalContent').innerHTML = "<div class='row'><div class='col-xs-12 text-right' style='font-size:24px'><div onclick='view.close()' style='cursor:pointer;'>&times;</div></div></div><div class='row'><div class='col-xs-12'><h3>Filter Report-</h3></div></div><hr><div class='row'><div class='col-xs-12'>Cutt-off percentage: <input type='text' maxlength='2' id='cuttoff'></div></div><div class='row' style='margin-top: 10px;'><div class='col-xs-12'>Show from <select id='selectedYear'>" + yearList + "</select> <select id='selectedMonth'>" + monthList + "</select> <select id='selectedDate'>" + dateList + "</select></div></div><div class='row' style='margin-top:10px'><div class='col-xs-12 text-center'><div class='btn btn-danger' onclick='view.showCustomReport()'>Filter</div></div></div>";
+    document.getElementById('batchData').style.display = 'block';
   },
 
   batchDataPanel: function(e){
@@ -144,6 +215,7 @@ var view = {
     document.getElementById("addBatchModal").style.display = "none" ;
     document.getElementById("assignFacultyNewBatchModal").style.display = "none" ;
     document.getElementById('facultySettingModal').style.display = "none";
+    document.getElementById('batchData').style.display = "none";
   },
 
   facultySettings: function(){
@@ -372,6 +444,7 @@ var controller = {
     logoutRequest.open('GET','http://localhost:3000/login/logout',true);
     logoutRequest.send(null);
   }
+
 };
 
 window.onload = controller.departmentData;
