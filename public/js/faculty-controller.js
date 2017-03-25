@@ -1,11 +1,11 @@
 var view ={
       home: "<div class='col-md-9 col-xs-10 col-xs-12 left'> <div class='row'><div class='col-md-3 col-xs-12 col-xs-offset-1 panel panel_batch text-center' id='panel_batch'> <h4 style='color:black;font-weight:bold'>Batches</h4>"
        + "<div class='row batch_list' id='batch_list'></div></div><div class='col-md-7 col-md-offset-1 col-xs-12 col-xs-offset-1 panel text-center'>" +
-      " <div class='row' style='color:black;font-size:24px;font-weight:bold' class='col-xs-12'> <div class='col-xs-12'>Reports</div></div><div class='row' style='background-color:white;height:70%;overflow-y:auto;'> <div class='col-xs-12 text-center' style='font-size:150%;' id='showReport'> <div style='opacity:.7;position:relative;top:100px;'>select batch</div></div></div></div></div></div><div class='col-md-3 col-xs-12'> <div style='' class='col-md-10 panel text-center col-xs-12'> <div style='color:black;font-size:160%;'>Name</div><hr style='box-shadow: 5px .5px 10px lightgrey'> <div class='row panel_dept_info'> </div></div><div style='max-height:150px;' class='col-md-10 panel text-center col-xs-12'> <h4 style='color:black;font-weight:bold;'>Time Table</h4> <div class='row time_table'> </div></div></div>",
+      " <div class='row' style='color:red;font-size:24px;font-weight:bold;margin-bottom:5px' class='text-danger text-right' id='reportHeader'></div><div class='row' style='background-color:white;height:70%;overflow-y:auto;'> <div class='col-xs-12 text-center' style='font-size:150%;' id='showReport'> <div style='opacity:.7;position:relative;top:150px;'>select batch to view reports and student data</div></div></div></div></div></div><div class='col-md-3 col-xs-12'> <div style='' class='col-md-10 panel text-center col-xs-12'> <div style='color:black;font-size:160%;'>Name</div><hr style='box-shadow: 5px .5px 10px lightgrey'> <div class='row panel_dept_info'> </div></div><div style='max-height:150px;' class='col-md-10 panel text-center col-xs-12'> <h4 style='color:black;font-weight:bold;'>Time Table</h4> <div class='row time_table'> </div></div></div>",
 
       loadHome: function(){
         document.getElementById("nextSection").innerHTML = view.home;
-        document.getElementById('nextSection').innerHTML += "<div class='col-xs-12 modal' id='batchData'><div class='row'><div class='col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-4 modal-content text-center' id='batchDataContent'></div></div></div>"
+        document.getElementById('nextSection').innerHTML += "<div class='col-xs-12 modal' id='batchData'><div class='row'><div class='col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-4 modal-content text-center' id='modalContent'></div></div></div>"
         controller.present.students = [];
         controller.facultyData();
       },
@@ -39,12 +39,46 @@ var view ={
         model.personalInfo.current_classes.forEach(function(x,i){
           if( x._id === id){
             model.selectedBatch = model.personalInfo.current_classes[i];
+            var d = new Date(Date.parse(x.classes_held[0]));
+            var dt = d.getDate();
+            var mnt = model.months[d.getMonth()];
+            var yrs = d.getFullYear();
+            document.getElementById('modalContent').innerHTML = "<div class='row'><div class='col-xs-12 text-right' style='font-size: 24px;cursor:pointer' onclick='view.closeModal()'>&times;</div></div><div class='row text-center text-danger' style='border-bottom: 1px solid lightgrey'><h4 class='col-xs-12'>" + x.semester + "th, Sem</h4></div><div class='row' style='padding-top:10px'><div class='col-xs-6 text-success'>Subject :</div><div class='col-xs-6'>" + x.subject + "</div></div><div class='row' style='padding-top:10px'><div class='col-xs-6 text-success'>First Class :</div><div class='col-xs-6'>" + mnt + " " + dt + ", " + yrs + "</div></div><div class='row' style='padding-top:10px'><div class='col-xs-6 text-success'>Batch :</div>" + x.batch + "</div></div><div class='row' style='padding-top:10px'><div class='col-xs-6 text-success'>Class Held:</div><div class='col-xs-6'>" + x.classes_held.length + "</div></div><hr><div class='row' style='padding-top:5px'><div class='col-xs-6 text-success'><div class='btn btn-info' onclick='controller.getStudentList()'>Attendance</div></div><div class='col-xs-6'><div class='btn btn-success' onclick='controller.getReport()'>Report</div></div></div>";
             document.getElementById('batchData').style.display = "block";
-            document.getElementById('batchDataContent').innerHTML = "<div class='row' id='batchData'><div class='col-xs-12 text-right' style='font-size: 24px;cursor:pointer' onclick='view.closeModal()'>&times;</div></div><div class='row text-center text-danger' style='border-bottom: 1px solid lightgrey'><h4 class='col-xs-12'>" + x.semester + "th, Sem</h4></div><div class='row' style='padding-top:10px'><div class='col-xs-6 text-success'>Subject :</div><div class='col-xs-6'>" + x.subject + "</div></div><div class='row' style='padding-top:10px'><div class='col-xs-6 text-success'>First Class :</div><div class='col-xs-6'>" + x.classes_held[0] + "</div></div><div class='row' style='padding-top:10px'><div class='col-xs-6 text-success'>Batch :</div>" + x.batch + "</div></div><div class='row' style='padding-top:10px'><div class='col-xs-6 text-success'>Class Held:</div><div class='col-xs-6'>" + x.classes_held.length + "</div></div><hr><div class='row' style='padding-top:5px'><div class='col-xs-6 text-success'><div class='btn btn-info' onclick='controller.getStudentList()'>Attendance</div></div><div class='col-xs-6'><div class='btn btn-success' onclick='controller.getReport()'>Report</div></div></div>";
+
           } else {
 
           }
         })
+      },
+
+      filterReportModal: function(){
+        var classes_held = {};
+        model.selectedBatch.classes_held.forEach(function(d,i){
+          var x = new Date(Date.parse(d));
+          classes_held[model.months[x.getMonth()]] = [];
+          classes_held[model.months[x.getMonth()]].push(x.getDate());
+          classes_held.year = [];
+          classes_held.year.push(x.getFullYear()) ;
+        })
+        var yearList = "";
+        var monthList = "";
+        var dateList = "";
+        for(var name in classes_held){
+          if(name != "year"){
+            monthList += "<option id='" + name + "'>" + name + "</option>"
+            classes_held[name].forEach(function(dt,i){
+              dateList += "<option id='" + dt + "'>" + dt + "</option>";
+            })
+          } else {
+            classes_held[name].forEach(function(yr){
+              yearList += "<option id='" + yr + "'>" + yr + "</option>";
+            })
+          }
+        }
+
+        document.getElementById('modalContent').innerHTML = "<div class='row'><div class='col-xs-12 text-right' style='font-size:24px'><div onclick='view.closeModal()' style='cursor:pointer;'>&times;</div></div></div><div class='row'><div class='col-xs-12'><h3>Filter Report-</h3></div></div><hr><div class='row'><div class='col-xs-12'>Cutt-off percentage: <input type='text' maxlength='2' id='cuttoff'></div></div><div class='row' style='margin-top: 10px;'><div class='col-xs-12'>Show from <select id='selectedYear'>" + yearList + "</select> <select id='selectedMonth'>" + monthList + "</select> <select id='selectedDate'>" + dateList + "</select></div></div><div class='row' style='margin-top:10px'><div class='col-xs-12 text-center'><div class='btn btn-danger' onclick='controller.prepareCustomReport()'>Filter</div></div></div>";
+        document.getElementById('batchData').style.display = 'block';
       },
 
       closeModal: function(){
@@ -135,8 +169,7 @@ markPresent: function(e){
 
 submitData: function(){
   this.present.subject = model.selectedBatch.subject;
-  this.present.month = (new Date()).getMonth();
-  this.present.date = (new Date()).getDate();
+  this.present.date = new Date();
   console.log(JSON.stringify(this.present))
   var SAD = new XMLHttpRequest();
 
@@ -160,35 +193,27 @@ getReport: function(){
   requestReport.onreadystatechange = function(){
     if(requestReport.readyState == 4 || requestReport.status == 200){
       var reportData = JSON.parse(requestReport.response);
+      model.reportData = JSON.parse(requestReport.response);
       console.log(reportData);
+      document.getElementById('reportHeader').innerHTML = "<div class='col-xs-6 text-right'>" + model.selectedBatch.subject + "</div><div class='col-xs-6 text-right'><div class='btn btn-default' onclick='view.filterReportModal()'>Filter</div></div>";
       var x = "<table class='table-responsive table-striped' class='col-xs-12'><tr class='row' style='font-size:18px;'><th class='col-xs-6 text-center'>Name</th><th class='col-xs-3 text-center'>Attendance</th><th class='col-xs-3 text-center'>Percentage</th></tr>";
       var max = 1;
+
       reportData.attendance.forEach(function(student){
         var count = 0;
         if(student[model.selectedBatch.subject] === undefined){
-           student[model.selectedBatch.subject] = [];
+           student[model.selectedBatch.subject] = {};
          }
 
-         for(var props in student[model.selectedBatch.subject]){
-           if( model.months.indexOf(props)>=0 ){
-             count += student[model.selectedBatch.subject][props].length;
-           }
-         }
-        if(count>max){
-          max = count;
+         if(student[model.selectedBatch.subject].attendance === undefined){
+            student[model.selectedBatch.subject].attendance = [];
+          }
+
+         count = student[model.selectedBatch.subject].attendance.length;
+        if(model.selectedBatch.classes_held.length > max){
+          max = model.selectedBatch.classes_held.length;
         }
-      });
-      reportData.attendance.forEach(function(student){
-        var count = 0;
-        if(student[model.selectedBatch.subject] === undefined){
-           student[model.selectedBatch.subject] = [];
-         }
-
-         for(var props in student[model.selectedBatch.subject]){
-           if( model.months.indexOf(props)>=0 ){
-             count += student[model.selectedBatch.subject][props].length;
-           }
-         }
+        console.log(count);
          console.log(max);
          if( (count/max)*100 < 75 ){
            x += "<tr style='font-family:notosans;' class='row'><td class='col-xs-6 text-left'><div class='btn btn-danger'>" + student.name + "</div></td><td class='col-xs-3 text-center'>" + count + "</td><td class='col-xs-3 text-center'>" + Math.ceil((count/max)*100) + "</td></tr>";
@@ -205,6 +230,48 @@ getReport: function(){
 
   requestReport.open("GET","http://localhost:3000/faculty/report/" + model.selectedBatch._id + '/' + model.selectedBatch.subject ,true);
   requestReport.send(null);
+},
+
+prepareCustomReport: function(){
+  document.getElementById('batchData').style.display = "none";
+  var reportData = model.reportData;
+  var cuttoff = document.getElementById('cuttoff').value;
+  var selectedYear = document.getElementById('selectedYear').value;
+  var selectedMonth = document.getElementById('selectedMonth').value;
+  var selectedDate = document.getElementById('selectedDate').value;
+  var completeDate = model.months.indexOf(selectedMonth) + "/" + selectedDate + "/" + selectedYear;
+  var dateSelected = Date.parse(completeDate);
+  var afterDateData = {};
+  max = 1;
+  if(cuttoff === undefined || cuttoff === ""){
+    cuttoff = 75;
+  }
+  console.log(cuttoff);
+  var x = "<table class='table-responsive table-striped' class='col-xs-12'><tr class='row' style='font-size:18px;'><th class='col-xs-6 text-center'>Name</th><th class='col-xs-3 text-center'>Attendance</th><th class='col-xs-3 text-center'>Percentage</th></tr>";
+  reportData.attendance.forEach(function(student,i){
+    if(student[model.selectedBatch.subject] === undefined){
+       student[model.selectedBatch.subject] = {};
+     }
+
+     if(student[model.selectedBatch.subject].attendance === undefined){
+        student[model.selectedBatch.subject].attendance = [];
+      }
+      var presentDates = [];
+      student[model.selectedBatch.subject].attendance.forEach(function(x,i){
+        var dt = Date.parse(x);
+        if(dt >= dateSelected){
+          presentDates.push(dt);
+        }
+      })
+      var count = presentDates.length;
+      if( (count/max)*100 < cuttoff ){
+        x += "<tr style='font-family:notosans;' class='row'><td class='col-xs-6 text-left'><div class='btn btn-danger'>" + student.name + "</div></td><td class='col-xs-3 text-center'>" + count + "</td><td class='col-xs-3 text-center'>" + Math.ceil((count/max)*100) + "</td></tr>";
+      } else {
+        x += "<tr style='font-family:notosans;' class='row'><td class='col-xs-4 text-left'><div class='btn btn-success'>" + student.name + "</div></td><td class='col-xs-4 text-center'>" + count + "</td><td class='col-xs-4 text-center'>" + (count/max)*100 + "</td></tr>";
+      }
+  })
+  x += "</table>";
+  view.showReport(x);
 }
 };
 

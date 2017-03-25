@@ -70,21 +70,26 @@ var view = {
     var x = "<div class='col-xs-12'><h3 class='text-center text-danger' style='margin-top:0'>" + model.selectedFaculty.current_classes[e].subject + "</h3></div><div id='studentDataReport' class='col-xs-12'><table class='table-responsive table-striped'><tr class='row' style='font-size:18px;'><div id='historyModal' class='modal'><div class='modal-content'><span class='close' onclick='controller.modalCloses()' id='close'>&times;</span><div class='studentData row'></div></div></div><th class='col-xs-6 text-center'>Name</th><th class='col-xs-3 text-center'>Attendance</th><th class='col-xs-3 text-center'>Percentage</th></tr>";
     model.studentAttendanceData = response;
     model.studentAttendanceData.forEach(function(student,i){
+      var max = 1;
       var count = 0;
       var classesHeld = model.selectedFaculty.current_classes[e].classes_held.length;
       if(classesHeld === 0){
         classesHeld = 1;
       }
       if(student[model.selectedFaculty.current_classes[e].subject] === undefined){
-         student[model.selectedFaculty.current_classes[e].subject] = [];
+         student[model.selectedFaculty.current_classes[e].subject] = {};
        }
 
-       for(var props in student[model.selectedFaculty.current_classes[e].subject]){
-         if( model.months.indexOf(props)>=0 ){
-           count += student[model.selectedFaculty.current_classes[e].subject][props].length;
-         }
+       if(student[model.selectedFaculty.current_classes[e].subject].attendance === undefined){
+         student[model.selectedFaculty.current_classes[e].subject].attendance = [];
        }
-       x += "<tr style='font-size:14px;font-family:notosans;' class='row'><td class='col-xs-4 text-center'><div class='student_name' style='margin-top: 5px;margin-bottom: 5px;' id=#" + i + ">" + student.name + "</div></td><td class='col-xs-4 text-center'>" + count + "</td><td class='col-xs-4 text-center'>" + (count/classesHeld)*100 + "</td></tr>";
+
+       count += student[model.selectedFaculty.current_classes[e].subject].attendance.length;
+       if( (count/max)*100 < 75 ){
+         x += "<tr style='font-family:notosans;' class='row'><td class='col-xs-6 text-left'><div style='margin-top: 5px;margin-bottom: 5px;' class='btn btn-danger' id='" + student.enroll_number +"'>" + student.name + "</div></td><td class='col-xs-3 text-center'>" + count + "</td><td class='col-xs-3 text-center'>" + Math.ceil((count/max)*100) + "</td></tr>";
+       } else {
+         x += "<tr style='font-family:notosans;' class='row'><td class='col-xs-4 text-left'><div style='margin-top: 5px;margin-bottom: 5px;' class='btn btn-success' id='" + student.enroll_number +"'>" + student.name + "</div></td><td class='col-xs-4 text-center'>" + count + "</td><td class='col-xs-4 text-center'>" + (count/max)*100 + "</td></tr>";
+       }
     });
     x += "</table></div><div style='padding-top:5px;padding-bottom:5px;border-bottom: 3px solid lightgrey;' class='col-xs-12 text-right'><div style='margin-right:10px' class='btn btn-default'>Download Attendance Report</div><div class='btn btn-default'>Download Scoresheet</div></div>";
     document.getElementById("reportSection").innerHTML = x;
