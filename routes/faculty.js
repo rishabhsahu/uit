@@ -80,6 +80,12 @@ router.get('/getStudentList/:college/:department/:batch',function(req,res){
 })
 
 router.post('/submitData/:college/:department/:batch',function(req,res){
+  console.log(req.body)
+  var d = new Date(req.body.date)
+  d.setSeconds(0)
+  d.setMilliseconds(0)
+  d.setMinutes(0)
+  d.setHours(0)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
     console.log(err)
@@ -106,12 +112,12 @@ router.post('/submitData/:college/:department/:batch',function(req,res){
               console.log(data)
               data.students.forEach(function(name,x){
                 var final1 = {}
-                var y1 = "attendance.$." + req.body.subject + "." + months[req.body.month]
-                final1[y1] = req.body.date
+                var y1 = "attendance.$." + req.body.subject + ".attendance"
+                final1[y1] = d
                 console.log(final1)
                 db.collection("classes").update({_id:req.params.college + '/' + req.params.department + '/' + req.params.batch,"attendance.enroll_number":name},{$addToSet:final1})
               })
-              db.collection("faculty").update({_id:decoded.name,"current_classes._id": req.params.college + '/' + req.params.department + '/' + req.params.batch},{$addToSet:{"current_classes.$.classes_held":req.body.date + ", " + months[req.body.month]}})
+              db.collection("faculty").update({_id:decoded.name,"current_classes._id": req.params.college + '/' + req.params.department + '/' + req.params.batch},{$addToSet:{"current_classes.$.classes_held":d}})
               db.close()
               res.writeHead(200)
               res.end()
