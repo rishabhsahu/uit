@@ -251,6 +251,19 @@ prepareCustomReport: function(){
   if(cuttoff === undefined || cuttoff === ""){
     cuttoff = 75;
   }
+
+  var classesHeldDates = [];
+  model.selectedBatch.classes_held.forEach(function(x,i){
+    var dt = Date.parse(x);
+    if(dt >= dateSelected){
+      classesHeldDates.push(dt);
+    }
+  })
+  console.log(classesHeldDates);
+  if(classesHeldDates.length > max){
+    max = classesHeldDates.length;
+  }
+
   console.log(cuttoff);
   var x = "<table class='table-responsive table-striped' class='col-xs-12'><tr class='row' style='font-size:18px;'><th class='col-xs-6 text-center'>Name</th><th class='col-xs-3 text-center'>Attendance</th><th class='col-xs-3 text-center'>Percentage</th></tr>";
   reportData.attendance.forEach(function(student,i){
@@ -268,11 +281,10 @@ prepareCustomReport: function(){
           presentDates.push(dt);
         }
       })
+
       console.log(presentDates);
       var count = presentDates.length;
-      if(model.selectedBatch.classes_held.length > 1){
-        max = model.selectedBatch.classes_held.length;
-      }
+
       if( (count/max)*100 < cuttoff ){
         x += "<tr style='font-family:notosans;' class='row'><td class='col-xs-6 text-left'><div class='btn btn-danger'>" + student.name + "</div></td><td class='col-xs-3 text-center'>" + count + "</td><td class='col-xs-3 text-center'>" + Math.ceil((count/max)*100) + "</td></tr>";
       } else {

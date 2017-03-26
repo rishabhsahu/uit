@@ -102,19 +102,34 @@ var view = {
   },
 
   showCustomReport: function(){
+
     document.getElementById('batchData').style.display = "none";
     var reportData = model.reportData;
     var cuttoff = document.getElementById('cuttoff').value;
     var selectedYear = document.getElementById('selectedYear').value;
     var selectedMonth = document.getElementById('selectedMonth').value;
     var selectedDate = document.getElementById('selectedDate').value;
-    var completeDate = model.months.indexOf(selectedMonth) + "/" + selectedDate + "/" + selectedYear;
+    var completeDate = (model.months.indexOf(selectedMonth) + 1) + "/" + selectedDate + "/" + selectedYear;
     var dateSelected = Date.parse(completeDate);
+    console.log(dateSelected);
     var afterDateData = {};
     max = 1;
     if(cuttoff === undefined || cuttoff === ""){
       cuttoff = 75;
     }
+
+    var classesHeldDates = [];
+    model.selectedBatch.classes_held.forEach(function(x,i){
+      var dt = Date.parse(x);
+      if(dt >= dateSelected){
+        classesHeldDates.push(dt);
+      }
+    })
+    console.log(classesHeldDates);
+    if(classesHeldDates.length > max){
+      max = classesHeldDates.length;
+    }
+
     console.log(cuttoff);
     var reportData = model.studentAttendanceData;
     var x = "<div class='col-xs-6'><h3 class='text-right text-danger' style='margin-top:0'>" + model.selectedBatch.subject + "</h3></div><div class='col-xs-6 text-right'><div class='btn btn-default' onclick='view.showFilterModal()'>Filter</div></div><div id='studentDataReport' class='col-xs-12'><table class='table-responsive table-striped'><tr class='row' style='font-size:18px;'><div id='historyModal' class='modal'><div class='modal-content'><span class='close' onclick='controller.modalCloses()' id='close'>&times;</span><div class='studentData row'></div></div></div><th class='col-xs-6 text-center'>Name</th><th class='col-xs-3 text-center'>Attendance</th><th class='col-xs-3 text-center'>Percentage</th></tr><div class='col-xs-12 modal' id='batchData'><div class='row'><div class='col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-4 modal-content text-center' id='modalContent'></div></div></div>";
@@ -134,9 +149,7 @@ var view = {
           }
         })
         var count = presentDates.length;
-        if(model.selectedBatch.classes_held.length > 1){
-          max = model.selectedBatch.classes_held.length;
-        }
+        
         if( (count/max)*100 < cuttoff ){
           x += "<tr style='font-family:notosans;' class='row'><td class='col-xs-6 text-left'><div class='btn btn-danger' style='margin-top: 5px;margin-bottom: 5px;'>" + student.name + "</div></td><td class='col-xs-3 text-center'>" + count + "</td><td class='col-xs-3 text-center'>" + Math.ceil((count/max)*100) + "</td></tr>";
         } else {
