@@ -5,7 +5,7 @@ var mongo = require('mongodb').MongoClient
 var ObjectId = require('mongodb').ObjectId
 
 var months = ["january","february","march"]
-var d = new Date()
+var dt = new Date()
 
 router.get('/requestFacultyData',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
@@ -82,10 +82,7 @@ router.get('/getStudentList/:college/:department/:batch',function(req,res){
 router.post('/submitData/:college/:department/:batch',function(req,res){
   console.log(req.body)
   var d = new Date(req.body.date)
-  d.setSeconds(0)
-  d.setMilliseconds(0)
-  d.setMinutes(0)
-  d.setHours(0)
+  d = d.toLocaleDateString()
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
     console.log(err)

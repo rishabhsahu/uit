@@ -149,14 +149,12 @@ var view = {
           }
         })
         var count = presentDates.length;
-        
-        if( (count/max)*100 < cuttoff ){
-          x += "<tr style='font-family:notosans;' class='row'><td class='col-xs-6 text-left'><div class='btn btn-danger' style='margin-top: 5px;margin-bottom: 5px;'>" + student.name + "</div></td><td class='col-xs-3 text-center'>" + count + "</td><td class='col-xs-3 text-center'>" + Math.ceil((count/max)*100) + "</td></tr>";
-        } else {
+
+        if( (count/max)*100 >= cuttoff ){
           x += "<tr style='font-family:notosans;' class='row'><td class='col-xs-4 text-left'><div class='btn btn-success' style='margin-top: 5px;margin-bottom: 5px;'>" + student.name + "</div></td><td class='col-xs-4 text-center'>" + count + "</td><td class='col-xs-4 text-center'>" + (count/max)*100 + "</td></tr>";
         }
     })
-    x += "</table>";
+    x += "</table></div><div style='padding-top:5px;padding-bottom:5px;border-bottom: 3px solid lightgrey;' class='col-xs-12 text-right'><div style='margin-right:10px' class='btn btn-default disabled' onclick='controller.downloadAttendanceReport()'>Download Attendance Report</div><div class='btn btn-default disabled'>Download Scoresheet</div></div>";
     document.getElementById("reportSection").innerHTML = x;
   },
 
@@ -182,6 +180,7 @@ var view = {
     var classes_held = {};
     model.selectedBatch.classes_held.forEach(function(d,i){
       var x = new Date(Date.parse(d));
+      console.log(x);
       classes_held[model.months[x.getMonth()]] = [];
       classes_held[model.months[x.getMonth()]].push(x.getDate());
       classes_held.year = [];

@@ -1,7 +1,7 @@
 var view ={
       home: "<div class='col-md-9 col-xs-10 col-xs-12 left'> <div class='row'><div class='col-md-3 col-xs-12 col-xs-offset-1 panel panel_batch text-center' id='panel_batch'> <h4 style='color:black;font-weight:bold'>Batches</h4>"
        + "<div class='row batch_list' id='batch_list'></div></div><div class='col-md-7 col-md-offset-1 col-xs-12 col-xs-offset-1 panel text-center'>" +
-      " <div class='row' style='color:red;font-size:24px;font-weight:bold;margin-bottom:5px' class='text-danger text-right' id='reportHeader'></div><div class='row' style='background-color:white;height:70%;overflow-y:auto;'> <div class='col-xs-12 text-center' style='font-size:150%;' id='showReport'> <div style='opacity:.7;position:relative;top:150px;'>select batch to view reports and student data</div></div></div></div></div></div><div class='col-md-3 col-xs-12'> <div style='' class='col-md-10 panel text-center col-xs-12'> <div style='color:black;font-size:160%;'>Name</div><hr style='box-shadow: 5px .5px 10px lightgrey'> <div class='row panel_dept_info'> </div></div><div style='max-height:150px;' class='col-md-10 panel text-center col-xs-12'> <h4 style='color:black;font-weight:bold;'>Time Table</h4> <div class='row time_table'> </div></div></div>",
+      " <div class='row' style='color:red;font-size:24px;font-weight:bold;margin-bottom:5px' class='text-danger text-right' id='reportHeader'></div><div class='row' style='background-color:white;height:70%;overflow-y:auto;'> <div class='col-xs-12 text-center' style='font-size:150%;' id='showReport'> <div style='opacity:.7;position:relative;top:150px;'>select batch to view reports and student data</div></div></div></div></div></div><div class='col-md-3 col-xs-12'> <div style='' class='col-md-10 panel text-center col-xs-12'> <div style='color:black;font-size:160%;'>Name<span class='btn glyphicon glyphicon-pencil'></div><hr style='box-shadow: 5px .5px 10px lightgrey'> <div class='row panel_dept_info'> </div></div><div style='max-height:150px;' class='col-md-10 panel text-center col-xs-12'> <h4 style='color:black;font-weight:bold;'>Time Table</h4> <div class='row time_table'> </div></div></div>",
 
       loadHome: function(){
         document.getElementById("nextSection").innerHTML = view.home;
@@ -173,7 +173,9 @@ markPresent: function(e){
 
 submitData: function(){
   this.present.subject = model.selectedBatch.subject;
-  this.present.date = new Date();
+  var d = new Date();
+  d = d.toLocaleDateString();
+  this.present.date = d;
   console.log(JSON.stringify(this.present))
   var SAD = new XMLHttpRequest();
 
@@ -225,7 +227,7 @@ getReport: function(){
            x += "<tr style='font-family:notosans;' class='row'><td class='col-xs-4 text-left'><div class='btn btn-success'>" + student.name + "</div></td><td class='col-xs-4 text-center'>" + count + "</td><td class='col-xs-4 text-center'>" + (count/max)*100 + "</td></tr>";
          }
       })
-      x += "</table>";
+      x += "</table></div><div style='padding-top:5px;padding-bottom:5px;border-bottom: 3px solid lightgrey;' class='col-xs-12 text-right'><div style='margin-right:10px' class='btn btn-default disabled' onclick='controller.downloadAttendanceReport()'>Download Attendance Report</div><div class='btn btn-default disabled'>Download Scoresheet</div></div>";
       view.showReport(x);
     } else {
       document.getElementById("showReport").innerHTML = "<div style='position:relative;top:75px;'>loading ...</div>";
@@ -285,13 +287,11 @@ prepareCustomReport: function(){
       console.log(presentDates);
       var count = presentDates.length;
 
-      if( (count/max)*100 < cuttoff ){
-        x += "<tr style='font-family:notosans;' class='row'><td class='col-xs-6 text-left'><div class='btn btn-danger'>" + student.name + "</div></td><td class='col-xs-3 text-center'>" + count + "</td><td class='col-xs-3 text-center'>" + Math.ceil((count/max)*100) + "</td></tr>";
-      } else {
+      if( (count/max)*100 >= cuttoff ){
         x += "<tr style='font-family:notosans;' class='row'><td class='col-xs-4 text-left'><div class='btn btn-success'>" + student.name + "</div></td><td class='col-xs-4 text-center'>" + count + "</td><td class='col-xs-4 text-center'>" + (count/max)*100 + "</td></tr>";
       }
   })
-  x += "</table>";
+  x += "</table></div><div style='padding-top:5px;padding-bottom:5px;border-bottom: 3px solid lightgrey;' class='col-xs-12 text-right'><div style='margin-right:10px' class='btn btn-default disabled' onclick='controller.downloadAttendanceReport()'>Download Attendance Report</div><div class='btn btn-default disabled'>Download Scoresheet</div></div>";
   view.showReport(x);
 }
 };

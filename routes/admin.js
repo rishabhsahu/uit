@@ -22,6 +22,7 @@ router.get('/getDepartmentData',function(req,res){
         console.log(decoded.name)
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(!err){
+            db.collection('admin').update({_id:decoded.name},{$inc:{"access":1}})
             db.collection('admin').findOne({_id:decoded.name},function(err,item){
               console.log(JSON.stringify(item))
               res.setHeader('Content-type','application/json')
