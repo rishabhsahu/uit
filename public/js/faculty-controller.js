@@ -54,13 +54,17 @@ var view ={
 
       filterReportModal: function(){
         var classes_held = {};
+        classes_held.year = [];
         model.selectedBatch.classes_held.forEach(function(d,i){
           var x = new Date(Date.parse(d));
           classes_held[model.months[x.getMonth()]] = [];
+        })
+        model.selectedBatch.classes_held.forEach(function(d,i){
+          var x = new Date(Date.parse(d));
           classes_held[model.months[x.getMonth()]].push(x.getDate());
-          classes_held.year = [];
           classes_held.year.push(x.getFullYear()) ;
         })
+        console.log(classes_held);
         var yearList = "";
         var monthList = "";
         var dateList = "";
@@ -239,8 +243,9 @@ prepareCustomReport: function(){
   var selectedYear = document.getElementById('selectedYear').value;
   var selectedMonth = document.getElementById('selectedMonth').value;
   var selectedDate = document.getElementById('selectedDate').value;
-  var completeDate = model.months.indexOf(selectedMonth) + "/" + selectedDate + "/" + selectedYear;
+  var completeDate = (model.months.indexOf(selectedMonth) + 1) + "/" + selectedDate + "/" + selectedYear;
   var dateSelected = Date.parse(completeDate);
+  console.log(dateSelected);
   var afterDateData = {};
   max = 1;
   if(cuttoff === undefined || cuttoff === ""){
@@ -263,7 +268,11 @@ prepareCustomReport: function(){
           presentDates.push(dt);
         }
       })
+      console.log(presentDates);
       var count = presentDates.length;
+      if(model.selectedBatch.classes_held.length > 1){
+        max = model.selectedBatch.classes_held.length;
+      }
       if( (count/max)*100 < cuttoff ){
         x += "<tr style='font-family:notosans;' class='row'><td class='col-xs-6 text-left'><div class='btn btn-danger'>" + student.name + "</div></td><td class='col-xs-3 text-center'>" + count + "</td><td class='col-xs-3 text-center'>" + Math.ceil((count/max)*100) + "</td></tr>";
       } else {

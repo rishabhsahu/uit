@@ -86,6 +86,10 @@ var view = {
          student[model.selectedFaculty.current_classes[e].subject].attendance = [];
        }
 
+       if(model.selectedBatch.classes_held.length > 1){
+         max = model.selectedBatch.classes_held.length;
+       }
+
        count += student[model.selectedFaculty.current_classes[e].subject].attendance.length;
        if( (count/max)*100 < 75 ){
          x += "<tr style='font-family:notosans;' class='row'><td class='col-xs-6 text-left'><div style='margin-top: 5px;margin-bottom: 5px;' class='btn btn-danger' id='" + student.enroll_number +"'>" + student.name + "</div></td><td class='col-xs-3 text-center'>" + count + "</td><td class='col-xs-3 text-center'>" + Math.ceil((count/max)*100) + "</td></tr>";
@@ -93,7 +97,7 @@ var view = {
          x += "<tr style='font-family:notosans;' class='row'><td class='col-xs-4 text-left'><div style='margin-top: 5px;margin-bottom: 5px;' class='btn btn-success' id='" + student.enroll_number +"'>" + student.name + "</div></td><td class='col-xs-4 text-center'>" + count + "</td><td class='col-xs-4 text-center'>" + (count/max)*100 + "</td></tr>";
        }
     });
-    x += "</table></div><div style='padding-top:5px;padding-bottom:5px;border-bottom: 3px solid lightgrey;' class='col-xs-12 text-right'><div style='margin-right:10px' class='btn btn-default'>Download Attendance Report</div><div class='btn btn-default'>Download Scoresheet</div></div>";
+    x += "</table></div><div style='padding-top:5px;padding-bottom:5px;border-bottom: 3px solid lightgrey;' class='col-xs-12 text-right'><div style='margin-right:10px' class='btn btn-default disabled' onclick='controller.downloadAttendanceReport()'>Download Attendance Report</div><div class='btn btn-default disabled'>Download Scoresheet</div></div>";
     document.getElementById("reportSection").innerHTML = x;
   },
 
@@ -130,6 +134,9 @@ var view = {
           }
         })
         var count = presentDates.length;
+        if(model.selectedBatch.classes_held.length > 1){
+          max = model.selectedBatch.classes_held.length;
+        }
         if( (count/max)*100 < cuttoff ){
           x += "<tr style='font-family:notosans;' class='row'><td class='col-xs-6 text-left'><div class='btn btn-danger' style='margin-top: 5px;margin-bottom: 5px;'>" + student.name + "</div></td><td class='col-xs-3 text-center'>" + count + "</td><td class='col-xs-3 text-center'>" + Math.ceil((count/max)*100) + "</td></tr>";
         } else {
@@ -183,7 +190,7 @@ var view = {
       }
     }
 
-    document.getElementById('modalContent').innerHTML = "<div class='row'><div class='col-xs-12 text-right' style='font-size:24px'><div onclick='view.close()' style='cursor:pointer;'>&times;</div></div></div><div class='row'><div class='col-xs-12'><h3>Filter Report-</h3></div></div><hr><div class='row'><div class='col-xs-12'>Cutt-off percentage: <input type='text' maxlength='2' id='cuttoff'></div></div><div class='row' style='margin-top: 10px;'><div class='col-xs-12'>Show from <select id='selectedYear'>" + yearList + "</select> <select id='selectedMonth'>" + monthList + "</select> <select id='selectedDate'>" + dateList + "</select></div></div><div class='row' style='margin-top:10px'><div class='col-xs-12 text-center'><div class='btn btn-danger' onclick='view.showCustomReport()'>Filter</div></div></div>";
+    document.getElementById('modalContent').innerHTML = "<div class='row'><div class='col-xs-12 text-right' style='font-size:24px'><div onclick='view.close()' style='cursor:pointer;'>&times;</div></div></div><div class='row'><div class='col-xs-12'><h3>Filter Report-</h3></div></div><hr><div class='row'><div class='col-xs-12'>Cutt-off percentage: <input type='text' maxlength='2' id='cuttoff'></div></div><div class='row' style='margin-top: 10px;'><div class='col-xs-12'>Show from <select id='selectedYear'>" + yearList + "</select> <select id='selectedMonth'>" + monthList + "</select> <select id='selectedDate'>" + dateList + "</select></div></div><div class='row' style='margin-top:10px;margin-bottom:10px'><div class='col-xs-12 text-center'><div class='btn btn-danger' onclick='view.showCustomReport()'>Filter</div></div></div>";
     document.getElementById('batchData').style.display = 'block';
   },
 
@@ -443,6 +450,13 @@ var controller = {
     }
     logoutRequest.open('GET','http://localhost:3000/login/logout',true);
     logoutRequest.send(null);
+  },
+
+  downloadAttendanceReport: function(){
+    var downloadAttendanceReportRequest = new XMLHttpRequest();
+
+    downloadAttendanceReportRequest.open('GET','http://localhost:3000/download/attendanceReport/' + model.selectedBatch._id + '/' + model.selectedBatch.subject,true);
+    downloadAttendanceReportRequest.send(null);
   }
 
 };
