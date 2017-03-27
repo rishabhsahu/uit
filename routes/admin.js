@@ -195,13 +195,76 @@ router.post('/assignFacultyNewBatch/:faculty_id',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
     if(!err){
+      mongo.connect('mongodb://localhost:27018/data',function(err,db){
+        if(!err){
+          db.collection('classes').findOne({_id:req.body._id},{"prev_faculties":1},function(err,item){
+            var obj = {}
+            console.log(item.prev_faculties[req.params.faculty_id].subject)
+            if(item.prev_faculties[req.params.faculty_id].subject === req.body.subject){
+              db.collection('faculty').update({_id:req.params.faculty_id},{$addToSet:{"current_classes":{"_id":req.body._id,"batch":req.body.batch,"semester":req.body.semester,"subject":req.body.subject,"classes_held":item.prev_faculties[req.params.faculty_id]["classes_held"]}}})
+              console.log("Faculty Re-assigned")
+              res.status(200)
+              res.end()
+            } else {
+              db.collection('faculty').update({_id:req.params.faculty_id},{$addToSet:{"current_classes":{"_id":req.body._id,"batch":req.body.batch,"semester":req.body.semester,"subject":req.body.subject,"classes_held":[]}}})
+              console.log("added")
+              res.status(200)
+              res.end()
+            }
+          })
+        } else {
+          console.log("failed to connect to db")
+          res.status(500)
+          res.end()
+        }
+      })
+    } else {
+      console.log("failed to verify")
+      res.status(500)
+      res.end()
+    }
+  })
+})
+
+router.delete('/deassignbatch/:id/:college/:department/:batch',function(req,res){
+  console.log('De-Assign Faculty Batch request');
+  var cookies = cookie.parse(req.headers.cookie || '')
+  jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+    if(!err){
       console.log("faculty data requested.")
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(!err){
-          db.collection('faculty').update({_id:req.params.faculty_id},{$addToSet:{"current_classes":{"_id":req.body._id,"batch":req.body.batch,"semester":req.body.semester,"subject":req.body.subject,"classes_held":[]}}})
-          console.log("added")
-          res.status(200)
-          res.end()
+          var classes_held = []
+          var subject = ""
+          db.collection('faculty').findOne({_id:req.params.id},{"current_classes":1},function(err,item){
+            if(!err){
+              console.log(item)
+              item.current_classes.forEach(function(x,i){
+                if(x._id ===  (req.params.college + '/' + req.params.department + '/' + req.params.batch) ){
+                  classes_held = x["classes_held"]
+                  subject = x["subject"]
+                  console.log(classes_held)
+                  var obj = {
+                    prev_faculties:{}
+                  }
+                  var y = {
+                    "classes_held": classes_held,
+                    "subject": subject
+                  }
+                  obj.prev_faculties[req.params.id] = y
+                  db.collection('faculty').update({_id:req.params.id},{$pull:{"current_classes":{"_id":req.params.college + '/' + req.params.department + '/' + req.params.batch }}})
+                  db.collection('classes').update({_id: req.params.college + '/' + req.params.department + '/' + req.params.batch},{$set:obj})
+                  console.log("added")
+                  res.status(200)
+                  res.end()
+                }
+              })
+            } else {
+              console.log(err)
+              res.status(500)
+              res.end()
+            }
+          })
         } else {
           console.log("failed to connect to db")
           res.status(500)

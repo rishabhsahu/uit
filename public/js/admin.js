@@ -40,6 +40,8 @@ var view = {
 
     document.getElementById("switch").innerHTML += "<div id='facultySettingModal' class='text-center modal col-sm-12'><div class='row' style='padding-top:100px;'><div class='col-sm-4 col-sm-offset-4 modalContent' style='padding:20px;font-size: 20px;'>Are you sure you want to remove this Faculty from department/college ?<br><div class='text-danger' style='font-size:16px;'>note- this removal will be permanent and you will loose all the faculty data</div></div></div><div class='row' style='padding-top:20px;'><div class='col-sm-4 col-sm-offset-4'><div class='row'><div class='col-sm-2 col-sm-offset-3 btn btn-danger' onclick='controller.deleteFaculty()'>Yes</div><div class='btn btn-success col-sm-2 col-sm-offset-2' onclick='view.close()'>No</div></div></div></div></div>";
 
+    document.getElementById("switch").innerHTML += "<div id='deassignbatchModal' class='text-center modal col-sm-12'><div class='row' style='padding-top:100px;'><div class='col-sm-4 col-sm-offset-4 modalContent' style='padding:20px;font-size: 20px;'>Are you sure you want to De-assign Faculty this Batch?<br><div class='text-success' style='font-size:16px;'>note- You can however Re-assign Faculty this Batch and get the data back</div></div></div><div class='row' style='padding-top:20px;'><div class='col-sm-4 col-sm-offset-4'><div class='row'><div class='col-sm-2 col-sm-offset-3 btn btn-danger' onclick='controller.deassignbatch()'>Yes</div><div class='btn btn-success col-sm-2 col-sm-offset-2' onclick='view.close()'>No</div></div></div></div></div>";
+
     //end of faculty Settings modal
 
     model.info.faculties.forEach(function(faculty,i){
@@ -69,7 +71,7 @@ var view = {
       }
     })
     console.log(model);
-    var x = "<div class='col-xs-6'><h3 class='text-right text-danger' style='margin-top:0'>" + model.selectedFaculty.current_classes[e].subject + "</h3></div><div class='col-xs-6 text-right'><div class='btn btn-default' onclick='view.showFilterModal()'>Filter</div></div><div id='studentDataReport' class='col-xs-12'><table class='table-responsive table-striped'><tr class='row' style='font-size:18px;'><div id='historyModal' class='modal'><div class='modal-content'><span class='close' onclick='controller.modalCloses()' id='close'>&times;</span><div class='studentData row'></div></div></div><th class='col-xs-6 text-center'>Name</th><th class='col-xs-3 text-center'>Attendance</th><th class='col-xs-3 text-center'>Percentage</th></tr><div class='col-xs-12 modal' id='batchData'><div class='row'><div class='col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-4 modal-content text-center' id='modalContent'></div></div></div>";
+    var x = "<div class='col-xs-6'><h3 class='text-right text-danger' style='margin-top:0'>" + model.selectedFaculty.current_classes[e].subject + "</h3></div><div class='col-xs-6 text-right'><div class='btn btn-default' onclick='view.showDeassignModal()'>De-assign Batch</div><div class='btn btn-default' onclick='view.showFilterModal()'>Filter</div></div><div id='studentDataReport' class='col-xs-12'><table class='table-responsive table-striped'><tr class='row' style='font-size:18px;'><div id='historyModal' class='modal'><div class='modal-content'><span class='close' onclick='controller.modalCloses()' id='close'>&times;</span><div class='studentData row'></div></div></div><th class='col-xs-6 text-center'>Name</th><th class='col-xs-3 text-center'>Attendance</th><th class='col-xs-3 text-center'>Percentage</th></tr><div class='col-xs-12 modal' id='batchData'><div class='row'><div class='col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-4 modal-content text-center' id='modalContent'></div></div></div>";
     model.studentAttendanceData = response;
     model.studentAttendanceData.forEach(function(student,i){
       var max = 1;
@@ -172,6 +174,10 @@ var view = {
     document.getElementById("addFacultyModal").style.display = "block" ;
   },
 
+  showDeassignModal: function(){
+    document.getElementById("deassignbatchModal").style.display = "block" ;
+  },
+
   showAddBatchModal: function(){
     document.getElementById("addBatchModal").style.display = "block" ;
   },
@@ -234,6 +240,7 @@ var view = {
     document.getElementById("addBatchModal").style.display = "none" ;
     document.getElementById("assignFacultyNewBatchModal").style.display = "none" ;
     document.getElementById('facultySettingModal').style.display = "none";
+    document.getElementById('deassignbatchModal').style.display = "none";
     document.getElementById('batchData').style.display = "none";
   },
 
@@ -451,6 +458,26 @@ var controller = {
     }
     deleteBatchRequest.open('DELETE','http://localhost:3000/admin/removebatch/' + model.selectedBatch._id,true);
     deleteBatchRequest.send(null);
+  },
+
+  deassignbatch: function(){
+    var deassignbatchRequest = new XMLHttpRequest();
+    deassignbatchRequest.onreadystatechange = function(){
+      if(deassignbatchRequest.status === 200 && deassignbatchRequest.readyState === 4 ){
+        model.selectedBatch = {};
+        document.getElementById('report_section').innerHTML = "";
+        document.getElementById('deassignbatchModal').style.display = "none";
+        controller.departmentData();
+      } else if( deassignbatchRequest.status === 500 && deassignbatchRequest.readyState === 4 ){
+        alert('Internal server Error. Please try again. If issue continues, try again after time later');
+        view.updateView();
+      } else if( deassignbatchRequest.status != 500 && deassignbatchRequest.status != 200 && deassignbatchRequest.readyState === 4){
+        alert('error. Check your Internet Connection');
+        view.updateView();
+      }
+    }
+    deassignbatchRequest.open('DELETE','http://localhost:3000/admin/deassignbatch/' + model.selectedFaculty._id + '/' + model.selectedBatch._id,true);
+    deassignbatchRequest.send(null);
   },
 
   logout: function(){

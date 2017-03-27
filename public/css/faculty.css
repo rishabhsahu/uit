@@ -174,3 +174,37 @@ td > div {
   background-color: white;
   padding: 20px;
 }
+
+/* @media screen and (max-width: 480px) {
+  #reportSection, #timeTableSection {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 480px) {
+  #mobile-navigator {
+    display: none;
+  }
+}
+
+#mobile-navigator {
+  background-color: rgba(2,62,53,.2);
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  height: 40px;
+  width: 100%;
+  margin: 0;
+  font-size: 16px;
+  border-top: solid 3px rgba(2,62,53,.2);
+}
+
+
+#mobile-attendance-section:active, #mobile-report-section:active, #mobile-personal-section:active {
+  background-color: rgba(2,62,53,.1);
+}
+
+#mobile-attendance-section, #mobile-report-section {
+
+}
+*/
