@@ -27,15 +27,18 @@ router.get('/getDepartmentData',function(req,res){
               console.log(JSON.stringify(item))
               res.setHeader('Content-type','application/json')
               res.json(item)
+              db.close()
             })
           } else {
             console.log(err)
+            db.close()
             res.status(500)
             res.end()
           }
         })
       } else {
         console.log(err)
+        db.close()
         res.status(500)
         res.end()
       }
@@ -60,8 +63,11 @@ router.get('/getFacultyData/:id',function(req,res){
               res.end()
             }
           })
+          db.close()
         } else {
           console.log("failed to connect to db")
+          db.close()
+          db.close()
           res.status(500)
           res.end()
         }
@@ -84,14 +90,18 @@ router.get('/getBatchData/:college/:department/:batch',function(req,res){
           db.collection('classes').findOne({_id:req.params.college + '/' + req.params.department + '/' + req.params.batch},function(err,item){
             if(!err){
               res.json(item)
+              db.close()
             } else {
               console.log("document not found")
+              db.close()
               res.status(404)
               res.end()
             }
           })
+          db.close()
         } else {
           console.log("failed to connect to db")
+          db.close()
           res.status(500)
           res.end()
         }
@@ -139,7 +149,8 @@ router.post('/addnewbatch/:college/:department/:batch/:sem',function(req,res){
         class_data.semester = req.params.sem
         class_data.department = req.params.department
         class_data.students = std
-        class_data.attendance = std
+        class_data.student_data = std
+        class_data.prev_faculties = {}
         console.log(class_data)
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
@@ -172,6 +183,7 @@ router.post('/addnewfaculty',function(req,res){
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(err){
           console.log(err)
+          db.close()
           res.status(500)
           res.end()
         } else {
@@ -180,6 +192,7 @@ router.post('/addnewfaculty',function(req,res){
           console.log('new faculty added')
           res.status(200)
           res.end()
+          db.close()
         }
       })
     } else {
@@ -199,21 +212,31 @@ router.post('/assignFacultyNewBatch/:faculty_id',function(req,res){
         if(!err){
           db.collection('classes').findOne({_id:req.body._id},{"prev_faculties":1},function(err,item){
             var obj = {}
-            console.log(item.prev_faculties[req.params.faculty_id].subject)
-            if(item.prev_faculties[req.params.faculty_id].subject === req.body.subject){
-              db.collection('faculty').update({_id:req.params.faculty_id},{$addToSet:{"current_classes":{"_id":req.body._id,"batch":req.body.batch,"semester":req.body.semester,"subject":req.body.subject,"classes_held":item.prev_faculties[req.params.faculty_id]["classes_held"]}}})
-              console.log("Faculty Re-assigned")
-              res.status(200)
-              res.end()
+            if(!err){
+              console.log(item)
+              if(item.prev_faculties.hasOwnProperty(req.params.faculty_id) && item.prev_faculties[req.params.faculty_id].subject === req.body.subject){
+                  db.collection('faculty').update({_id:req.params.faculty_id},{$addToSet:{"current_classes":{"_id":req.body._id,"batch":req.body.batch,"semester":req.body.semester,"subject":req.body.subject,"classes_held":item.prev_faculties[req.params.faculty_id]["classes_held"]}}})
+                  console.log("Faculty Re-assigned")
+                  db.close()
+                  res.status(200)
+                  res.end()
+              } else {
+                db.collection('faculty').update({_id:req.params.faculty_id},{$addToSet:{"current_classes":{"_id":req.body._id,"batch":req.body.batch,"semester":req.body.semester,"subject":req.body.subject,"classes_held":[]}}})
+                console.log("added")
+                db.close()
+                res.status(200)
+                res.end()
+              }
             } else {
-              db.collection('faculty').update({_id:req.params.faculty_id},{$addToSet:{"current_classes":{"_id":req.body._id,"batch":req.body.batch,"semester":req.body.semester,"subject":req.body.subject,"classes_held":[]}}})
-              console.log("added")
-              res.status(200)
+              console.log(err)
+              db.close()
+              res.status(500)
               res.end()
             }
           })
         } else {
           console.log("failed to connect to db")
+          db.close()
           res.status(500)
           res.end()
         }
@@ -244,29 +267,30 @@ router.delete('/deassignbatch/:id/:college/:department/:batch',function(req,res)
                   classes_held = x["classes_held"]
                   subject = x["subject"]
                   console.log(classes_held)
-                  var obj = {
-                    prev_faculties:{}
-                  }
+                  var obj = {}
                   var y = {
                     "classes_held": classes_held,
                     "subject": subject
                   }
-                  obj.prev_faculties[req.params.id] = y
+                  obj["prev_faculties." + req.params.id] = y
                   db.collection('faculty').update({_id:req.params.id},{$pull:{"current_classes":{"_id":req.params.college + '/' + req.params.department + '/' + req.params.batch }}})
                   db.collection('classes').update({_id: req.params.college + '/' + req.params.department + '/' + req.params.batch},{$set:obj})
                   console.log("added")
+                  db.close()
                   res.status(200)
                   res.end()
                 }
               })
             } else {
               console.log(err)
+              db.close()
               res.status(500)
               res.end()
             }
           })
         } else {
           console.log("failed to connect to db")
+          db.close()
           res.status(500)
           res.end()
         }
@@ -289,10 +313,12 @@ router.delete('/removefaculty/:id',function(req,res){
           db.collection('faculty').remove({_id:req.params.id})
           db.collection('admin').update({_id:decoded.name},{$pull:{"faculties":{"id":req.params.id}}})
           console.log("removed")
+          db.close()
           res.status(200)
           res.end()
         } else {
           console.log("failed to connect to db")
+          db.close()
           res.status(500)
           res.end()
         }
@@ -317,8 +343,10 @@ router.delete('/removebatch/:college/:department/:batch',function(req,res){
           console.log("removed")
           res.status(200)
           res.end()
+          db.close()
         } else {
           console.log("failed to connect to db")
+          db.close()
           res.status(500)
           res.end()
         }

@@ -30,7 +30,12 @@ router.get('/',function(req,res){
                   res.render('index',{message:"Interval Server Error"})
                   db.close()
                 } else {
-                  res.render('faculty_home',{title:"",user:decoded.name})
+                  if(req.device.type === "desktop"){
+                    res.render('faculty_mobile')
+
+                  } else {
+                    res.render('faculty_mobile')
+                  }
                   db.close()
                 }
               })

@@ -8,10 +8,10 @@ var months = ["january","february","march"]
 var dt = new Date()
 
 router.get('/requestFacultyData',function(req,res){
+  console.log(req.device)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
     console.log(err)
-    db.close()
     res.status(401)
     res.end()
   } else {
@@ -39,18 +39,56 @@ router.get('/requestFacultyData',function(req,res){
   }
 })
 
-router.get('/getStudentList/:college/:department/:batch',function(req,res){
+router.get('/classesheld/:college/:department/:batch',function(req,res){
+  console.log(req.device)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
     console.log(err)
-    db.close()
     res.status(401)
     res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
         console.log(err)
-        db.close()
+        res.status(401)
+        res.end()
+      } else {
+        console.log(decoded.name)
+        mongo.connect('mongodb://localhost:27018/data',function(err,db){
+          if(err){
+            console.log(err)
+            db.close()
+            res.status(500)
+            res.end()
+          } else {
+            db.collection("faculty").findOne({_id:decoded.name,"current_classes._id": req.params.college + '/' + req.params.department + '/' + req.params.batch},{"current_classes.$.classes_held":1},function(err,item){
+              if(!err){
+                res.json(item)
+              } else {
+                console.log(err)
+                db.close()
+                res.status(500)
+                res.end()
+              }
+            })
+          }
+        })
+      }
+    })
+  }
+})
+
+
+router.get('/getStudentList/:college/:department/:batch',function(req,res){
+  var cookies = cookie.parse(req.headers.cookie || '')
+  if(!cookies){
+    console.log(err)
+    res.status(401)
+    res.end()
+  } else {
+    jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+      if(err){
+        console.log(err)
         res.status(401)
         res.end()
       } else {
@@ -81,19 +119,17 @@ router.get('/getStudentList/:college/:department/:batch',function(req,res){
 
 router.post('/submitData/:college/:department/:batch',function(req,res){
   console.log(req.body)
-  var d = new Date(req.body.date)
-  d = d.toLocaleDateString()
+  var d = req.body.date
+  console.log(d)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
     console.log(err)
-    db.close()
     res.status(401)
     res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
         console.log(err)
-        db.close()
         res.status(401)
         res.end()
       } else {
@@ -109,10 +145,10 @@ router.post('/submitData/:college/:department/:batch',function(req,res){
               console.log(data)
               data.students.forEach(function(name,x){
                 var final1 = {}
-                var y1 = "attendance.$." + req.body.subject + ".attendance"
+                var y1 = "student_data.$." + req.body.subject + ".attendance"
                 final1[y1] = d
                 console.log(final1)
-                db.collection("classes").update({_id:req.params.college + '/' + req.params.department + '/' + req.params.batch,"attendance.enroll_number":name},{$addToSet:final1})
+                db.collection("classes").update({_id:req.params.college + '/' + req.params.department + '/' + req.params.batch,"student_data.enroll_number":name},{$addToSet:final1})
               })
               db.collection("faculty").update({_id:decoded.name,"current_classes._id": req.params.college + '/' + req.params.department + '/' + req.params.batch},{$addToSet:{"current_classes.$.classes_held":d}})
               db.close()
@@ -129,14 +165,12 @@ router.get('/report/:college/:department/:batch/:subject',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
     console.log(err)
-    db.close()
     res.status(401)
     res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
         console.log(err)
-        db.close()
         res.status(401)
         res.end()
       } else {
@@ -147,14 +181,58 @@ router.get('/report/:college/:department/:batch/:subject',function(req,res){
             res.status(500)
             res.end()
           } else {
-            var obj = {}
-            var str = "attendance." + req.params.subject
-            obj[str] = 1
-            obj['attendance.name'] = 1
-            console.log(obj)
-            db.collection("classes").findOne({_id:req.params.college + '/' + req.params.department + '/' + req.params.batch},obj,function(err,item){
+            db.collection("classes").findOne({_id:req.params.college + '/' + req.params.department + '/' + req.params.batch},function(err,item){
               console.log(item)
               res.json(item)
+              db.close()
+            })
+          }
+          })
+        }
+    })
+  }
+})
+
+router.post('/submitscores/:college/:branch/:batch/:subject',function(req,res){
+  console.log(req.body)
+  var cookies = cookie.parse(req.headers.cookie || '')
+  if(!cookies){
+    console.log(err)
+    res.status(401)
+    res.end()
+  } else {
+    jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+      if(err){
+        console.log(err)
+        res.status(401)
+        res.end()
+      } else {
+        mongo.connect('mongodb://localhost:27018/data',function(err,db){
+          if(err){
+            console.log(err)
+            db.close()
+            res.status(500)
+            res.end()
+          } else {
+            req.body.scores.forEach(function(student,i){
+              var obj = {}
+              var score
+              var enroll_number
+              for(var props in student){
+                score = student[props]
+                enroll_number = props
+              }
+              console.log(score)
+              var xyz = {
+                test_name: req.body.test_name,
+                score: score
+              }
+              var str = "student_data.$." + req.params.subject + '.scores'
+              obj[str] = xyz
+              console.log(obj)
+              db.collection("classes").update({_id:req.params.college + '/' + req.params.branch + '/' + req.params.batch,"student_data.enroll_number":enroll_number},{$addToSet:obj})
+              res.status(200)
+              res.end()
             })
           }
           })
@@ -193,7 +271,7 @@ fs.readFile("student_list1.txt",function(err,data){
   db.collection("classes").findOne({_id:"uit-rgpv/ec-a/14"},function(err,item){
     var students = item.students
     students.forEach(function(student,i){
-      db.collection("classes").update({_id:"uit-rgpv/ec-a/14"},{$addToSet:{"attendance.IE":{"name":student.name}}})
+      db.collection("classes").update({_id:"uit-rgpv/ec-a/14"},{$addToSet:{"student_data.IE":{"name":student.name}}})
     })
   })
 */

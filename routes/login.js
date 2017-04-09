@@ -28,7 +28,12 @@ router.post('/',function(req,res){
               console.log(item)
               if(item.password == req.body.password){
                 res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
-                res.render('faculty_home',{title:"",user:username})
+                if(req.device.type === "desktop"){
+                  res.render('faculty_mobile')
+
+                } else {
+                  res.render('faculty_mobile')
+                }
                 db.close()
               } else {
                 res.send("invalid login")

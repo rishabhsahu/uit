@@ -2,17 +2,16 @@
 <html lang='en'>
 	<head>
 		<meta name='viewport' content='width=device-width, initial-scale=1'>
-		<title>TM dept., BPL div.</title>
+		<title>Oniv || faculty-student management portal</title>
+		<link rel="manifest" href="/manifest.json">
 		<link href='css/bootstrap.css' type='text/css' rel='stylesheet'>
+		<link rel="shortcut icon" type="image/png" href="img/icon.png"/>
+		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 		<style type='text/css' rel='stylesheet'>
 
-		@font-face {
-			font-family: notosans;
-			src: url(fonts/NotoSans-Regular.ttf);
-		}
 
 		* {
-			font-family: notosans;
+			font-family: Roboto;
 		}
 
 			body {
@@ -87,13 +86,12 @@
 				<div class="container-fluid">
 					<div class='row' id='navbar'>
 
-						<h3 class='col-lg-4 col-xs-12' id='company'><b>Attendance</b> <small class='text-danger'>@uit</small></h3>
-
+						<h3 class='text-center' id='company'><b>oniv</b></h3>
 					</div>
 				</div>
 
 		<div class='container-fluid'>
-			<form action="http://localhost:3000/login" method="POST" class="form">
+			<form action="http://localhost:3000" method="POST" class="form">
 				<br>
 				<div class='row'>
 					<div class='col-xs-12 col-md-12 text-center' style="color:red" id="messageFolder"></div><br>
