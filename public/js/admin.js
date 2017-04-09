@@ -99,14 +99,14 @@ var view = {
          x += "<tr style='font-family:notosans;' class='row'><td class='col-xs-4 text-left'><div style='margin-top: 5px;margin-bottom: 5px;' class='btn btn-success' id='" + student.enroll_number +"'>" + student.name + "</div></td><td class='col-xs-4 text-center'>" + count + "</td><td class='col-xs-4 text-center'>" + (count/max)*100 + "</td></tr>";
        }
     });
-    x += "</table></div><div style='padding-top:5px;padding-bottom:5px;border-bottom: 3px solid lightgrey;' class='col-xs-12 text-right'><div style='margin-right:10px' class='btn btn-default disabled' onclick='controller.downloadAttendanceReport()'>Download Attendance Report</div><div class='btn btn-default disabled'>Download Scoresheet</div></div>";
+    x += "</table></div><div style='padding-top:5px;padding-bottom:5px;border-bottom: 3px solid lightgrey;' class='col-xs-12 text-right'><a target='_blank' href='" + "http://localhost:3000/download/attendanceOverview/" + model.selectedBatch._id + "/" + model.selectedFaculty._id + "/" + model.selectedBatch.subject + "' style='margin-right:10px' class='btn btn-default''>Download Attendance Report</a><div class='btn btn-default disabled'>Download Scoresheet</div></div>";
     document.getElementById("reportSection").innerHTML = x;
   },
 
   showCustomReport: function(){
-
+    console.log(model.reportData)
     document.getElementById('batchData').style.display = "none";
-    var reportData = model.reportData;
+    var reportData = model.studentAttendanceData;
     var cuttoff = document.getElementById('cuttoff').value;
     var selectedYear = document.getElementById('selectedYear').value;
     var selectedMonth = document.getElementById('selectedMonth').value;
@@ -122,9 +122,8 @@ var view = {
 
     var classesHeldDates = [];
     model.selectedBatch.classes_held.forEach(function(x,i){
-      var dt = Date.parse(x);
-      if(dt >= dateSelected){
-        classesHeldDates.push(dt);
+      if(x >= dateSelected){
+        classesHeldDates.push(x);
       }
     })
     console.log(classesHeldDates);
@@ -133,8 +132,7 @@ var view = {
     }
 
     console.log(cuttoff);
-    var reportData = model.studentAttendanceData;
-    var x = "<div class='col-xs-6'><h3 class='text-right text-danger' style='margin-top:0'>" + model.selectedBatch.subject + "</h3></div><div class='col-xs-6 text-right'><div class='btn btn-default' onclick='view.showFilterModal()'>Filter</div></div><div id='studentDataReport' class='col-xs-12'><table class='table-responsive table-striped'><tr class='row' style='font-size:18px;'><div id='historyModal' class='modal'><div class='modal-content'><span class='close' onclick='controller.modalCloses()' id='close'>&times;</span><div class='studentData row'></div></div></div><th class='col-xs-6 text-center'>Name</th><th class='col-xs-3 text-center'>Attendance</th><th class='col-xs-3 text-center'>Percentage</th></tr><div class='col-xs-12 modal' id='batchData'><div class='row'><div class='col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-4 modal-content text-center' id='modalContent'></div></div></div>";
+    var x = "<table class='table-responsive table-striped' class='col-xs-12'><tr class='row' style='font-size:18px;'><th class='col-xs-6 text-center'>Name</th><th class='col-xs-3 text-center'>Attendance</th><th class='col-xs-3 text-center'>Percentage</th></tr>";
     reportData.forEach(function(student,i){
       if(student[model.selectedBatch.subject] === undefined){
          student[model.selectedBatch.subject] = {};
@@ -144,12 +142,13 @@ var view = {
           student[model.selectedBatch.subject].attendance = [];
         }
         var presentDates = [];
-        student[model.selectedBatch.subject].attendance.forEach(function(x,i){
-          var dt = Date.parse(x);
-          if(dt >= dateSelected){
-            presentDates.push(dt);
+        student[model.selectedBatch.subject].attendance.forEach(function(z,i){
+          if(z >= dateSelected){
+            presentDates.push(z);
           }
         })
+
+        console.log(presentDates);
         var count = presentDates.length;
 
         if( (count/max)*100 >= cuttoff ){
@@ -185,7 +184,7 @@ var view = {
   showFilterModal: function(){
     var classes_held = {};
     model.selectedBatch.classes_held.forEach(function(d,i){
-      var x = new Date(Date.parse(d));
+      var x = new Date(d);
       console.log(x);
       classes_held[model.months[x.getMonth()]] = [];
       classes_held[model.months[x.getMonth()]].push(x.getDate());
@@ -311,7 +310,7 @@ var controller = {
       var response = batchDataRequest.response;
       if(batchDataRequest.status === 200 && batchDataRequest.readyState === 4){
         response = JSON.parse(response);
-        view.renderBatchData(response.attendance,e);
+        view.renderBatchData(response.student_data,e);
       }
     }
 
@@ -489,13 +488,6 @@ var controller = {
     }
     logoutRequest.open('GET','http://localhost:3000/login/logout',true);
     logoutRequest.send(null);
-  },
-
-  downloadAttendanceReport: function(){
-    var downloadAttendanceReportRequest = new XMLHttpRequest();
-
-    downloadAttendanceReportRequest.open('GET','http://localhost:3000/download/attendanceReport/' + model.selectedBatch._id + '/' + model.selectedBatch.subject,true);
-    downloadAttendanceReportRequest.send(null);
   }
 
 };
