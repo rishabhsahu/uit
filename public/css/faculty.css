@@ -20,7 +20,7 @@ body {
   width: 100%;
   position:fixed;
   height: 50px;
-  background-color: rgba(2,62,53,.2);
+  background-color: rgb(15, 22, 38);
   border-color: white;
   z-index: 1;
 }

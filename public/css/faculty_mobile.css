@@ -1,15 +1,6 @@
-@font-face {
-  font-family: Poppins;
-  src: url(../fonts/Poppins-Regular.ttf);
-}
-
-@font-face {
-  font-family: notosans;
-  src: url(../fonts/NotoSans-Regular.ttf);
-}
 
 * {
-  font-family: Roboto;
+  font-family: Noto Sans;
 }
 
 body {
@@ -17,12 +8,12 @@ body {
 }
 
 #navbar {
-  font-family: notosans;
+  font-family: Noto Sans;
   width: 100%;
   position:fixed;
   height: 8%;
-  background-color: rgba(205,205,205,.4);
-  border-bottom:solid 1px rgba(0,0,0,0.2);
+  background-color: white;
+  border-bottom:solid 1px grey;
   z-index: 1;
   color:black;
 }
@@ -34,7 +25,6 @@ body {
 }
 
 #main {
-  background-color:rgba(235,235,235,.9);
   position: absolute;
   top: 8%;
   width: 100%;
@@ -86,6 +76,12 @@ body {
   cursor: pointer;
 }
 
+@keyframes pushup {
+  0% { bottom:-45%;}
+  90% { bottom:2%;}
+  100% { bottom:0%;}
+}
+
 /* @media screen and (max-width: 480px) {
   #reportSection, #timeTableSection {
     display: none;
@@ -99,16 +95,16 @@ body {
 } */
 
 #mobile-navigator {
-  background-color: rgba(225,225,225,.9);
+  background-color: white;
   position: fixed;
   bottom: 0px;
   left: 0px;
-  height: 8%;
   width: 100%;
   padding-top: 15px;
+  padding-bottom: 15px;
   margin: 0;
   font-size: 16px;
-  border-top: solid 1px rgba(0,0,0,.4);
+  border-top: solid 1px grey;
 }
 
 
@@ -116,10 +112,10 @@ body {
   position: fixed;
   left: 0px;
   top: 0px;
-  background-color: rgba(0,0,0,.9);
+  background-color: rgba(0,0,0,1);
   height: 100%;
   width: 100%;
-  padding-top: 60px;
+  padding-top: 50px;
   animation-timing-function: ease-in;
   animation-name: fade-in;
 }

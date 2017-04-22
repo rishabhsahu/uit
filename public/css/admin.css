@@ -23,10 +23,31 @@
 				margin-top: auto;
 			}
 
+			.modal {
+				display: none;
+				position: fixed;
+				z-index: 1;
+				top:0;
+				left:0;
+				padding-top: 20px;
+				width: 100%;
+				height: 100%;
+				overflow: auto;
+				background-color: rgba(195,195,195,.7);
+			}
+
+			.modalContent {
+				background-color: white;
+				border-radius: 3px;
+				padding-bottom: 5px;
+				overflow-x: auto;
+				animation-name: modalDrop;
+				animation-duration: .3s;
+			}
+
 			#first_section {
-				height: 92%;
-				border: solid 1px lightgrey;
-				border-top: none;
+				height: 100%;
+				background-color: rgb(15, 22, 38);
 			}
 
 			#faculty_list_box {
@@ -35,12 +56,12 @@
 				max-height: 450px;
 				overflow-x: hidden;
 				overflow-y: visible;
-				border-top: solid 1px black;
-				border-bottom: solid 1px black;
+				background-color: rgba(15, 18, 30,1);
+				border-radius: 5px;
 			}
 
 			.faculty_names, .batches_names, .student_name {
-				background-color: rgba(195,195,195,.5);
+				background-color: rgba(245,245,245,.7);
 				margin-top: 5%;
 				padding-top: 3%;
 				padding-bottom: 3%;
@@ -69,21 +90,20 @@
 				cursor: pointer;
 			}
 
-			#batch_list_box {
-				height: 30%;
-				border-top: solid 1px black;
-				border-bottom: solid 1px black;
+			#third_section {
+				height: 100%;
+				background-color: rgb(15, 22, 38);
 			}
 
-			#third_section {
-				height: 92%;
-				border: solid 1px lightgrey;
-				border-top: none;
+			#batch_list_box {
+				height: 30%;
+				background-color: rgba(15, 18, 30,1);
+				border-radius: 5px;
 			}
 
 			#report_section {
-				height: 92%;
-				background-color: rgba(195,195,195,.3);
+				height: 100%;
+				background-color: #192231;
 			}
 
 			#studentDataReport {
@@ -102,27 +122,19 @@
 						font-size: 24px;
 					}
 
-					.modal {
-					  display: none;
-					  position: fixed;
-					  z-index: 1;
-					  top:0;
-					  left:0;
-					  padding-top: 20px;
-					  width: 100%;
-					  height: 100%;
-					  overflow: auto;
-					  background-color: rgba(195,195,195,.7);
-					}
-
-					.modalContent {
-						background-color: white;
-						border-radius: 3px;
-						padding-bottom: 5px;
-						overflow-x: auto;
+					@keyframes modalDrop {
+						from {position: absolute;top: -100%;}
+						to {position: absolute;top:20px;}
 					}
 
 					input {
 						border-radius: 4px;
 						border-size: 1px;
+					}
+
+					#batchListSection {
+						background-color: rgba(15, 22, 38,.7);
+						padding-top:5px;
+						padding-bottom:5px;
+						border-bottom: solid 2px black;
 					}
