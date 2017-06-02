@@ -33,7 +33,18 @@
 				width: 100%;
 				height: 100%;
 				overflow: auto;
-				background-color: rgba(195,195,195,.7);
+				background-color: rgba(0,0,0,.9);
+			}
+
+			.modal2 {
+				display: none;
+				position: fixed;
+				z-index: 1;
+				top:0;
+				left:0;
+				height: 100%;
+				overflow: auto;
+				background-color: rgb(166, 172, 181);
 			}
 
 			.modalContent {
@@ -45,9 +56,23 @@
 				animation-duration: .3s;
 			}
 
+			.admin-navigation-options {
+				padding-bottom:12px;
+				padding-top:12px;
+				color:rgba(200,200,200,.4);
+				font-size:14px;
+				font-family:Lato;
+				cursor:pointer;
+			}
+
+			.admin-navigation-options:hover {
+				background-color: rgba(14, 23, 35,1);
+				color:rgba(255,255,255,.7);
+			}
+
 			#first_section {
 				height: 100%;
-				background-color: rgb(15, 22, 38);
+				background-color: rgba(14, 23, 35,.98);
 			}
 
 			#faculty_list_box {
@@ -58,6 +83,20 @@
 				overflow-y: visible;
 				background-color: rgba(15, 18, 30,1);
 				border-radius: 5px;
+			}
+
+			.faculty_name {
+				background-color:rgba(255,255,255,.7);
+				text-transform:capitalize;
+				padding-top:15px;
+				padding-bottom:15px;
+				border-bottom: solid 1px rgba(0,0,0,.2);
+				cursor: pointer;
+			}
+
+			.faculty_name:hover {
+				background-color: rgba(14, 23, 35,.7);
+				color: white;
 			}
 
 			.faculty_names, .batches_names, .student_name {
@@ -103,7 +142,7 @@
 
 			#report_section {
 				height: 100%;
-				background-color: #192231;
+				background-color: #d0d5e0;
 			}
 
 			#studentDataReport {
@@ -133,7 +172,7 @@
 					}
 
 					#batchListSection {
-						background-color: rgba(15, 22, 38,.7);
+						background-color: rgba(14, 23, 35,.91);
 						padding-top:5px;
 						padding-bottom:5px;
 						border-bottom: solid 2px black;

@@ -100,7 +100,7 @@ var controller = {
   addNewBatch: function(){
     var file = document.getElementById('student_list').files[0];
     var batch = document.getElementById('year').value
-    var sem = document.getElementById('semester').value
+    var cls = document.getElementById('class').value
     console.log(batch);
     var newBatchData = new XMLHttpRequest();
 
@@ -119,7 +119,7 @@ var controller = {
       }
     }
 
-    newBatchData.open('POST','http://localhost:3000/admin/addnewbatch/' + model.info.college + '/' + model.info.department + '/' + batch + '/' + sem,true);
+    newBatchData.open('POST','http://localhost:3000/admin/addnewbatch/' + model.info.college + '/' + model.info.department + '/' + batch + '/' + cls,true);
     newBatchData.setRequestHeader('Content-type','application/octet-stream');
     newBatchData.send(file);
   },
@@ -128,11 +128,11 @@ var controller = {
     var batch = document.getElementById('selectBatch').value;
     batch = batch.replace('#','');
     var obj = {};
-    obj.batch = batch;
+    obj.class = batch;
     obj.subject = document.getElementById('assignedSubject').value;
     model.info.batches.forEach(function(x){
-      if(x.batch == batch){
-        obj.semester = x.semester;
+      if(x.class == batch){
+        obj.class = x.class;
         obj._id = x._id;
       }
     })

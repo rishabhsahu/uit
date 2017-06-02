@@ -6,7 +6,7 @@ var jwt = require('jsonwebtoken')
 
 //router logic
 router.post('/',function(req,res){
-  console.log(req.body)
+  console.log(req.body) // req.body is an object
   var username = req.body.username
   var password = req.body.password
   mongo.connect('mongodb://localhost:27018/data',function(err,db){
@@ -28,12 +28,7 @@ router.post('/',function(req,res){
               console.log(item)
               if(item.password == req.body.password){
                 res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
-                if(req.device.type === "desktop"){
-                  res.render('faculty_mobile')
-
-                } else {
-                  res.render('faculty_mobile')
-                }
+                res.render('faculty_mobile')
                 db.close()
               } else {
                 res.send("invalid login")

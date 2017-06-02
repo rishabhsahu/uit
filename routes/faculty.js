@@ -4,11 +4,10 @@ var jwt = require('jsonwebtoken')
 var mongo = require('mongodb').MongoClient
 var ObjectId = require('mongodb').ObjectId
 
-var months = ["january","february","march"]
+var months = ["january","february","march","april","may","june","july","august","septermber","october","november","december"]
 var dt = new Date()
 
 router.get('/requestFacultyData',function(req,res){
-  console.log(req.device)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
     console.log(err)

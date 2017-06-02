@@ -2,10 +2,11 @@
 	<head>
 		<title>oniv</title>
 		<meta charset="utf-8">
-		<meta name="viewport" content="minimal-ui, width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no>
-    		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="minimal-ui, width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<link rel="shortcut icon" type="image/png" href="img/icon.png"/>
-		<link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 		<link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' type='text/css' rel='stylesheet'>
 		<link href="css/faculty_mobile.css" type="text/css" rel="stylesheet">
 		<link href="css/loader.css" type="text/css" rel="stylesheet">
@@ -18,7 +19,7 @@
 		<!-- new row, for name of the Home Company -->
 				<div class='row' id='navbar'>
 
-					<h5 class='text-center' style='margin-top:0;padding-top:0' id='company'><img src='img/logo.png' style='height:100%;display:inline;margin-left:auto' class='img-responsive'></h5>
+					<div class='text-center' style='margin-top:0;padding-top:0' id='company'><img src='img/logo.png' style='height:100%;display:inline;margin-left:auto' class='img-responsive'></div>
 
 				</div>
 
@@ -32,8 +33,11 @@
     <div class='container-fluid'>
 
       <div class='row text-center' id='mobile-navigator'>
-        <div class='col-xs-4' id='mobile-home-section' onclick='controller.facultyData()'><div class='glyphicon glyphicon-home'></div></div><div class='col-xs-4' id='mobile-report-section' onclick='view.loadReportSection()'><div class='glyphicon glyphicon-list-alt'></div></div><div class='col-xs-4 disabled' id='mobile-personal-section' onclick='view.showPersonal()'><div class='glyphicon glyphicon-user'></div></div><div style='position:absolute;bottom:72px;right:35px' id='take-attendance-button'  onclick='view.showBatchList()'><div style='padding:15px;background-color:rgba(56,103,211,1);border-radius:30px;border:solid 1px grey;cursor:pointer' class='glyphicon glyphicon-plus'></div></div>
+        <div class='col-xs-4' id='mobile-home-section' onclick='controller.facultyData()'><div class='glyphicon glyphicon-home'></div></div>
+				<div class='col-xs-4' id='mobile-report-section' onclick='view.loadReportSection()'><div class='glyphicon glyphicon-list-alt'></div></div>
+				<div class='col-xs-4 disabled' id='mobile-personal-section' onclick='view.showPersonal()'><div class='glyphicon glyphicon-user'></div></div>
       </div>
+			<div id='take-attendance-button' style="position:fixed;right:35px;bottom:82px;padding:10px;background-color:rgba(56,103,211,.9);border:solid 1px grey;border-radius:30px;cursor:pointer;" onclick='view.showBatchList()'><div class='glyphicon glyphicon-plus'></div></div>
     </div>
   </body>
 </html>

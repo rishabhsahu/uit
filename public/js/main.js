@@ -37,7 +37,7 @@ var controller = {
       alert("error")
     }
 
-    requestClassData.open('GET','http://localhost:3000/faculty/requestClassData',true);
+    requestClassData.open('GET','http://oniv.in/faculty/requestClassData',true);
     requestClassData.send()
 
     requestClassData.onreadystatechange = function(){

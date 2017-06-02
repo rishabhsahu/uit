@@ -114,7 +114,7 @@ router.get('/getBatchData/:college/:department/:batch',function(req,res){
   })
 })
 
-router.post('/addnewbatch/:college/:department/:batch/:sem',function(req,res){
+router.post('/addnewbatch/:college/:department/:batch/:cls',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
     if(!err){
@@ -140,13 +140,14 @@ router.post('/addnewbatch/:college/:department/:batch/:sem',function(req,res){
           entry = list[i].replace("\r","")
           obj.enroll_number = entry.split(',')[0]
           obj.name = entry.split(',')[1]
+          obj.mobile = entry.split(',')[2]
           std.push(obj)
         }
         var class_data = {}
         class_data._id = req.params.college + '/' + req.params.department + '/' + req.params.batch
         class_data.batch = req.params.batch
         class_data.college = req.params.college
-        class_data.semester = req.params.sem
+        class_data.class = req.params.cls
         class_data.department = req.params.department
         class_data.students = std
         class_data.student_data = std
@@ -160,7 +161,7 @@ router.post('/addnewbatch/:college/:department/:batch/:sem',function(req,res){
             res.end()
           } else {
             db.collection('classes').insert(class_data)
-            db.collection('admin').update({_id:decoded.name},{$addToSet:{"batches":{"batch":req.params.batch,"_id":class_data._id,"semester":req.params.sem}}})
+            db.collection('admin').update({_id:decoded.name},{$addToSet:{"batches":{"batch":req.params.batch,"_id":class_data._id,"class":req.params.cls}}})
             db.close()
             res.status(200)
             res.end()
@@ -215,13 +216,13 @@ router.post('/assignFacultyNewBatch/:faculty_id',function(req,res){
             if(!err){
               console.log(item)
               if(item.prev_faculties.hasOwnProperty(req.params.faculty_id) && item.prev_faculties[req.params.faculty_id].subject === req.body.subject){
-                  db.collection('faculty').update({_id:req.params.faculty_id},{$addToSet:{"current_classes":{"_id":req.body._id,"batch":req.body.batch,"semester":req.body.semester,"subject":req.body.subject,"classes_held":item.prev_faculties[req.params.faculty_id]["classes_held"]}}})
+                  db.collection('faculty').update({_id:req.params.faculty_id},{$addToSet:{"current_classes":{"_id":req.body._id,"batch":req.body.batch,"class":req.body.class,"subject":req.body.subject,"classes_held":item.prev_faculties[req.params.faculty_id]["classes_held"]}}})
                   console.log("Faculty Re-assigned")
                   db.close()
                   res.status(200)
                   res.end()
               } else {
-                db.collection('faculty').update({_id:req.params.faculty_id},{$addToSet:{"current_classes":{"_id":req.body._id,"batch":req.body.batch,"semester":req.body.semester,"subject":req.body.subject,"classes_held":[]}}})
+                db.collection('faculty').update({_id:req.params.faculty_id},{$addToSet:{"current_classes":{"_id":req.body._id,"batch":req.body.batch,"class":req.body.class,"subject":req.body.subject,"classes_held":[]}}})
                 console.log("added")
                 db.close()
                 res.status(200)

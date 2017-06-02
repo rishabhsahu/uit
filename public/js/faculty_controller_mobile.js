@@ -7,6 +7,7 @@ var controller = {
     document.getElementById('take-attendance-button').style.display = "block";
     document.getElementById('mobile-home-section').style.color = "black";
     document.getElementById('mobile-report-section').style.color = "grey";
+    var day_today = (new Date()).getDay()-1;
     var requestFacultyData = new XMLHttpRequest();
 
     if(!requestFacultyData){
@@ -22,6 +23,13 @@ var controller = {
 
           response = JSON.parse(response);
           model.personalInfo = response;
+          var arr = [];
+          model.personalInfo.current_classes.forEach(function(t,n){
+            if(t.timing && t.timing[day_today] != 0){
+              arr.push({"class":t.class,"period":t.timing[day_today]});
+            }
+          })
+          model.classes_today = arr;
           console.log(model);
           view.loadHome();
         } else {
@@ -57,8 +65,6 @@ var controller = {
 },
 
 routes: function(e){
-  document.getElementById('batchListModal').style.display = "none";
-  document.getElementById('take-attendance-button').style.display = "block";
   model.route = e.target.id.split('#')[0];
   var _id = e.target.id.split('#')[1];
   model.selectedBatch._id = _id;
@@ -69,11 +75,17 @@ routes: function(e){
   })
   console.log(model.route);
   switch(model.route){
-    case 'attendance': controller.getStudentList();
+    case 'attendance':
+      document.getElementById('take-attendance-button').style.display = "block";
+      document.getElementById('batchListModal').style.display = "none";
+      controller.getStudentList();
       break;
     case 'report': controller.getReport();
       break;
-    case 'score': controller.getStudentList();
+    case 'score':
+      document.getElementById('take-attendance-button').style.display = "block";
+      document.getElementById('batchListModal').style.display = "none";
+      controller.getStudentList();
       break;
   }
 },
@@ -83,7 +95,7 @@ takeAttendance: function(){
   var name = "";
   model.students.forEach(function(student,i){
     if(controller.present.students.indexOf(student.enroll_number)<0){
-      name += "<div onclick='controller.markPresent(event)' class='col-xs-12 text-left' style='text-transform:capitalize;color:grey;background-color:rgba(215,215,215,.8);border:solid 1px lightgrey;padding-top:25px;padding-bottom:25px;cursor:pointer' " + "id=" + student.enroll_number + ">" + student.name + "<br>" + student.enroll_number +"</div>";
+      name += "<div onclick='controller.markPresent(event)' class='col-xs-12 text-left' style='text-transform:capitalize;color:grey;background-color:rgba(215,215,215,.2);border:solid 1px lightgrey;padding-top:25px;padding-bottom:25px;cursor:pointer' " + "id=" + student.enroll_number + ">" + student.name + "<br>" + student.enroll_number +"</div>";
     } else {
       name += "<div onclick='controller.markPresent(event)' class='col-xs-12 text-left' style='text-transform:capitalize;color:grey;background-color:lightgreen;border:solid 1px lightgrey;padding-top:25px;padding-bottom:25px;cursor:pointer' " + "id=" + student.enroll_number + ">" + student.name + "<br>" + student.enroll_number +"</div>";
     }
@@ -168,10 +180,10 @@ getReport: function(){
 
   requestReport.onreadystatechange = function(){
     if(requestReport.readyState == 4 || requestReport.status == 200){
-      var reportData = JSON.parse(requestReport.response);
       model.reportData = JSON.parse(requestReport.response);
-      console.log(reportData);
-      var content2 = "<div class='modal col-xs-12 text-center' id='downloadsOptionModal'><div class='row' style='animation-name: pushup;animation-duration:.25s;position:fixed;bottom:0;height:50%;width:100%;background-color:white;border-radius: 10px'><div class='col-xs-12'><div class='row' style='margin-bottom:15px;'><div class='col-xs-12' style='border-bottom: 1px solid grey'><h3>Select list<span style='position:absolute;right: 10%;font-size: 26px;color:red;cursor:pointer' onclick='view.close()'>&times;</span></h3></div><div class='col-xs-12' style='margin-top:10px'><div class='row' style='margin-top:10px'><div class='col-xs-12'><a href='http://localhost:3000/download/attendanceOverview/" + model.selectedBatch._id + "/" + model.personalInfo._id + "/" + model.selectedBatch.subject + "' target='_blank' class='btn btn-default'>Attendance Report ( Overview )</a></div></div><div class='row' style='margin-top:10px'><div class='col-xs-12'><a href='http://localhost:3000/download/attendanceDetailed/" + model.selectedBatch._id + "/" + model.personalInfo._id + "/" +  model.selectedBatch.subject + "' target='_blank' class='btn btn-default'>Attendance Report ( Date by Date Track )</a></div></div></div></div></div></div>";
+      var reportData = model.reportData;
+      console.log(model.reportData);
+      var content2 = "<div class='modal col-xs-12 text-center' id='downloadsOptionModal'><div class='row' style='animation-name: pushup;animation-duration:.25s;position:fixed;bottom:0;height:50%;width:100%;background-color:white;border-radius: 10px'><div class='col-xs-12'><div class='row' style='margin-bottom:15px;'><div class='col-xs-12' style='border-bottom: 1px solid grey'><h3>Select list<span style='position:absolute;right: 10%;font-size: 26px;color:red;cursor:pointer' onclick='view.closeDownloadListModal()'>&times;</span></h3></div><div class='col-xs-12' style='margin-top:10px'><div class='row' style='margin-top:10px'><div class='col-xs-12'><a href='http://localhost:3000/download/attendanceOverview/" + model.selectedBatch._id + "/" + model.personalInfo._id + "/" + model.selectedBatch.subject + "' target='_blank' class='btn btn-default'>Attendance Report ( Overview )</a></div></div><div class='row' style='margin-top:10px'><div class='col-xs-12'><a href='http://localhost:3000/download/attendanceDetailed/" + model.selectedBatch._id + "/" + model.personalInfo._id + "/" +  model.selectedBatch.subject + "' target='_blank' class='btn btn-default'>Attendance Report ( Date by Date Track )</a></div></div></div></div></div></div>";
       document.getElementsByTagName('body')[0].innerHTML += content2;
       var x = "<div id='downloads' onclick='view.showDownloadOptions()'><span style='width:15px;height:15px;' class='glyphicon glyphicon-download'></span></div><div class='batches_box col-xs-12' id='student_list_box'>";
       var max = 1;
@@ -198,9 +210,9 @@ getReport: function(){
         } else {
         }
          if( (count/max)*100 > 75 ){
-           x += "<div class='row text-left' style='border:solid 1px lightgrey;padding-top:15px;padding-bottom:15px;cursor:pointer;background-color:rgba(225,225,225,1)'><div class='col-xs-12'><div class='' style='font-size:13px;text-transform:capitalize;'><b>" + student.name + "</b></div></div><br><div class='col-xs-12' style='font-size:12px'>" + student.enroll_number + "</div><br><div class='col-xs-12'>" + count + "/" + max + " <div class='label label-success'>" + Math.ceil((count/max)*100) + "</div> " + tests + " </div></div>";
+           x += "<div class='row text-left' style='border:solid 1px lightgrey;padding-top:15px;padding-bottom:15px;cursor:pointer;background-color:rgba(225,225,225,.4)'><div class='col-xs-12'><div class='' style='font-size:13px;text-transform:capitalize;'><b>" + student.name + "</b></div></div><br><div class='col-xs-12' style='font-size:12px'>" + student.enroll_number + "</div><br><div class='col-xs-12'>" + count + "/" + max + " <div class='label label-success'>" + Math.ceil((count/max)*100) + "</div> " + tests + " </div></div>";
          } else {
-           x += "<div class='row text-left' style='border:solid 1px lightgrey;padding-top:15px;padding-bottom:15px;cursor:pointer;background-color:rgba(225,225,225,1)'><div class='col-xs-12'><div class='' style='font-size:13px;text-transform:capitalize;'><b>" + student.name + "</b></div></div><br><div class='col-xs-12' style='font-size:12px'>" + student.enroll_number + "</div><br><div class='col-xs-12'>" + count + "/" + max + " <div class='label label-danger'>" + Math.ceil((count/max)*100) + "</div> " + tests + " </div></div>";
+           x += "<div class='row text-left' style='border:solid 1px lightgrey;padding-top:15px;padding-bottom:15px;cursor:pointer;background-color:rgba(225,225,225,.5)'><div class='col-xs-12'><div class='' style='font-size:13px;text-transform:capitalize;'><b>" + student.name + "</b></div></div><br><div class='col-xs-12' style='font-size:12px'>" + student.enroll_number + "</div><br><div class='col-xs-12'>" + count + "/" + max + " <div class='label label-danger'>" + Math.ceil((count/max)*100) + "</div> " + tests + " </div></div>";
          }
       })
       x += "</div>";

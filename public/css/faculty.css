@@ -1,15 +1,6 @@
-@font-face {
-  font-family: Poppins;
-  src: url(../fonts/Poppins-Regular.ttf);
-}
-
-@font-face {
-  font-family: notosans;
-  src: url(../fonts/NotoSans-Regular.ttf);
-}
 
 * {
-  font-family: notosans;
+  font-family: Roboto;
 }
 
 body {
@@ -20,7 +11,7 @@ body {
   width: 100%;
   position:fixed;
   height: 50px;
-  background-color: rgb(15, 22, 38);
+  background-color: rgba(2,62,53,.2);
   border-color: white;
   z-index: 1;
 }

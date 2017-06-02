@@ -110,7 +110,7 @@ var controller = {
       alert('error')
     }
 
-    requestFacultyData.open('GET','http://localhost:3000/faculty/requestFacultyData',true);
+    requestFacultyData.open('GET','http://oniv.in/faculty/requestFacultyData',true);
     requestFacultyData.send(null)
 
     requestFacultyData.onreadystatechange = function(){
@@ -145,7 +145,7 @@ var controller = {
       } else {}
     }
 
-      attendance.open('GET','http://localhost:3000/faculty/getStudentList/' + model.selectedBatch._id,true);
+      attendance.open('GET','http://oniv.in/faculty/getStudentList/' + model.selectedBatch._id,true);
       attendance.send(null);
     })
 },
@@ -192,7 +192,7 @@ submitData: function(){
     }
   }
 
-  SAD.open("POST","http://localhost:3000/faculty/submitData/" + model.selectedBatch._id,true)
+  SAD.open("POST","http://oniv.in/faculty/submitData/" + model.selectedBatch._id,true)
   SAD.setRequestHeader('Content-Type','application/json');
   SAD.send(JSON.stringify(this.present))
 },
@@ -239,7 +239,7 @@ getReport: function(){
     }
   }
 
-  requestReport.open("GET","http://localhost:3000/faculty/report/" + model.selectedBatch._id + '/' + model.selectedBatch.subject ,true);
+  requestReport.open("GET","http://oniv.in/faculty/report/" + model.selectedBatch._id + '/' + model.selectedBatch.subject ,true);
   requestReport.send(null);
 },
 
