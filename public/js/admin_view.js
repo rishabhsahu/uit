@@ -80,23 +80,44 @@ var view = {
     if(!model.selectedFaculty.mobile){
       model.selectedFaculty.mobile = "Not Added";
     }
-    var facultyInfo = "<div class='col-xs-3' style='margin-left:10px;background-color:white;margin-top:50px;border: solid 1px rgba(160,160,160,.6);box-shadow:2px 2px 5px rgba(160,160,160,.4)'><div class='row'><div class='col-xs-12 text-center' style='padding-top:15px;padding-bottom:15px;border-bottom:solid 1px #d0d5e0;background-color:rgb(32, 46, 81);'><img src='img/flat-face-icon-23.png' width=60%></div><div class='row text-center'><div class='col-xs-12' style='margin-top:10px'><div class='row' style='padding-top:10px;padding-bottom:10px;'><div class='text-left col-xs-3 col-xs-offset-1'><b>Name</b></div><div class='text-left col-xs-7 col-xs-offset-1'>" + model.selectedFaculty.name + "</div></div><div class='row' style='padding-top:10px;padding-bottom:10px;'><div class='text-left col-xs-3 col-xs-offset-1'><b>Username</b></div><div class='text-left col-xs-7 col-xs-offset-1'>" + model.selectedFaculty._id + "</div></div><div class='row' style='padding-top:10px;padding-bottom:10px;'><div class='text-left col-xs-3 col-xs-offset-1'><b>Mobile</b></div><div class='text-left col-xs-7 col-xs-offset-1'>" + model.selectedFaculty.mobile + "</div></div><div class='row' style='padding-top:10px;padding-bottom:10px;'><div class='text-left col-xs-3 col-xs-offset-1'><b>Teaching Since</b></div><div class='text-left col-xs-7 col-xs-offset-1'>" + model.selectedFaculty.teaching_since + "</div></div></div></div>";
+    var facultyInfo = "<div class='col-xs-3 col-xs-offset-1' style='background-color:white;margin-top:50px;border: solid 1px rgba(160,160,160,.6);box-shadow:2px 2px 5px rgba(160,160,160,.4)'><div class='row'><div class='col-xs-12 text-center' style='padding-top:15px;padding-bottom:15px;border-bottom:solid 1px #d0d5e0;background-color:rgb(32, 46, 81);'><img src='img/flat-face-icon-23.png' width=60%></div><div class='row text-center'><div class='col-xs-12' style='margin-top:10px'><div class='row' style='padding-top:10px;padding-bottom:10px;'><div class='text-left col-xs-3 col-xs-offset-1'><b>Name</b></div><div class='text-left col-xs-7 col-xs-offset-1'>" + model.selectedFaculty.name + "</div></div><div class='row' style='padding-top:10px;padding-bottom:10px;'><div class='text-left col-xs-3 col-xs-offset-1'><b>Username</b></div><div class='text-left col-xs-7 col-xs-offset-1'>" + model.selectedFaculty._id + "</div></div><div class='row' style='padding-top:10px;padding-bottom:10px;'><div class='text-left col-xs-3 col-xs-offset-1'><b>Mobile</b></div><div class='text-left col-xs-7 col-xs-offset-1'>" + model.selectedFaculty.mobile + "</div></div><div class='row' style='padding-top:10px;padding-bottom:10px;'><div class='text-left col-xs-3 col-xs-offset-1'><b>Teaching Since</b></div><div class='text-left col-xs-7 col-xs-offset-1'>" + model.selectedFaculty.teaching_since + "</div></div></div></div>";
     document.getElementById('faculty_list').style.display = "none";
 
     var clsInf = "";
     model.selectedFaculty.current_classes.forEach(function(x,i){
       if(x.classes_held.length != 0){
-        clsInf += "<div class='col-xs-4 card' style='border-radius:3px;margin-right: 10px;padding:15px;padding-bottom:0px;background-color:rgba(255,255,255,.7);box-shadow:2px 2px 5px rgba(160,160,160,.4);cursor:pointer' onclick='controller.getBatchData(event)' id='" + x._id + "'><div class='row'><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;'><div style='font-size:24px;color:green'>" + x.classes_held.length/x.classes_held.length*100 + "%" + "</div></div><div class='col-xs-12' style='font-size:12px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.2);font-weight:bold;'><span style='font-size:14px'>" + x.class + "</span>th Class</div><div class='col-xs-12'><div class='row' style='padding-top:10px;padding-bottom:10px'><div class='col-xs-6' style='font-weight:bold;border-right:solid 1px rgba(160,160,160,.2);'><span style='font-size:14px;color:rgba(20,20,20,.8)'>" + x.classes_held.length + "</span><br><span style='font-size:10px;color:rgba(40,40,40,.7);color:green'>taken</span></div><div class='col-xs-6' style='font-weight:bold;'><span style='font-size:14px;color:rgba(20,20,20,.8)'>0</span><br><span style='font-size:10px;color:rgba(40,40,40,.7);color:red'>dismissed</span></div></div></div></div></div>";
+        clsInf += "<div class='col-xs-3 card' style='border-radius:3px;margin-top: 10px;margin-right: 10px;padding:5px;padding-bottom:0px;background-color:rgba(255,255,255,.7);box-shadow:2px 2px 5px rgba(160,160,160,.4);cursor:pointer' onclick='controller.getBatchData(event)' id='" + x._id + "'><div class='row'><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;'><div style='font-size:24px;color:green'>" + x.classes_held.length/x.classes_held.length*100 + "%" + "</div></div><div class='col-xs-12' style='font-size:12px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.2);font-weight:bold;'><span style='font-size:14px'>" + x.class + "</span>th Class</div><div class='col-xs-12'><div class='row' style='padding-top:10px;padding-bottom:10px'><div class='col-xs-6' style='font-weight:bold;border-right:solid 1px rgba(160,160,160,.2);'><span style='font-size:14px;color:rgba(20,20,20,.8)'>" + x.classes_held.length + "</span><br><span style='font-size:10px;color:rgba(40,40,40,.7);color:green'>taken</span></div><div class='col-xs-6' style='font-weight:bold;'><span style='font-size:14px;color:rgba(20,20,20,.8)'>0</span><br><span style='font-size:10px;color:rgba(40,40,40,.7);color:red'>dismissed</span></div></div></div></div></div>";
       } else {
-        clsInf += "<div class='col-xs-4 card' style='border-radius:3px;margin-right: 10px;padding:15px;padding-bottom:0px;background-color:rgba(255,255,255,.7);box-shadow:2px 2px 5px rgba(160,160,160,.4);cursor:pointer' onclick='controller.getBatchData(event)' id='" + x._id + "'><div class='row'><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;font-size:24px;color:rgba(160,160,160,.9)'>Not yet</div><div class='col-xs-12' style='font-size:12px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.2);font-weight:bold;'><span style='font-size:14px'>" + x.class + "</span>th Class</div><div class='col-xs-12'><div class='row' style='padding-top:10px;padding-bottom:10px'><div class='col-xs-6' style='font-weight:bold;border-right:solid 1px rgba(160,160,160,.2);'><span style='font-size:14px;color:rgba(20,20,20,.8)'>" + x.classes_held.length + "</span><br><span style='font-size:10px;color:rgba(40,40,40,.7);color:green'>taken</span></div><div class='col-xs-6' style='font-weight:bold;'><span style='font-size:14px;color:rgba(20,20,20,.8)'>0</span><br><span style='font-size:10px;color:rgba(40,40,40,.7);color:red'>dismissed</span></div></div></div></div></div>";
+        clsInf += "<div class='col-xs-3 card' style='border-radius:3px;margin-top: 10px;margin-right: 10px;padding:5px;padding-bottom:0px;background-color:rgba(255,255,255,.7);box-shadow:2px 2px 5px rgba(160,160,160,.4);cursor:pointer' onclick='controller.getBatchData(event)' id='" + x._id + "'><div class='row'><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;font-size:24px;color:rgba(160,160,160,.9)'>Not yet</div><div class='col-xs-12' style='font-size:12px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.2);font-weight:bold;'><span style='font-size:14px'>" + x.class + "</span>th Class</div><div class='col-xs-12'><div class='row' style='padding-top:10px;padding-bottom:10px'><div class='col-xs-6' style='font-weight:bold;border-right:solid 1px rgba(160,160,160,.2);'><span style='font-size:14px;color:rgba(20,20,20,.8)'>" + x.classes_held.length + "</span><br><span style='font-size:10px;color:rgba(40,40,40,.7);color:green'>taken</span></div><div class='col-xs-6' style='font-weight:bold;'><span style='font-size:14px;color:rgba(20,20,20,.8)'>0</span><br><span style='font-size:10px;color:rgba(40,40,40,.7);color:red'>dismissed</span></div></div></div></div></div>";
       }
     })
 
-    var otherInfo = "<div class='text-center col-sm-7 col-xs-offset-1' style='margin-top:25px' id='reportYahaDikha'><div class='row'>" + clsInf + "</div></div>";
+    var otherInfo = "<div class='text-center col-sm-8' style='margin-top:25px' id='reportYahaDikha'><div class='row'><div class='col-xs-12'><canvas id='myChart'></canvas></div></div><div class='row'>" + clsInf + "</div></div>";
 
     var content = "<div id='batchListSection' class='row'><div class='col-xs-11'>";
-    content += "<div style='margin-left:10px' class='btn btn-warning' id='assignNewBatch' onclick='view.assignNewBatch()'>+ assign new Batch</div></div><div class='col-xs-1' style='margin-top:5px'><img style='cursor:pointer;color:red' width=25 src='img/delete.png' onclick='view.facultySettings()'></div></div><div class='row' id='reportSection'></div><div class='row' id='main'>" + facultyInfo + "</div></div>" + otherInfo + "</div>"
+    content += "<div style='margin-left:10px' class='btn btn-warning' id='assignNewBatch' onclick='view.assignNewBatch()'>+ assign new Batch</div></div><div class='col-xs-1' style='margin-top:5px'><img style='cursor:pointer;color:red' width=25 src='img/delete.png' onclick='view.facultySettings()'></div></div>" + otherInfo + "" + facultyInfo + "</div>"
     document.getElementById("report_section").innerHTML = content;
+
+    var ctx = document.getElementById('myChart').getContext('2d');
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'line',
+
+    // The data for our dataset
+    data: {
+        labels: ["January", "February", "March", "April", "May", "June", "July"],
+        datasets: [{
+            label: "My First dataset",
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: [0, 10, 5, 2, 20, 30, 45],
+        }]
+    },
+
+    // Configuration options go here
+    options: {}
+});
+
   },
 
   renderBatchData: function(response,id){
@@ -130,10 +151,10 @@ var view = {
        }
 
        count += student[model.selectedFaculty.current_classes[e].subject].attendance.length;
-       std += "<tr class='row text-center'><td class='col-xs-4' style='font-size:12px;font-family:notosans'>" + student.name + "</td><td class='col-xs-4'>" + count + "</td><td>" + Math.ceil(count/max*100) + "</td></tr>";
+       std += "<tr class='row text-center c'><td class='col-xs-4' style='font-size:12px;font-family:notosans'>" + student.name + "</td><td class='col-xs-4'>" + count + "</td><td>" + Math.ceil(count/max*100) + "</td></tr>";
     });
 
-    var x = "<div class='row' id='reportModal'><div class='col-sm-12' style='background-color:white;color:black'><div class='row' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)'><div class='col-xs-6' style='font-size:24px'>" + model.selectedBatch.subject + "</div><div class='col-xs-2' style='font-size:12px'>" + max + "<br><span style='font-size:10px;color:rgba(40,40,40,.7);color:green'>taken</span></div></div><div class='row' style='padding-top:10px;padding-bottom:10px;'><div class='col-xs-4'>Name</div><div class='col-xs-4'>Classes Taken</div><div class='col-xs-4'>Percentage</div></div><div class='row' style='height:250px;overflow-y:auto;'><table class='col-xs-12 table-striped'>" + std + "</table></div></div></div><div class='row'></div";
+    var x = "<div class='row' id='reportModal' style='border-radius:5px;background-color:rgba(255,255,255,.7);box-shadow:2px 2px 5px rgba(160,160,160,.4);'><div class='col-sm-12' style='background-color:white;color:black'><div class='row' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6);background-color:rgba(14, 23, 35,.9);color:white'><div class='col-xs-6' style='font-size:24px'>" + model.selectedBatch.subject + "</div><div class='col-xs-2' style='font-size:14px;color:rgba(220,220,220,.8)'>" + max + "<br><span style='font-size:10px;color:rgba(40,40,40,.7);color:green'>taken</span></div></div><div class='row' style='padding-top:10px;padding-bottom:10px;background-color:rgba(14, 23, 35,.9);color:white'><div class='col-xs-4'>Name</div><div class='col-xs-4'>Classes Taken</div><div class='col-xs-4'>Percentage</div></div><div class='row' style='height:250px;overflow-y:auto;'><table class='col-xs-12 table-condensed table-striped'>" + std + "</table></div></div></div><div class='row'></div";
     document.getElementById("reportYahaDikha").innerHTML = x;
   },
 
