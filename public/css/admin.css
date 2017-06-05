@@ -48,6 +48,18 @@
 		background-color: rgb(166, 172, 181);
 	}
 
+	.modal3 {
+		display: none;
+		position: fixed;
+		z-index: 1;
+		top:0;
+		left:0;
+		height: 100%;
+		width:100%;
+		overflow: auto;
+		background-color: rgb(0,0,0,.7);
+	}
+
 	.modalContent {
 		background-color: white;
 		border-radius: 3px;
@@ -120,6 +132,7 @@
 			#report_section {
 				height: 100%;
 				background-color: #d0d5e0;
+				overflow-y: auto;
 			}
 
 			#studentDataReport {
@@ -149,10 +162,8 @@
 					}
 
 					#batchListSection {
-						background-color: rgba(14, 23, 35,.91);
 						padding-top:5px;
 						padding-bottom:5px;
-						border-bottom: solid 2px black;
 					}
 
 					td:hover {
@@ -161,5 +172,5 @@
 					}
 
 					.container {
-						width: 970px !important;
+						min-width: 970px;
 					}
