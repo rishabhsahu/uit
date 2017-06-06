@@ -1,15 +1,36 @@
 var view = {
   loadHome: function(){
+    var d = new Date()
+    d.setHours(0)
+    d.setMinutes(0)
+    d.setSeconds(0)
+    d.setMilliseconds(0)
     var content = "<div class='col-xs-12' style='border-radius:3px;margin-bottom:5px;padding-top:5px;padding-bottom:5px;margin-top:5px;background-color:rgba(160,160,160,.5);border: solid 1px rgba(200,200,200,.5);font-size:16px;text-transform:capitalize;color:white;font-size:18px'>" + model.personalInfo.name + "</div><div class='col-xs-12'><div class='row' id='home_section'></div></div>";
     document.getElementById('main').style.paddingLeft = "10px";
     document.getElementById('main').style.paddingRight = "10px";
     document.getElementById('main').innerHTML = content;
-    var classes_today = "";
-    model.classes_today.forEach(function(c,n){
-      classes_today += "<div class='col-xs-3' style='border-radius:3px;color:rgba(0,0,0,.6);padding:0px;'><div class='row' style='padding:0px;margin:0px'><div class='col-xs-12' style='padding:0px;color:rgba(0,0,0,.7);font-size:16px'>" + c.class + "th<sub>class</sub></div><div class='col-xs-12' style='padding:0px;color:rgba(0,0,0,.5);font-size:12px'>" + c.period + "th<sub>period</sub></div><div class='col-xs-12' style='margin-top:5px;font-size:16;color:red;'><span class='glyphicon glyphicon-remove'></span></div></div></div>";
-    })
+    var ctd = "";
+    if(model.classes_today.length != 0 ){
+      ctd = "<div class='row'><div class='col-xs-12' style='font-size:24px;font-weight:bold;color:rgba(0,0,0,.7)'>" + model.classes_today.length + " Classes today</div></div><div class='row' style='margin-top:10px;margin-bottom:5px'>" + classes_today + "</div></div>";
+      model.classes_today.forEach(function(c,n){
+        ctd += "<div class='col-xs-3' style='border-radius:3px;color:rgba(0,0,0,.6);padding:0px;'><div class='row' style='padding:0px;margin:0px'><div class='col-xs-12' style='padding:0px;color:rgba(0,0,0,.7);font-size:16px'>" + c.class + "th<sub>class</sub></div><div class='col-xs-12' style='padding:0px;color:rgba(0,0,0,.5);font-size:12px'>" + c.period + "th<sub>period</sub></div><div class='col-xs-12' style='margin-top:5px;font-size:16;color:red;'><span class='glyphicon glyphicon-remove'></span></div></div></div>";
+      })
+    } else {
+      ctd = "<div class='row'><div class='col-xs-12' style='font-size:24px;font-weight:bold;color:rgb(244, 83, 66)'>! Schedule Not Available</div><div class='col-xs-12' style='color:rgba(0,0,0,1)'>set up now</div></div></div>";
+    }
     console.log(model);
-    var content2 = "<div class='col-xs-12' style='padding-bottom:10px;border-radius:3px;margin-bottom:5px;padding-top:7px;background-color:white;border: solid 1px rgba(200,200,200,.5);'><div class='row'><div class='col-xs-12' style='font-size:24px;font-weight:bold;color:rgba(0,0,0,.7)'>" + model.classes_today.length + " Classes today</div></div><div class='row' style='margin-top:10px;margin-bottom:5px'>" + classes_today + "</div></div><div class='col-xs-12' style='border-radius:3px;'><h4 class='btn btn-danger'>Will be Absent</h4></div>";
+    var absent = "";
+    if(model.personalInfo.absent.indexOf(d.valueOf())>-1){
+      var d = new Date()
+      d.setHours(0)
+      d.setMinutes(0)
+      d.setSeconds(0)
+      d.setMilliseconds(0)
+      absent = "<div class='col-xs-12' style='border-radius:3px;'><h4 class='btn btn-success' onclick=''>Mark Present</h4></div>";
+    } else {
+      absent = "<div class='col-xs-12' style='border-radius:3px;'><div class='row'><div class='col-xs-12'><h4 class='btn btn-danger' onclick='view.showAbsentOption()'>Will be Absent</h4></div></div><div class='row'><div class='col-xs-12' style='border-radius:3px;'><h4 class='btn btn-primary' onclick=''>Will be Present</h4></div></div></div>";
+    }
+    var content2 = "<div class='col-xs-12' style='padding-bottom:10px;border-radius:3px;margin-bottom:5px;padding-top:7px;background-color:white;border: solid 1px rgba(200,200,200,.5);'>" + ctd + absent;
     document.getElementById('home_section').innerHTML = content2;
   },
 
@@ -62,18 +83,20 @@ var view = {
    document.getElementById('mobile-home-section').style.color = "grey";
    document.getElementById('mobile-report-section').style.color = "black";
     document.getElementById('take-attendance-button').style.display = "none";
-    var content = "<div class='col-xs-12 batches_box;' style='overflow-x:hidden;height:94%;display:fixed;padding-left:25px;padding-right:25px;margin-top:5px;'><div class='row' id='batch_list_header' style='background-color:white;border: solid 1px rgba(200,200,200,.5);border-bottom:solid 2px rgba(200,200,200,.7);box-shadow: 3px 2px 2px rgba(205,205,205,.6);margin-bottom:5px'><h4 class='col-xs-12'>batches</h4></div><div id='batches_cards' style='margin-bottom:10px'></div></div>";
+    var content = "<div class='col-xs-12 batches_box;' style='overflow-x:hidden;height:94%;display:fixed;padding-left:25px;padding-right:25px;margin-top:5px;'><div class='row' id='batch_list_header' style='background-color:white;border: solid 1px rgba(200,200,200,.5);margin-bottom:5px;border-radius:3px'><h4 class='col-xs-12'>batches</h4></div><div id='batches_cards' style='margin-bottom:10px'></div></div>";
     document.getElementById('main').innerHTML = content;
     var contentX = "";
     model.personalInfo.current_classes.forEach(function(x,i){
       var days = ["Mon","Tue","Wed","Thu","Fri","Sat"];
       var classes_timing = "";
-      if(x.timing){
+      if(x.timing && x.timing.length !=0){
         x.timing.forEach(function(z,n){
           classes_timing += "<div class='col-xs-2' style='color:rgba(0,0,0,.7);'><div class='row'><div class='col-xs-12' style='padding:0'>" + days[n] + "</div><div class='col-xs-12' style='font-size:10px;color:rgba(0,0,0,.6);padding:0'>" + z + "th</div></div></div>";
         })
+      } else {
+        classes_timing += "<div class='col-xs-12' style='color:rgba(0,0,0,.6);font-size:18px'>No schedule found</div>";
       }
-      contentX += "<div class='row text-center' style='margin-bottom:5px;border: solid 1px rgba(200,200,200,.5);box-shadow: 1px 1px 2px rgba(205,205,205,.6);border-radius:3px'><div class='col-xs-12' style='background-color:white;'><div class='row' style=';padding-bottom:10px'><div class='col-xs-3' style='font-size:40px;'><div class='row'><div class='col-xs-12;' style='color:rgba(0,0,0,.55);color:#ffe030'>" + x.class + "<span style='font-size:24px'>th</span></div></div></div><div class='col-xs-7'><h3 style='margin-top:10px;color:rgba(0,0,0,.8);margin-bottom:0px;'>" + x.subject + "</h3><div class='row' style='margin-top:0px'><div class='col-xs-12' style='font-size:13px;color:rgba(0,0,0,.4)'>strength -</div></div></div></div><div class='row' style='margin-top:10px;border-bottom:solid 1px rgba(0,0,0,.1);padding-bottom:10px;padding-right:5px'>" + classes_timing + "</div><div class='row' style='padding-top:10px;padding-bottom:10px;font-size:18px;margin-top:0px'><div class='col-xs-4'><span class='glyphicon glyphicon-envelope' style='color:#4286f4'></span></div><div class='col-xs-4 lelo' id='report#"+x._id+"'><span id='report#"+x._id+"' class='glyphicon glyphicon-circle-arrow-right'></span></div><div class='col-xs-4'><span class='glyphicon glyphicon glyphicon-option-horizontal'></span></div></div></div></div>";
+      contentX += "<div class='row text-center' style='margin-bottom:5px;border: solid 1px rgba(200,200,200,.3);box-shadow:1px 1px 3px rgba(160,160,160,.4);border-radius:5px'><div class='col-xs-12' style='background-color:white;'><div class='row'><div class='col-xs-4' style='font-size:44px;padding-top:10px'><div class='row'><div class='col-xs-12;' style='color:rgba(0,0,0,.55);color:#ffe030;font-family:Raleway'>" + x.class + "<span style='font-size:24px'>th</span></div></div></div><div class='col-xs-7'><h3 style='margin-top:10px;color:rgba(0,0,0,.8);margin-bottom:0px;'>" + x.subject + "</h3><div class='row' style='margin-top:0px'><div class='col-xs-12' style='font-size:13px;color:rgba(0,0,0,.4)'>strength -</div></div></div></div><div class='row' style='margin-top:10px;border-bottom:solid 1px rgba(0,0,0,.1);padding-bottom:10px;padding-right:5px'>" + classes_timing + "</div><div class='row' style='padding-top:10px;padding-bottom:10px;font-size:18px;margin-top:0px'><div class='col-xs-4'><span class='glyphicon glyphicon-envelope' style='color:#4286f4'></span></div><div class='col-xs-4 lelo' id='report#"+x._id+"'><span id='report#"+x._id+"' class='glyphicon glyphicon-circle-arrow-right'></span></div><div class='col-xs-4'><span class='glyphicon glyphicon glyphicon-option-horizontal'></span></div></div></div></div>";
     })
     document.getElementById('batches_cards').innerHTML = contentX;
     model.personalInfo.current_classes.forEach(function(x,i){
@@ -179,6 +202,12 @@ var view = {
     }
   },
 
+  showAbsentOption: function(){
+    var content = "<div class='row modal' id='absentModal' style='padding-top:150px'><div class='col-xs-8 col-xs-offset-2 text-center modalContent' style='background-color:white;border-radius:7px;'><div class='row' style='border-bottom:solid 1px rgba(0,0,0,.6);color:rgb(91, 143, 247)'><div class='col-xs-12'><h2>Reason</h2></div></div><div class='row' style='border-bottom: solid 1px black;font-size:20px;cursor:pointer'><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(60,60,60,.4);' onclick='controller.willBeAbsent(1)'>On School Duty</div><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;' onclick='controller.willBeAbsent(2)'>Day off</div></div><div class='row'><div class='col-xs-4 col-xs-offset-4' style='padding-top:10px;padding-bottom:10px;color:rgb(244, 14, 33);cursor:pointer' onclick='view.closeAbsentModal()'>close</div></div></div></div>";
+    document.getElementsByTagName("body")[0].innerHTML += content;
+    document.getElementById("absentModal").style.display = "block";
+  },
+
   closeDownloadListModal: function(){
     document.getElementById('downloadsOptionModal').style.display = "none";
     controller.showReport();
@@ -188,6 +217,10 @@ var view = {
     document.getElementById('batchListModal').style.display = "none";
     document.getElementById('take-attendance-button').style.display = "block";
     controller.showReport();
+  },
+
+  closeAbsentModal: function(){
+    document.getElementById('absentModal').style.display = "none";
   }
 };
 

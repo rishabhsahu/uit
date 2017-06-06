@@ -240,6 +240,54 @@ router.post('/submitscores/:college/:branch/:batch/:subject',function(req,res){
   }
 })
 
+router.post('/markabsent',function(req,res){
+  console.log(req.body)
+  var cookies = cookie.parse(req.headers.cookie || '')
+  if(!cookies){
+    console.log(err)
+    res.status(401)
+    res.end()
+  } else {
+    jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+      if(err){
+        console.log(err)
+        res.status(401)
+        res.end()
+      } else {
+        mongo.connect('mongodb://localhost:27018/data',function(err,db){
+          if(err){
+            console.log(err)
+            db.close()
+            res.status(500)
+            res.end()
+          } else {
+            var d = new Date()
+            d.setHours(0)
+            d.setMinutes(0)
+            d.setSeconds(0)
+            d.setMilliseconds(0)
+            var obj = {}
+            var domain = ""
+            obj["reason." + d.valueOf().toString()] = req.body.absent
+            db.collection('faculty').update({_id:decoded.name},{$addToSet:{"absent":d.valueOf()}})
+            db.collection('faculty').update({_id:decoded.name},{$set:obj})
+            db.collection('faculty').findOne({_id:decoded.name},{"domain_name":1},function(err,item){
+              domain = item.domain_name
+              console.log(domain)
+            })
+            db.collection('admin').update({_id:"school.admin@bbps","faculties.id":decoded.name},{$addToSet:{"faculties.$.absent":d.valueOf()}})
+            obj = {}
+            obj["faculties.$.reason." + d.valueOf().toString()] = req.body.absent
+            db.collection('admin').update({_id:"school.admin@bbps","faculties.id":decoded.name},{$set:obj})
+            res.status(200)
+            res.end()
+          }
+          })
+        }
+    })
+  }
+})
+
 module.exports = router
 
 //to upload student names

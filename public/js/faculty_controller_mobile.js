@@ -258,6 +258,26 @@ addScoreSetting: function(){
   }
 },
 
+willBeAbsent: function(n){
+  var obj = {
+    absent: n
+  }
+  var xhr = new XMLHttpRequest();
+  if(!xhr){
+    alert("error");
+  }
+
+  xhr.onreadystatechange = function(){
+    if(xhr.status === 200 && xhr.readyState === 4){
+      view.closeAbsentModal();
+    }
+  }
+
+  xhr.open('POST','http://localhost:3000/faculty/markabsent',true);
+  xhr.setRequestHeader('Content-Type','application/json');
+  xhr.send(JSON.stringify(obj))
+}
+
 
 };
 
