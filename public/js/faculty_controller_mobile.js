@@ -22,8 +22,21 @@ var controller = {
       if( requestFacultyData.status === 200 && requestFacultyData.readyState === XMLHttpRequest.DONE){
 
           response = JSON.parse(response);
-          model.personalInfo = response;
+          console.log(response);
           var arr = [];
+          var school = response._id.split('@')[1];
+          model.personalInfo = {};
+          if(response.current_school_data[school] && response.personalData){
+            var at = response.current_school_data[school];
+            model.personalInfo.current_classes = [];
+            model.personalInfo.current_classes = at.current_classes;
+            model.personalInfo.absent = [];
+            model.personalInfo.absent = at.absent;
+            model.personalInfo.reason = {};
+            model.personalInfo.reason = at.reason;
+            model.personalInfo.personalData = response.personalData;
+            model.personalInfo.personalData.name = response.personalData.first.toUpperCase() + " " + response.personalData.last.toUpperCase();
+          }
           model.personalInfo.current_classes.forEach(function(t,n){
             if(t.timing && t.timing[day_today] != 0){
               arr.push({"class":t.class,"period":t.timing[day_today]});
@@ -276,6 +289,56 @@ willBeAbsent: function(n){
   xhr.open('POST','http://localhost:3000/faculty/markabsent',true);
   xhr.setRequestHeader('Content-Type','application/json');
   xhr.send(JSON.stringify(obj))
+},
+
+check: function(e){
+  if(document.getElementById(e.target.id).value.length===0){
+    document.getElementById('showRequiredError#' + e.target.id).innerHTML = "<span class='glyphicon glyphicon-asterisk' style='color:red'></span>";
+    document.getElementById(e.target.id).style.borderColor = "red";
+  } else if(document.getElementById(e.target.id).value.length != 0 && document.getElementById('showRequiredError#' + e.target.id).innerHTML != "" ){
+    document.getElementById('showRequiredError#' + e.target.id).innerHTML = "";
+    document.getElementById(e.target.id).style.borderColor = "rgb(123, 244, 93)";
+  } else {
+    document.getElementById(e.target.id).style.borderColor = "rgb(123, 244, 93)";
+  }
+},
+
+checkAll: function(){
+  var el = document.getElementsByClassName('showRequiredError');
+  var tl = document.getElementsByClassName('required');
+  var er=0;
+  for(var i=0;i<tl.length;i++){
+    if(tl[i].value.length===0){
+      el[i].innerHTML = "<span class='glyphicon glyphicon-asterisk' style='color:red'></span>";
+      er++;
+    }
+  }
+  if(er===0){
+    this.setUpProfile();
+  }
+},
+
+setUpProfile: function(){
+  var obj = {};
+  obj.first = document.getElementById('first').value;
+  obj.last = document.getElementById('last').value;
+  obj.mobile = document.getElementById('mobile').value;
+  obj.email = document.getElementById('email').value;
+  obj.address = document.getElementById('address').value;
+  obj.password = document.getElementById('password').value;
+  console.log(obj);
+
+  var xhr = new XMLHttpRequest();
+
+  xhr.onreadystatechange = function(){
+    if(xhr.status===200 && xhr.readyState===4){
+      view.showPersonal();
+    }
+  }
+
+  xhr.open('POST','http://localhost:3000/faculty/setupprofile',true);
+  xhr.setRequestHeader('Content-Type','application/json');
+  xhr.send(JSON.stringify(obj));
 }
 
 

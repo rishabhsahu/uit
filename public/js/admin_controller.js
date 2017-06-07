@@ -71,7 +71,7 @@ var controller = {
   addNewFaculty: function(){
     var obj = {};
     obj.name = document.getElementsByTagName("input")[0].value;
-    obj["_id"] = document.getElementsByTagName("input")[1].value + "@" + model.info.college;
+    obj["_id"] = document.getElementsByTagName("input")[0].value.replace(" ","") + "@" + model.info.college;
     obj.password = document.getElementsByTagName("input")[2].value;
     obj.college = model.info.college;
     obj.deparment = model.info.department;

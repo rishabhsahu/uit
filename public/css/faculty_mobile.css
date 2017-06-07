@@ -4,7 +4,7 @@
 }
 
 body {
-  background-color:rgba(235,235,235,.4);
+  background-color:rgb(234, 232, 232);
 }
 
 #navbar {
@@ -103,6 +103,7 @@ body {
   margin: 0;
   font-size: 14px;
   border-top: solid 1px rgba(50,50,50,.2);
+  color:grey;
 }
 
 

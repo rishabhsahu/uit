@@ -261,29 +261,82 @@ router.post('/markabsent',function(req,res){
             res.status(500)
             res.end()
           } else {
+            var school = decoded.name.split('@')[1]
             var d = new Date()
             d.setHours(0)
             d.setMinutes(0)
             d.setSeconds(0)
             d.setMilliseconds(0)
-            var obj = {}
+            var abs = {}
+            abs["current_school_data." + school + ".absent"] = d.valueOf()
+            console.log(abs)
+            var rsn = {}
             var domain = ""
-            obj["reason." + d.valueOf().toString()] = req.body.absent
-            db.collection('faculty').update({_id:decoded.name},{$addToSet:{"absent":d.valueOf()}})
-            db.collection('faculty').update({_id:decoded.name},{$set:obj})
-            db.collection('faculty').findOne({_id:decoded.name},{"domain_name":1},function(err,item){
-              domain = item.domain_name
-              console.log(domain)
-            })
+            rsn["current_school_data." + school + ".reason." + d.valueOf().toString()] = req.body.absent
+            db.collection('faculty').update({_id:decoded.name},{$addToSet:abs})
+            db.collection('faculty').update({_id:decoded.name},{$set:rsn})
+
             db.collection('admin').update({_id:"school.admin@bbps","faculties.id":decoded.name},{$addToSet:{"faculties.$.absent":d.valueOf()}})
             obj = {}
             obj["faculties.$.reason." + d.valueOf().toString()] = req.body.absent
             db.collection('admin').update({_id:"school.admin@bbps","faculties.id":decoded.name},{$set:obj})
+            db.close()
             res.status(200)
             res.end()
           }
           })
         }
+    })
+  }
+})
+
+router.post('/setupprofile',function(req,res){
+  console.log(req.body)
+  var cookies = cookie.parse(req.headers.cookie || "")
+  if(!cookies){
+    res.status(401)
+    res.end()
+  } else {
+    jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+      if(err){
+        console.log(err)
+        res.status(401)
+        res.end()
+      } else {
+        console.log(decoded.name)
+        mongo.connect('mongodb://localhost:27018/data',function(err,db){
+          if(err){
+            console.log(err)
+            res.status(500)
+            res.end()
+          } else {
+            var obj = {}
+            db.collection('faculty').findOne({_id:decoded.name},function(err,item){
+              if(!err){
+                obj._id = decoded.name
+                obj.password = req.body.password
+                delete req.body.password
+                obj.personalData = req.body
+                obj.current_school_data = {}
+                obj.current_school_data[item.college] = {}
+                obj.current_school_data[item.college].current_classes = item.current_classes
+                obj.current_school_data[item.college].absent = item.absent || []
+                obj.current_school_data[item.college].reason = item.reason || {}
+
+                db.collection('faculty').remove({"_id":decoded.name})
+                db.collection('faculty').insert(obj)
+                db.close()
+                res.status(200)
+                res.end()
+              } else {
+                db.close()
+                res.status(500)
+                res.end()
+              }
+            })
+          }
+        })
+      }
     })
   }
 })
