@@ -9,7 +9,20 @@ var controller = {
         if(getDepartmentData.status === 200 && getDepartmentData.readyState === 4){
           var response = JSON.parse(response)
           model.info = response;
+          model.absentToday = [];
+          model.reasonToday = [];
           console.log(model)
+          model.info.faculties.forEach(function(x,i){
+            var d = new Date();
+            d.setHours(0);
+            d.setMinutes(0);
+            d.setSeconds(0);
+            d.setMilliseconds(0);
+            if( x.absent.indexOf(d.valueOf()) != -1){
+              model.absentToday.push(x.name);
+              model.reasonToday.push(x.reason[d.valueOf()]);
+            }
+          })
           view.updateView();
         } else {
 
@@ -76,6 +89,7 @@ var controller = {
     obj.college = model.info.college;
     obj.deparment = model.info.department;
     obj.current_classes = [];
+    obj.profileSetUp = 0;
     console.log(obj);
     var newFacultyData = new XMLHttpRequest();
 

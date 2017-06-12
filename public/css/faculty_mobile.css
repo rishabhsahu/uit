@@ -4,7 +4,7 @@
 }
 
 body {
-  background-color:rgb(234, 232, 232);
+  background-color:rgb(14, 23, 35);
 }
 
 #navbar {
@@ -19,7 +19,6 @@ body {
 
 #company {
   margin-top: 18px;
-  border-radius: 5px;
 }
 
 #main {

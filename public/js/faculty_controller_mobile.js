@@ -7,7 +7,8 @@ var controller = {
     document.getElementById('take-attendance-button').style.display = "block";
     document.getElementById('mobile-home-section').style.color = "black";
     document.getElementById('mobile-report-section').style.color = "grey";
-    var day_today = (new Date()).getDay()-1;
+    document.getElementById('mobile-personal-section').style.color = "grey";
+    var day_today = (new Date()).getDay();
     var requestFacultyData = new XMLHttpRequest();
 
     if(!requestFacultyData){
@@ -26,28 +27,31 @@ var controller = {
           var arr = [];
           var school = response._id.split('@')[1];
           model.personalInfo = {};
-          if(response.current_school_data[school] && response.personalData){
-            var at = response.current_school_data[school];
-            model.personalInfo.current_classes = [];
-            model.personalInfo.current_classes = at.current_classes;
-            model.personalInfo.absent = [];
-            model.personalInfo.absent = at.absent;
-            model.personalInfo.reason = {};
-            model.personalInfo.reason = at.reason;
-            model.personalInfo.personalData = response.personalData;
-            model.personalInfo.personalData.name = response.personalData.first.toUpperCase() + " " + response.personalData.last.toUpperCase();
+          model.personalInfo.current_classes = [];
+          model.personalInfo.current_classes = response.current_classes;
+          model.personalInfo.absent = [];
+          model.personalInfo.absent = response.absent;
+          model.personalInfo.reason = {};
+          model.personalInfo.reason = response.reason;
+          model.personalInfo.name = response.name;
+          model.personalInfo.first = response.first;
+          model.personalInfo.last = response.last;
+          model.personalInfo.mobile = response.mobile;
+          model.personalInfo.email = response.email;
+          model.personalInfo.profileSetUp = response.profileSetUp;
+          model.personalInfo._id = response._id;
+
+            model.personalInfo.current_classes.forEach(function(t,n){
+              if(t.schedule && t.schedule[day_today] != "0"){
+                console.log((new Date()).getDay());
+                arr.push({"class":t.class,"period":t.schedule[day_today]});
+              }
+            })
+            model.classes_today = arr;
+            console.log(model);
           }
-          model.personalInfo.current_classes.forEach(function(t,n){
-            if(t.timing && t.timing[day_today] != 0){
-              arr.push({"class":t.class,"period":t.timing[day_today]});
-            }
-          })
-          model.classes_today = arr;
-          console.log(model);
           view.loadHome();
-        } else {
         }
-    }
 
   },
 
@@ -108,12 +112,12 @@ takeAttendance: function(){
   var name = "";
   model.students.forEach(function(student,i){
     if(controller.present.students.indexOf(student.enroll_number)<0){
-      name += "<div onclick='controller.markPresent(event)' class='col-xs-12 text-left' style='text-transform:capitalize;color:grey;background-color:rgba(215,215,215,.2);border:solid 1px lightgrey;padding-top:25px;padding-bottom:25px;cursor:pointer' " + "id=" + student.enroll_number + ">" + student.name + "<br>" + student.enroll_number +"</div>";
+      name += "<div onclick='controller.markPresent(event)' class='col-xs-12 text-left' style='text-transform:capitalize;color:grey;border-bottom:solid 1px rgba(160,160,160,.4);padding-top:10px;padding-bottom:10px;cursor:pointer' " + "id=" + student.enroll_number + ">" + student.name + "<br>" + student.enroll_number +"</div>";
     } else {
-      name += "<div onclick='controller.markPresent(event)' class='col-xs-12 text-left' style='text-transform:capitalize;color:grey;background-color:lightgreen;border:solid 1px lightgrey;padding-top:25px;padding-bottom:25px;cursor:pointer' " + "id=" + student.enroll_number + ">" + student.name + "<br>" + student.enroll_number +"</div>";
+      name += "<div onclick='controller.markPresent(event)' class='col-xs-12 text-left' style='text-transform:capitalize;color:black;background-color:lightgreen;padding-top:10px;padding-bottom:10px;cursor:pointer' " + "id=" + student.enroll_number + ">" + student.name + "<br>" + student.enroll_number +"</div>";
     }
   })
-  document.getElementById("main").innerHTML = "<div id='counter' onclick='controller.clearList()' style='cursor:pointer' onclick=''><div style='width:20px;height:20px;' id='count'>" + controller.present.students.length + "</div></div><div id='attendance-options' style='cursor:pointer' onclick='view.showAttendanceOptions()'><div class='glyphicon glyphicon-calendar' style='width:20px;height:20px;color:black'></div></div><div class='col-xs-12 batches_box' id='attendance-box'><div class='row' id='student_list_box''>" + name +"</div></div></div><div id='send-button' onclick='controller.submitData()'><span style='padding:15px;background-color:rgba(56,103,211,1);border-radius:30px;border:solid 1px grey;cursor:pointer' class='glyphicon glyphicon-send'></span></div>";
+  document.getElementById("main").innerHTML = "<div id='counter' onclick='controller.clearList()' style='cursor:pointer' onclick=''><div style='width:20px;height:20px;' id='count'>" + controller.present.students.length + "</div></div><div id='attendance-options' style='cursor:pointer' onclick='view.showAttendanceOptions()'><div class='glyphicon glyphicon-calendar' style='width:20px;height:20px;color:black'></div></div><div class='col-xs-12 batches_box' id='attendance-box'><div class='row' id='student_list_box' style='background-color:white'>" + name +"</div></div></div><div id='send-button' onclick='controller.submitData()'><span style='padding:15px;background-color:rgba(56,103,211,1);border-radius:30px;border:solid 1px grey;cursor:pointer' class='glyphicon glyphicon-send'></span></div>";
   document.getElementById('main').innerHTML += "<div class='modal col-xs-12' id='attendance-options-modal' style='background-color: rgba(0,0,0,.9)'><div style='margin-top: 100px' class='row'><hr class='col-xs-8 col-xs-offset-2'><br><br><h3 style='color:white'>Select a New Date</h3><br><div class='col-xs-12'><select id='allDates'></select></div><div class='col-xs-12'><select id='allMonth'></select></div><div class='col-xs-12'><select id='allYear'></select></div></div><div class='col-xs-12' style='font-size:20px;color:white;margin-top:20px'><div class='btn btn-danger' onclick='controller.dateSelected2()'>Select</div></div></div></div>";
 
 },
@@ -132,7 +136,7 @@ markPresent: function(e){
     this.present.students.push(student_id);
     document.getElementById('count').innerHTML = this.present.students.length;
   } else {
-    document.getElementById(student_id).style.backgroundColor= "rgba(225,225,225,1)";
+    document.getElementById(student_id).style.backgroundColor= "white";
     document.getElementById(student_id).style.color= "grey";
     this.present.students.splice(this.present.students.indexOf(student_id),1);
     document.getElementById('count').innerHTML = this.present.students.length;
@@ -283,6 +287,7 @@ willBeAbsent: function(n){
   xhr.onreadystatechange = function(){
     if(xhr.status === 200 && xhr.readyState === 4){
       view.closeAbsentModal();
+      view.loadHome();
     }
   }
 
@@ -332,11 +337,36 @@ setUpProfile: function(){
 
   xhr.onreadystatechange = function(){
     if(xhr.status===200 && xhr.readyState===4){
-      view.showPersonal();
+      controller.loadHome();
     }
   }
 
   xhr.open('POST','http://localhost:3000/faculty/setupprofile',true);
+  xhr.setRequestHeader('Content-Type','application/json');
+  xhr.send(JSON.stringify(obj));
+},
+
+setSchedule: function(){
+  var days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  var obj = {"schedule":[],batch_id:model.selectedBatch._id};
+
+  for(var i=0; i<6;i++){
+    var t = document.getElementById('day' + i).value;
+    if(t && t>0){
+      obj["schedule"].push(t);
+    } else {
+      obj["schedule"].push(0);
+    }
+  }
+  var xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function(){
+    if(xhr.readyState === 4 && xhr.status === 200){
+      view.closeSetSchedule();
+      view.loadReportSection();
+    }
+  }
+  console.log(obj);
+  xhr.open('POST','http://localhost:3000/faculty/setschedule',true);
   xhr.setRequestHeader('Content-Type','application/json');
   xhr.send(JSON.stringify(obj));
 }
