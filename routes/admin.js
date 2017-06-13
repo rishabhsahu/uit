@@ -140,7 +140,7 @@ router.post('/addnewbatch/:college/:department/:batch/:cls',function(req,res){
           entry = list[i].replace("\r","")
           obj.enroll_number = entry.split(',')[0]
           obj.name = entry.split(',')[1]
-          obj.mobile = entry.split(',')[2]
+          obj.mobile = "8989874911"
           std.push(obj)
         }
         var class_data = {}

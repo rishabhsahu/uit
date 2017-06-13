@@ -4,7 +4,7 @@ var jwt = require('jsonwebtoken')
 var mongo = require('mongodb').MongoClient
 var ObjectId = require('mongodb').ObjectId
 var request = require('request')
-
+var authkey = "155975ATpoRPi5h593ea16c"
 var months = ["january","february","march","april","may","june","july","august","septermber","october","november","december"]
 var dt = new Date()
 
@@ -143,12 +143,28 @@ router.post('/submitData/:college/:department/:batch',function(req,res){
           } else {
               data = req.body
               console.log(data)
+              var api_link = "http://api.msg91.com/api/sendhttp.php?"
+              api_link += "authkey=" + authkey + "&"
+              api_link += "mobiles=7500012514&message="
+              api_link += encodeURIComponent("Dont show me your face again. I hate Sri lankan - Paulita")
+              api_link += "&sender=onivin&route=4"
+              console.log(api_link)
               data.students.forEach(function(name,x){
                 var final1 = {}
-                var y1 = "student_data.$." + req.body.subject + ".attendance"
+                var y1 = "student_data.$." + req.body.subject + ".absent"
                 final1[y1] = d
-                console.log(final1)
                 db.collection("classes").update({_id:req.params.college + '/' + req.params.department + '/' + req.params.batch,"student_data.enroll_number":name},{$addToSet:final1})
+
+                request({
+                  method:'get',
+                  url: api_link
+                },function(err,resp,body){
+                  if(err){
+                    console.log(err)
+                  } else {
+                    console.log(resp)
+                  }
+                })
               })
               var obj1 = {}
               var obj2 = {}

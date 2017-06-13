@@ -174,7 +174,7 @@ var view = {
     var std = "";
     console.log(model);
     model.studentAttendanceData = response;
-    var max = 1;
+    var ch = 1;
     model.studentAttendanceData.forEach(function(student,i){
       var count = 0;
       var classesHeld = model.selectedFaculty.current_classes[e].classes_held.length;
@@ -190,14 +190,19 @@ var view = {
        }
 
        if(model.selectedBatch.classes_held.length > 1){
-         max = model.selectedBatch.classes_held.length;
+         ch = model.selectedBatch.classes_held.length;
        }
 
-       count += student[model.selectedFaculty.current_classes[e].subject].attendance.length;
-       std += "<tr class='row text-center c'><td class='col-xs-4' style='font-size:12px;font-family:notosans'>" + student.name + "</td><td class='col-xs-4'>" + count + "</td><td>" + Math.ceil(count/max*100) + "</td></tr>";
+       if(student[model.selectedFaculty.current_classes[e].subject].absent){
+         var t = student[model.selectedFaculty.current_classes[e].subject].absent.length;
+       } else {
+         t=0;
+       }
+       count = ch - t;
+       std += "<tr class='row text-center c'><td class='col-xs-4' style='font-size:12px;font-family:notosans'>" + student.name + "</td><td class='col-xs-4'>" + count + "</td><td>" + Math.ceil(count/ch*100) + "</td></tr>";
     });
 
-    var x = "<div class='col-xs-12 modal3' id='modalReport's style='background-color:rgba(255,255,255,1);'><div class='row' sid='reportModal' style='margin-top:25px;margin-bottom:25px'><div class='col-sm-2' style='border-right:solid 1px rgba(160,160,160,.7)'><div class='row text-center' style='margin-bottom:10px'><div class='col-xs-12'><div class='btn btn-default'>Attendance</div></div></div><div class='row text-center'><div class='col-xs-12'><div class='btn btn-default'>Test Score</div></div></div></div><div class='col-sm-10'><div class='row' style='margin-bottom:25px'><div class='col-sm-8 col-sm-offset-2' style='background-color:white;color:black;border-radius:5px;box-shadow:2px 2px 5px rgba(160,160,160,.4);border-left:solid 1px rgba(160,160,160,.5)'><div class='row' style='padding-top:10px;padding-bottom:10px;background-color:rgba(14, 23, 35,.9);color:white;border-radius:5px 5px 0px 0px'><div class='col-xs-6' style='font-size:24px'>" + model.selectedBatch.subject + "</div><div class='col-xs-2' style='font-size:14px;color:rgba(220,220,220,.8)'>" + max + "<br><span style='font-size:10px;color:rgba(40,40,40,.7);color:green'>taken</span></div></div><div class='row' style='padding-top:10px;padding-bottom:10px;background-color:rgba(14, 23, 35,.9);color:white'><div class='col-xs-4'>Name</div><div class='col-xs-4'>Classes Taken</div><div class='col-xs-4'>Percentage</div></div><div class='row' style='height:250px;overflow-y:auto;'><table class='col-xs-12 table-condensed table-striped'>" + std + "</table></div></div></div><div class='row'><div class='col-xs-4 col-xs-offset-2'><canvas height=200 id='7DayChart'></canvas></div></div></div></div></div>";
+    var x = "<div class='col-xs-12 modal3' id='modalReport's style='background-color:rgba(255,255,255,1);'><div class='row' sid='reportModal' style='margin-top:25px;margin-bottom:25px'><div class='col-sm-2' style='border-right:solid 1px rgba(160,160,160,.7)'><div class='row text-center' style='margin-bottom:10px'><div class='col-xs-12'><div class='btn btn-default'>Attendance</div></div></div><div class='row text-center'><div class='col-xs-12'><div class='btn btn-default'>Test Score</div></div></div></div><div class='col-sm-10'><div class='row' style='margin-bottom:25px'><div class='col-sm-8 col-sm-offset-2' style='background-color:white;color:black;border-radius:5px;box-shadow:2px 2px 5px rgba(160,160,160,.4);border-left:solid 1px rgba(160,160,160,.5)'><div class='row' style='padding-top:10px;padding-bottom:10px;background-color:rgba(14, 23, 35,.9);color:white;border-radius:5px 5px 0px 0px'><div class='col-xs-6' style='font-size:24px'>" + model.selectedBatch.subject + "</div><div class='col-xs-2' style='font-size:14px;color:rgba(220,220,220,.8)'>" + ch + "<br><span style='font-size:10px;color:rgba(40,40,40,.7);color:green'>taken</span></div></div><div class='row' style='padding-top:10px;padding-bottom:10px;background-color:rgba(14, 23, 35,.9);color:white'><div class='col-xs-4'>Name</div><div class='col-xs-4'>Classes Taken</div><div class='col-xs-4'>Percentage</div></div><div class='row' style='height:250px;overflow-y:auto;'><table class='col-xs-12 table-condensed table-striped'>" + std + "</table></div></div></div><div class='row'><div class='col-xs-4 col-xs-offset-2'><canvas width=400 height=400 id='7DayChart'></canvas></div></div></div></div></div>";
     document.getElementsByTagName("body")[0].innerHTML += x;
     document.getElementById('modalReport').style.display = "block";
     graph.batchPastWeekData();
@@ -215,7 +220,7 @@ var view = {
     var dateSelected = Date.parse(completeDate);
     console.log(dateSelected);
     var afterDateData = {};
-    max = 1;
+    ch = 1;
     if(cuttoff === undefined || cuttoff === ""){
       cuttoff = 75;
     }
@@ -227,8 +232,8 @@ var view = {
       }
     })
     console.log(classesHeldDates);
-    if(classesHeldDates.length > max){
-      max = classesHeldDates.length;
+    if(classesHeldDates.length > ch){
+      ch = classesHeldDates.length;
     }
 
     console.log(cuttoff);
@@ -251,8 +256,8 @@ var view = {
         console.log(presentDates);
         var count = presentDates.length;
 
-        if( (count/max)*100 >= cuttoff ){
-          x += "<tr style='font-family:notosans;' class='row'><td class='col-xs-4 text-left'><div class='btn btn-success' style='margin-top: 5px;margin-bottom: 5px;'>" + student.name + "</div></td><td class='col-xs-4 text-center'>" + count + "</td><td class='col-xs-4 text-center'>" + (count/max)*100 + "</td></tr>";
+        if( (count/ch)*100 >= cuttoff ){
+          x += "<tr style='font-family:notosans;' class='row'><td class='col-xs-4 text-left'><div class='btn btn-success' style='margin-top: 5px;margin-bottom: 5px;'>" + student.name + "</div></td><td class='col-xs-4 text-center'>" + count + "</td><td class='col-xs-4 text-center'>" + (count/ch)*100 + "</td></tr>";
         }
     })
     x += "</table></div><div style='padding-top:5px;padding-bottom:5px;border-bottom: 3px solid lightgrey;' class='col-xs-12 text-right'><div style='margin-right:10px' class='btn btn-default disabled' onclick='controller.downloadAttendanceReport()'>Download Attendance Report</div><div class='btn btn-default disabled'>Download Scoresheet</div></div>";

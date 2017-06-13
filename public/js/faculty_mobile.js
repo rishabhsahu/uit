@@ -233,7 +233,6 @@ var view = {
 
   closeAbsentModal: function(){
     document.getElementById('absentModal').style.display = "none";
-    view.loadHome();
   },
 
   closeBatchOptionModal: function(){
@@ -290,19 +289,19 @@ var view = {
   showBatchOptionModal: function(e){
     var batch = e.target.id.split('#')[1];
     model.selectedBatch._id = batch;
-    document.getElementsByTagName('body')[0].innerHTML += "<div class='col-xs-12 modal' style='background-color:black' id='batchOptionModal'><div class='row text-center'><div class='col-xs-8 col-xs-offset-2' style='background-color:white;border-radius:7px;margin-top:20%;'><div class='row'><div class='col-xs-12' style='border-bottom:solid 1px rgba(20,20,20,.8)'><h3>Options</h3></div><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)' onclick='view.setScheduleModal()'>Analysis</div><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)' onclick='view.setScheduleModal()'>Set Schedule</div><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)'>Notify class</div><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)'>Course Update</div><div class='col-xs-12' style='padding-top:5px;padding-bottom:5px;border-bottom:solid 1px rgba(160,160,160,.6);' onclick='view.closeBatchOptionModal()'>close</div></div></div></div></div>";
+    document.getElementsByTagName('body')[0].innerHTML += "<div class='col-xs-12 modal' style='background-color:black' id='batchOptionModal'><div class='row text-center'><div class='col-xs-8 col-xs-offset-2' style='background-color:white;border-radius:7px;margin-top:25%;'><div class='row'><div class='col-xs-12' style='border-bottom:solid 1px rgba(20,20,20,.8)'><h3>Options</h3></div><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)' onclick='view.setScheduleModal()'>Analysis</div><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)' onclick='view.setScheduleModal()'>Set Schedule</div><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)'>Notify class</div><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)'>Course Update</div><div class='col-xs-12' style='padding-top:5px;padding-bottom:5px;border-bottom:solid 1px rgba(160,160,160,.6);' onclick='view.closeBatchOptionModal()'>close</div></div></div></div></div>";
     document.getElementById('batchOptionModal').style.display = "block";
   },
 
   setScheduleModal: function(){
-    var day ="<div class='col-xs-12'><div class='row' style='margin-top:5px;margin-bottom:5px'><div class='col-xs-6'><h4>Days</h4></div><div class='row'><div class='col-xs-6'><h4>Period</h4></div></div><div style='height:100px;overflow-y:auto;overflow-x:hidden'>";
+    var day ="<div class='col-xs-12'><div class='row' style='margin-top:5px;margin-bottom:5px'><div class='col-xs-6'><h4>Days</h4></div><div class='row'><div class='col-xs-6'><h4>Period</h4></div></div><div style='height:150px;overflow-y:auto;overflow-x:hidden'>";
     var days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     days.forEach(function(x,i){
       day += "<div class='row' style='margin-top:5px;margin-bottom:5px'><div class='col-xs-6'>" + days[i] + "</div><div class='col-xs-3 col-xs-offset-1'><input type='text' size=2 maxlength=2 style='border-radius:3px;border: solid 1px rgba(0,0,0,.5)' id='day" + i + "'></div></div>";
     })
     day += "</div>";
     document.getElementById('batchOptionModal').style.display = "none";
-    document.getElementsByTagName('body')[0].innerHTML += "<div class='col-xs-12 modal' style='background-color:black' id='setSchedule'><div class='row text-center'><div class='col-xs-8 col-xs-offset-2' style='background-color:white;border-radius:7px;margin-top:10%;'><div class='row'><div class='col-xs-12' style='border-bottom:solid 1px rgba(20,20,20,.8)'><h3>Set Schedule</h3></div>" + day + "<div class='col-xs-6' style='padding-top:5px;padding-bottom:5px;border-right:solid 1px rgba(160,160,160,1)' onclick='controller.setSchedule()'>Set</div><div class='col-xs-6' style='padding-top:5px;padding-bottom:5px;' onclick='view.closeSetSchedule()'>close</div></div></div></div></div>";
+    document.getElementsByTagName('body')[0].innerHTML += "<div class='col-xs-12 modal' style='background-color:black' id='setSchedule'><div class='row text-center'><div class='col-xs-8 col-xs-offset-2' style='background-color:white;border-radius:7px;margin-top:25%;'><div class='row'><div class='col-xs-12' style='border-bottom:solid 1px rgba(20,20,20,.8)'><h3>Set Schedule</h3></div>" + day + "<div class='col-xs-6' style='padding-top:5px;padding-bottom:5px;border-right:solid 1px rgba(160,160,160,1)' onclick='controller.setSchedule()'>Set</div><div class='col-xs-6' style='padding-top:5px;padding-bottom:5px;' onclick='view.closeSetSchedule()'>close</div></div></div></div></div>";
     document.getElementById('setSchedule').style.display = "block";
   }
 };
@@ -310,7 +309,7 @@ var view = {
 var model = {
   classes_today:[],
   selectedBatch:{},
-  months: ["January","February","March","April","May","June"],
+  months: ["January","February","March","April","May","June","July","August","Septembet","October","November","December"],
 };
 
 /*
