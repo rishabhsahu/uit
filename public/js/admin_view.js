@@ -2,6 +2,29 @@ var view = {
   updateView: function(){
     document.getElementById('school_name').innerHTML = model.info.name;
 
+    var hd = new domElement('h4',{class:'text-center'},{fontFamily:'Roboto',color:"rgba(60,60,60,.5)",fontWeight:"bold"},"Faculties Absent Today");
+    var ab = new domElement('span',{},{color:"#F44336"},model.absentToday.length.toString());
+    var sl = new domElement('span',{},{},"/");
+    var nf = new domElement('span',{},{},model.info.faculties.length.toString());
+    var bd = new domElement('div',{class:'text-center'},{fontFamily:'Roboto',fontSize:'48px'},ab);
+    var b = new domElement('div',{class:'col-xs-12'},{},hd);
+    b.appendChild(bd);
+    var a = new domElement('div',{class:'row'},{},b);
+    var box1 = new domElement('div',{class:'col-xs-3'},{backgroundColor:'white',boxShadow:"1px 1px 6px rgba(0,0,0,.4)",marginTop:'15px',marginLeft:'15px',borderRadius:'3px'},a);
+
+    console.log(box1);
+    document.getElementById('report_section').appendChild(box1);
+
+    var hd = new domElement('h4',{class:'text-center'},{fontFamily:'Roboto',color:"rgba(60,60,60,.5)",fontWeight:"bold"},"Total Faculties");
+    var nf = new domElement('span',{},{color:"#4CAF50",},model.info.faculties.length.toString());
+    var bd = new domElement('div',{class:'text-center'},{fontFamily:'Roboto',fontSize:'48px'},nf);
+    var b = new domElement('div',{class:'col-xs-12'},{},hd);
+    b.appendChild(bd);
+    var a = new domElement('div',{class:'row'},{},b);
+    var box2 = new domElement('div',{class:'col-xs-2'},{backgroundColor:'white',boxShadow:"1px 1px 6px rgba(0,0,0,.4)",marginTop:'15px',marginLeft:'15px',borderRadius:'3px'},a);
+
+    console.log(box2);
+    document.getElementById('report_section').appendChild(box2);
     /*
     var facultiesList = "";
     var batchesList = "";

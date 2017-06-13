@@ -1,5 +1,9 @@
 var view = {
   loadHome: function(){
+
+    document.getElementById('mobile-home-section').style.color = "black";
+    document.getElementById('mobile-report-section').style.color = "white";
+    document.getElementById('mobile-personal-section').style.color = "white";
     var d = new Date()
     d.setHours(0)
     d.setMinutes(0)
@@ -10,7 +14,7 @@ var view = {
 
       if(model.personalInfo.absent && model.personalInfo.absent.length != 0){
         if(model.personalInfo.absent.indexOf(d.valueOf())>-1){
-          absent = "<div class='col-xs-12' style='background-color:white;border-radius:3px;font-size:16px;'><div class='row' style='margin-top:5px;margin-bottom:15px'><div class='col-xs-12'>You marked yourself Absent/Busy for today</div></div><div class='row' style='margin-bottom:5px'><div class='col-xs-12 text-center' style='text-decoration:underline'>Mark present</div></div></div>";
+          absent = "<div class='col-xs-12' style='background-color:white;border-radius:3px;font-size:16px;'><div class='row' style='margin-top:5px;margin-bottom:15px'><div class='col-xs-12 text-danger'>You marked yourself Absent/Busy for today</div></div><div class='row' style='margin-bottom:5px'><div class='col-xs-12 text-center' style='text-decoration:underline'>Mark present</div></div></div>";
           status = "rgb(239, 62, 62)";
         } else {
           absent = "<div class='row'><div class='col-xs-12' style='border-radius:3px;'><div class='row'><div class='col-xs-12'><h4 class='btn btn-danger' onclick='view.showAbsentOption()'>Will be Absent</h4></div></div><div class='row'><div class='col-xs-12' style='border-radius:3px;'><h4 class='btn btn-primary' onclick=''>Will be Present</h4></div></div></div></div>";
@@ -85,8 +89,8 @@ var view = {
   },
 
   loadReportSection: function(){
-   document.getElementById('mobile-home-section').style.color = "grey";
-   document.getElementById('mobile-personal-section').style.color = "grey";
+   document.getElementById('mobile-home-section').style.color = "white";
+   document.getElementById('mobile-personal-section').style.color = "white";
    document.getElementById('mobile-report-section').style.color = "black";
     document.getElementById('take-attendance-button').style.display = "none";
     var content = "<div class='col-xs-12 batches_box;' style='overflow-x:hidden;height:94%;display:fixed;padding-left:25px;padding-right:25px;margin-top:5px;'><div class='row' id='batch_list_header' style='background-color:white;border: solid 1px rgba(200,200,200,.5);margin-bottom:5px;border-radius:3px'><h4 class='col-xs-12'>batches</h4></div><div id='batches_cards' style='margin-bottom:10px'></div></div>";
@@ -229,6 +233,7 @@ var view = {
 
   closeAbsentModal: function(){
     document.getElementById('absentModal').style.display = "none";
+    view.loadHome();
   },
 
   closeBatchOptionModal: function(){
@@ -241,8 +246,8 @@ var view = {
 
   showPersonal: function(){
     document.getElementById('take-attendance-button').style.display = "none";
-    document.getElementById('mobile-home-section').style.color = "grey";
-    document.getElementById('mobile-report-section').style.color = "grey";
+    document.getElementById('mobile-home-section').style.color = "white";
+    document.getElementById('mobile-report-section').style.color = "white";
     document.getElementById('mobile-personal-section').style.color = "black";
     if(model.personalInfo.profileSetUp == 0){
       document.getElementById('main').innerHTML = "<div class='col-xs-12' style='margin-top:30%'><div class='row'><div class='col-xs-10 col-xs-offset-1' style='background-color:white;border-radius:5px;font-size:18px;padding:10px;margin-bottom:10px'>We need to know little more about you. Please provide us some more information</div></div><div class='row'><div class='col-xs-8 col-xs-offset-2'><div class='btn btn-primary' onclick='view.setUpProfile()'>Set up Profile</div></div></div></div>"

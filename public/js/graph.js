@@ -47,5 +47,25 @@ graph = {
     options: {}
     });
     console.log(chart);
+  },
+
+  facultiesNotTakingClassToday: function(e){
+    var ctx = document.getElementById(e);
+    var chart = new Chart(ctx,{
+      type:"doughnut",
+      data:{
+        labels:["Taking","Not Taking"],
+        datasets:[{
+          label:"hello",
+          data: [model.absentToday.length,model.info.faculties.length],
+          backgroundColor: ["rgb(91, 205, 247)","rgb(242, 60, 60)"]
+        }]
+      },
+      options:{
+        cutoutPercentage: 90,
+        rotation: (Math.PI)*.8,
+        circumference: Math.PI*1.75,
+      }
+    })
   }
 }

@@ -287,7 +287,6 @@ willBeAbsent: function(n){
   xhr.onreadystatechange = function(){
     if(xhr.status === 200 && xhr.readyState === 4){
       view.closeAbsentModal();
-      view.loadHome();
     }
   }
 

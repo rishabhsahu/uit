@@ -72,7 +72,7 @@
 	.admin-navigation-options {
 		padding-bottom:12px;
 		padding-top:12px;
-		color:rgba(200,200,200,.4);
+		color:white;
 		font-size:14px;
 		font-family:Lato;
 		cursor:pointer;
@@ -85,7 +85,7 @@
 
 			#first_section {
 				height: 100%;
-				background-color: rgba(14, 23, 35,.98);
+				background-color: #01579B; //rgba(14, 23, 35,.98)
 			}
 
 			.faculty_name {

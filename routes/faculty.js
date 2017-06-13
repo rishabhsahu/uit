@@ -3,6 +3,7 @@ var cookie = require('cookie')
 var jwt = require('jsonwebtoken')
 var mongo = require('mongodb').MongoClient
 var ObjectId = require('mongodb').ObjectId
+var request = require('request')
 
 var months = ["january","february","march","april","may","june","july","august","septermber","october","november","december"]
 var dt = new Date()
