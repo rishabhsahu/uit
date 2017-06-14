@@ -151,9 +151,9 @@ submitData: function(){
   this.absent.subject = model.selectedBatch.subject;
   this.absent.mobile = [];
   model.students.forEach(function(x,i){
-    if(x.enroll_number.indexOf(this.absent.students)){
-      this.absent.mobile.push(x.mobile)
-    }
+      if(controller.absent.students.indexOf(x.enroll_number)>-1){
+        controller.absent.mobile.push(x.mobile);
+      }
   })
   if(!this.absent.hasOwnProperty('date')){
     console.log(controller);
@@ -376,6 +376,22 @@ setSchedule: function(){
   }
   console.log(obj);
   xhr.open('POST','http://localhost:3000/faculty/setschedule',true);
+  xhr.setRequestHeader('Content-Type','application/json');
+  xhr.send(JSON.stringify(obj));
+},
+
+notifyClass: function(){
+  var obj = {};
+
+  var xhr = new XMLHttpRequest();
+  obj.batch_id = model.selectedBatch._id;
+  obj.text = document.getElementById('notify-text').value;
+  xhr.onreadystatechange = function(){
+    if(xhr.status === 200 && xhr.readyState === 4){
+      view.closeNotifyClass();
+    }
+  }
+  xhr.open('post','http://localhost:3000/sendsms/notifyclass',true);
   xhr.setRequestHeader('Content-Type','application/json');
   xhr.send(JSON.stringify(obj));
 }

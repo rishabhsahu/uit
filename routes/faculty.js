@@ -143,29 +143,33 @@ router.post('/submitData/:college/:department/:batch',function(req,res){
           } else {
               data = req.body
               console.log(data)
-              var api_link = "http://api.msg91.com/api/sendhttp.php?"
-              api_link += "authkey=" + authkey + "&"
-              api_link += "mobiles=7500012514&message="
-              api_link += encodeURIComponent("Dont show me your face again. I hate Sri lankan - Paulita")
-              api_link += "&sender=onivin&route=4"
-              console.log(api_link)
+              var mobile = ""
               data.students.forEach(function(name,x){
                 var final1 = {}
                 var y1 = "student_data.$." + req.body.subject + ".absent"
                 final1[y1] = d
                 db.collection("classes").update({_id:req.params.college + '/' + req.params.department + '/' + req.params.batch,"student_data.enroll_number":name},{$addToSet:final1})
-
-                request({
-                  method:'get',
-                  url: api_link
-                },function(err,resp,body){
-                  if(err){
-                    console.log(err)
-                  } else {
-                    console.log(resp)
-                  }
-                })
+                mobile += data.mobile[x].toString() + ","
               })
+
+
+              var api_link = "http://api.msg91.com/api/sendhttp.php?"
+              api_link += "authkey=" + authkey + "&"
+              api_link += "mobiles=" + mobile + "&message="
+              api_link += encodeURIComponent("Your child was Absent from class today-" + decoded.name)
+              api_link += "&sender=onivin&route=4"
+              console.log(api_link)
+              request({
+                method:'get',
+                url: api_link
+              },function(err,resp,body){
+                if(err){
+                  console.log(err)
+                } else {
+                  console.log(resp)
+                }
+              })
+
               var obj1 = {}
               var obj2 = {}
               var school = decoded.name.split('@')[1]
@@ -173,6 +177,8 @@ router.post('/submitData/:college/:department/:batch',function(req,res){
               obj1["current_classes._id"] = req.params.college + '/' + req.params.department + '/' + req.params.batch
               obj2["current_classes.$.classes_held"] = d
               db.collection("faculty").update(obj1,{$addToSet:obj2})
+              db.collection("faculty").update({_id:decoded.name},{$inc:{"recent_messages":req.body.mobile.length}})
+              db.collection("admin").update({_id:"school.admin@" + decoded.name.split('@')[1]},{$inc:{"recent_messages":req.body.mobile.length}})
               db.close()
               res.writeHead(200)
               res.end()
