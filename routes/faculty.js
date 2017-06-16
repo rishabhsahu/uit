@@ -159,16 +159,6 @@ router.post('/submitData/:college/:department/:batch',function(req,res){
               api_link += encodeURIComponent("Your child was Absent from class today-" + decoded.name)
               api_link += "&sender=onivin&route=4"
               console.log(api_link)
-              request({
-                method:'get',
-                url: api_link
-              },function(err,resp,body){
-                if(err){
-                  console.log(err)
-                } else {
-                  console.log(resp)
-                }
-              })
 
               var obj1 = {}
               var obj2 = {}
@@ -177,11 +167,25 @@ router.post('/submitData/:college/:department/:batch',function(req,res){
               obj1["current_classes._id"] = req.params.college + '/' + req.params.department + '/' + req.params.batch
               obj2["current_classes.$.classes_held"] = d
               db.collection("faculty").update(obj1,{$addToSet:obj2})
-              db.collection("faculty").update({_id:decoded.name},{$inc:{"recent_messages":req.body.mobile.length}})
-              db.collection("admin").update({_id:"school.admin@" + decoded.name.split('@')[1]},{$inc:{"recent_messages":req.body.mobile.length}})
-              db.close()
-              res.writeHead(200)
-              res.end()
+              request({
+                method:'get',
+                url: api_link
+              },function(err,resp,body){
+                if(err){
+                  console.log(err)
+                  db.close()
+                  res.writeHead(504)
+                  res.end()
+                } else {
+                  db.collection("faculty").update({_id:decoded.name},{$inc:{"recent_messages":req.body.mobile.length}})
+                  db.collection("admin").update({_id:"school.admin@" + decoded.name.split('@')[1]},{$inc:{"recent_messages":req.body.mobile.length}})
+                  db.collection("admin").update({_id:"school.admin@" + decoded.name.split('@')[1],"faculties.id":decoded.name},{$inc:{"faculties.$.recent_messages":req.body.mobile.length}})
+                  db.close()
+                  console.log(resp)
+                  res.writeHead(200)
+                  res.end()
+                }
+              })
             }
           })
         }

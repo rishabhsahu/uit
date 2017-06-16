@@ -1,30 +1,22 @@
 var view = {
   updateView: function(){
     document.getElementById('school_name').innerHTML = model.info.name;
+    var absentFaculties = "";
+    if(model.absentToday.length >0){
+      absentFaculties = "<div class='row'><div class='col-xs-12' style='border-radius:3px;background-color:white;margin-top:20px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='row'><div class='col-xs-12' style='border-bottom:solid 1px rgba(160,160,160,.4)'><h4 style='color:rgb(60,60,60)'>Absent faculties</h4></div></div><div class='row' style='padding-bottom:5px'><div class='col-xs-10 col-xs-offset-1' style='max-height:110px;overflow-y:auto'>";
+      model.absentToday.forEach(function(x,i){
+        absentFaculties += "<div class='row' style='padding-top:5px;padding-bottom:5px;overflow-y:auto;margin-top:5px;background-color:rgba(160,160,160,.2);border-radius:3px'><div class='col-xs-6' style='border-right:solid 1px white'>" + x + "</div><div class='col-xs-6'>" + model.reasonToday[i] + "</div></div>";
+      })
+      absentFaculties += "</div></div></div></div>";
+    }
 
-    var hd = new domElement('h4',{class:'text-center'},{fontFamily:'Roboto',color:"rgba(60,60,60,.5)",fontWeight:"bold"},"Faculties Absent Today");
-    var ab = new domElement('span',{},{color:"#F44336"},model.absentToday.length.toString());
-    var sl = new domElement('span',{},{},"/");
-    var nf = new domElement('span',{},{},model.info.faculties.length.toString());
-    var bd = new domElement('div',{class:'text-center'},{fontFamily:'Roboto',fontSize:'48px'},ab);
-    var b = new domElement('div',{class:'col-xs-12'},{},hd);
-    b.appendChild(bd);
-    var a = new domElement('div',{class:'row'},{},b);
-    var box1 = new domElement('div',{class:'col-xs-3'},{backgroundColor:'white',boxShadow:"1px 1px 6px rgba(0,0,0,.4)",marginTop:'15px',marginLeft:'15px',borderRadius:'3px'},a);
+    var left = "<div class='col-xs-5' style='background-color:white;border-radius:3px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='row'><div class='col-xs-12' style='border-bottom:solid 1px rgba(160,160,160,.4)'><h3 style='color:rgba(60,60,60,.8)'>Total Faculties</h3></div><div class='col-xs-12 text-success' style='font-size:48px'>" + model.info.faculties.length + "</div></div></div><div class='col-xs-6 col-xs-offset-1' style='background-color:white;border-radius:3px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='row'><div class='col-xs-12' style='border-bottom:solid 1px rgba(160,160,160,.4)'><h3 style='color:rgba(60,60,60,.8)'>Faculties Absent</h3></div><div class='col-xs-12 text-danger' style='font-size:48px'>" + model.absentToday.length + "</div></div></div>";
 
-    console.log(box1);
-    document.getElementById('report_section').appendChild(box1);
+    var top = "<div class='col-xs-3'><div class='row' style='border-right:solid 1px rgba(160,160,160,1)'><div class='col-xs-12'><h4 style='color:rgba(60,60,60,.8)'>SMS sent this month</h4></div><div class='col-xs-12 text-success' style='font-size:48px'>" + model.info.recent_messages + "</div></div></div><div class='col-xs-3'><div class='row' style='border-right:solid 1px rgba(160,160,160,1)'><div class='col-xs-12'><h4 style='color:rgba(60,60,60,.8)'>Total SMS sent till date</h4></div><div class='col-xs-12 text-danger' style='font-size:48px'>" + model.info.recent_messages + "</div></div></div><div class='col-xs-3'><div class='row'><div class='col-xs-12'><h5 style='color:rgba(60,60,60,.8)'>Faculty with most SMS sent</h5></div>" + "<div class='col-xs-12'><h5 style='color:rgba(40,40,40,1);border-right:solid 1px rgba(160,160,160,1);'>" + model.info.faculties[0].name + "</h5></div><div class='col-xs-12 text-success' style='font-size:20px'>" + model.info.recent_messages + "</div></div></div><div class='col-xs-3''><div class='row'><div class='col-xs-12'><h4 style='color:rgba(60,60,60,.8)'>SMS left</h4></div><div class='col-xs-12 text-primary' style='font-size:28px'>unlimited</div></div></div>";
 
-    var hd = new domElement('h4',{class:'text-center'},{fontFamily:'Roboto',color:"rgba(60,60,60,.5)",fontWeight:"bold"},"Total Faculties");
-    var nf = new domElement('span',{},{color:"#4CAF50",},model.info.faculties.length.toString());
-    var bd = new domElement('div',{class:'text-center'},{fontFamily:'Roboto',fontSize:'48px'},nf);
-    var b = new domElement('div',{class:'col-xs-12'},{},hd);
-    b.appendChild(bd);
-    var a = new domElement('div',{class:'row'},{},b);
-    var box2 = new domElement('div',{class:'col-xs-2'},{backgroundColor:'white',boxShadow:"1px 1px 6px rgba(0,0,0,.4)",marginTop:'15px',marginLeft:'15px',borderRadius:'3px'},a);
+     var content = "<div class='col-xs-10 col-xs-offset-1 text-center' style='margin-top:15px;background-color:white;border-radius:3px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='row'>" + top + "</div></div><div id='report_left' class='col-xs-6 col-xs-offset-1 text-center' style='margin-top:15px'><div class='row'>" + left + "</div>" + absentFaculties + "</div>";
 
-    console.log(box2);
-    document.getElementById('report_section').appendChild(box2);
+     document.getElementById('report_section').innerHTML = content;
     /*
     var facultiesList = "";
     var batchesList = "";
@@ -73,11 +65,14 @@ var view = {
   showFacultyNames: function(){
     var names = "";
     model.info.faculties.forEach(function(x,i){
-      names += "<div class='col-xs-12 faculty_name' id='" + x.id + "' onclick='controller.facultySelected(event)'>" + x.name + "</div>";
+      if( (i+1-1)%3 == 0 || (i+1-1)%3 == 3 ){
+        names += "<div class='col-xs-3 faculty_name' id='" + x.id + "' onclick='controller.facultySelected(event)' style='margin-top:15px'>" + x.name + "</div>";
+      } else {
+        names += "<div class='col-xs-3 col-xs-offset-1 faculty_name' id='" + x.id + "' onclick='controller.facultySelected(event)' style='margin-top:15px'>" + x.name + "</div>";
+      }
     })
-    var content = "<div class='col-sm-2 col-sm-offset-2 modal2 text-center' id='faculty_list'><div class='row'><div class='col-xs-12 faculty_name' style='font-weight:bold' onclick='view.showAddFacultyModal()'> + Add New Faculty</div>" + names + "</div></div><div class='col-sm-10' style='height:100%;' onclick='view.closeFacultyList()'></div>";
+    var content = "<div class='col-sm-12 text-center'><div class='row' style='margin-top:15px'><div class='col-xs-4 col-xs-offset-4 faculty_name' style='font-weight:bold;border-radius:3px;background-color:rgb(209, 35, 35);' onclick='view.showAddFacultyModal()'> + Add New Faculty</div></div><div class='row' style='max-height:500px;overflow-y:auto;margin-top:15px'>" + names + "</div></div>";
     document.getElementById('report_section').innerHTML = content;
-    document.getElementById('faculty_list').style.display = "block";
   },
 
   showClasses: function(){
@@ -88,11 +83,14 @@ var view = {
       })
 
       classes.forEach(function(x,i){
-        names += "<div class='col-xs-12 faculty_name' id='" + x._id + "' onclick='controller.batchSelected(event)'>" + x.class + "th</div>";
+        if( (i+1-1)%3 == 0 || (i+1-1)%3 == 3 ){
+          names += "<div class='col-xs-3 faculty_name' id='" + x._id + "' onclick='controller.batchSelected(event)' style='margin-top:15px'>" + x.class + "</div>";
+        } else {
+          names += "<div class='col-xs-3 col-xs-offset-1 faculty_name' id='" + x._id + "' onclick='controller.batchSelected(event)' style='margin-top:15px'>" + x.class + "</div>";
+        }
       })
-      var content = "<div class='col-sm-2 col-sm-offset-2 modal2 text-center' id='batch_list'><div class='row'><div class='col-xs-12 faculty_name' style='font-weight:bold' onclick='view.showAddBatchModal()'> + Add New Batch</div>" + names + "</div></div><div class='col-sm-10' style='height:100%;' onclick='view.closeBatchList()'></div>";
+      var content = "<div class='col-sm-12 text-center'><div class='row' style='margin-top:15px'><div class='col-xs-4 col-xs-offset-4 faculty_name' style='font-weight:bold;border-radius:3px;background-color:rgb(209, 35, 35);' onclick='view.showAddBatchModal()'> + Add New Batch</div></div><div class='row' style='max-height:500px;overflow-y:auto;margin-top:15px'>" + names + "</div></div>";
       document.getElementById('report_section').innerHTML = content;
-      document.getElementById('batch_list').style.display = "block";
   },
 
   showSelectedFacultyData: function(){
@@ -103,22 +101,21 @@ var view = {
     if(!model.selectedFaculty.mobile){
       model.selectedFaculty.mobile = "Not Added";
     }
-    var facultyInfo = "<div class='col-xs-3 col-xs-offset-1' style='background-color:white;margin-top:50px;border: solid 1px rgba(160,160,160,.6);box-shadow:2px 2px 5px rgba(160,160,160,.4)'><div class='row'><div class='col-xs-12 text-center' style='padding-top:15px;padding-bottom:15px;border-bottom:solid 1px #d0d5e0;background-color:rgb(32, 46, 81);'><img src='img/flat-face-icon-23.png' width=60%></div><div class='row text-center'><div class='col-xs-12' style='margin-top:10px'><div class='row' style='padding-top:10px;padding-bottom:10px;'><div class='text-left col-xs-3 col-xs-offset-1'><b>Name</b></div><div class='text-left col-xs-7 col-xs-offset-1'>" + model.selectedFaculty.name + "</div></div><div class='row' style='padding-top:10px;padding-bottom:10px;'><div class='text-left col-xs-3 col-xs-offset-1'><b>Username</b></div><div class='text-left col-xs-7 col-xs-offset-1'>" + model.selectedFaculty._id + "</div></div><div class='row' style='padding-top:10px;padding-bottom:10px;'><div class='text-left col-xs-3 col-xs-offset-1'><b>Mobile</b></div><div class='text-left col-xs-7 col-xs-offset-1'>" + model.selectedFaculty.mobile + "</div></div></div></div>";
-    document.getElementById('faculty_list').style.display = "none";
+    var facultyInfo = "<div class='col-xs-2 col-xs-offset-1' style='background-color:white;margin-top:50px;border: solid 1px rgba(160,160,160,.6);box-shadow:2px 2px 5px rgba(160,160,160,.4)'><div class='row'><div class='col-xs-12 text-center' style='padding-top:15px;padding-bottom:15px;border-bottom:solid 1px #d0d5e0;background-color:rgb(32, 46, 81);'><img src='img/flat-face-icon-23.png' width=60%></div><div class='row text-center'><div class='col-xs-12' style='margin-top:10px'><div style='border-bottom:solid 1px rgba(160,160,160,.8)'><div class='row' style='padding-top:3px;padding-bottom:3px;'><div class='text-left col-xs-3 col-xs-offset-1'><b>Name</b></div></div><div class='row' style='padding-top:3px;padding-bottom:3px;'><div class='text-left col-xs-11 col-xs-offset-1'>" + model.selectedFaculty.name + "</div></div></div><div class='row' style='padding-top:3px;padding-bottom:3px;'><div class='text-left col-xs-3 col-xs-offset-1'><b>username</b></div></div><div style='border-bottom:solid 1px rgba(160,160,160,.8)'><div class='row' style='padding-top:3px;padding-bottom:3px;'><div class='text-left col-xs-11 col-xs-offset-1'>" + model.selectedFaculty._id + "</div></div></div><div class='row' style='padding-top:3px;padding-bottom:3px;'><div class='text-left col-xs-3 col-xs-offset-1'><b>Mobile</b></div></div><div style='border-bottom:solid 1px rgba(160,160,160,.8)'><div class='row' style='padding-top:3px;padding-bottom:3px;'><div class='text-left col-xs-11 col-xs-offset-1'>" + model.selectedFaculty.mobile + "</div></div></div></div></div>";
 
     var clsInf = "";
     model.selectedFaculty.current_classes.forEach(function(x,i){
       if(x.classes_held.length != 0){
-        clsInf += "<div class='col-xs-3 card' style='border-radius:3px;margin-top: 10px;margin-right: 10px;background-color:rgba(255,255,255,.7);box-shadow:2px 2px 5px rgba(160,160,160,.4);cursor:pointer' onclick='controller.getBatchData(event)'><canvas id='" + x._id + "'></canvas><div class='col-xs-12' style='font-size:12px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.2);font-weight:bold;'><span style='font-size:14px'>" + x.class + "</span>th Class</div></div>";
+        clsInf += "<div class='col-xs-12 card' style='border-radius:3px;margin-top: 10px;margin-right: 10px;background-color:rgba(255,255,255,.7);box-shadow:2px 2px 5px rgba(160,160,160,.4);cursor:pointer' onclick='controller.getBatchData(event)'><canvas id='" + x._id + "'></canvas><div class='col-xs-12' style='font-size:12px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.2);font-weight:bold;'><span style='font-size:14px'>" + x.class + "</span>th Class</div></div>";
       } else {
-        clsInf += "<div class='col-xs-3 card' style='border-radius:3px;margin-top: 10px;margin-right: 10px;background-color:rgba(255,255,255,.7);box-shadow:2px 2px 5px rgba(160,160,160,.4);cursor:pointer' onclick='controller.getBatchData(event)'><canvas id='" + x._id + "'></canvas><div class='row'><div class='col-xs-12' style='font-size:12px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.2);font-weight:bold;'><span style='font-size:14px'>" + x.class + "</span>th Class</div></div></div>";
+        clsInf += "<div class='col-xs-12 card' style='border-radius:3px;margin-top: 10px;margin-right: 10px;background-color:rgba(255,255,255,.7);box-shadow:2px 2px 5px rgba(160,160,160,.4);cursor:pointer' onclick='controller.getBatchData(event)'><canvas id='" + x._id + "'></canvas><div class='row'><div class='col-xs-12' style='font-size:12px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.2);font-weight:bold;'><span style='font-size:14px'>" + x.class + "</span>th Class</div></div></div>";
       }
     })
 
-    var otherInfo = "<div class='text-center col-sm-8' style='margin-top:25px' id='reportYahaDikha'><div class='row'><div class='col-xs-12'></div></div><div class='row'>" + clsInf + "</div></div>";
+    var otherInfo = "<div class='text-center col-sm-2' style='margin-top:25px' id='reportYahaDikha'><div class='row'><div class='col-xs-12'></div></div><div class='row' style='max-height:500px;overflow-y:auto;padding-right:15px;padding-left:15px'>" + clsInf + "</div></div>";
 
     var content = "<div id='batchListSection' class='row'><div class='col-xs-11'>";
-    content += "<div style='margin-left:10px' class='btn btn-warning' id='assignNewBatch' onclick='view.assignNewBatch()'>+ assign new Batch</div></div><div class='col-xs-1' style='margin-top:5px'><img style='cursor:pointer;color:red' width=25 src='img/delete.png' onclick='view.facultySettings()'></div></div>" + otherInfo + "" + facultyInfo + "</div>"
+    content += "<div style='margin-left:10px' class='btn btn-warning' id='assignNewBatch' onclick='view.assignNewBatch()'>+ assign new Batch</div></div><div class='col-xs-1' style='margin-top:5px'><img style='cursor:pointer;color:red' width=25 src='img/delete.png' onclick='view.facultySettings()'></div></div><div class='row'>" + otherInfo + "" + facultyInfo + "</div></div>"
     document.getElementById("report_section").innerHTML = content;
 
 
@@ -136,9 +133,9 @@ var view = {
                     }]
                   },
                   options:{
-                    cutoutPercentage: 90,
+                    cutoutPercentage: 80,
                     rotation: (Math.PI)*.8,
-                    circumference: Math.PI*2,
+                    circumference: Math.PI*1.5,
                   }
                 })
               } else {
@@ -153,7 +150,7 @@ var view = {
                     }]
                   },
                   options:{
-                    cutoutPercentage: 90,
+                    cutoutPercentage: 80,
                     rotation: (Math.PI)*.8,
                     circumference: Math.PI*1.75,
                   }

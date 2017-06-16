@@ -18,10 +18,15 @@ var controller = {
             d.setMinutes(0);
             d.setSeconds(0);
             d.setMilliseconds(0);
-            if( x.absent.indexOf(d.valueOf()) != -1){
-              model.absentToday.push(x.name);
-              model.reasonToday.push(x.reason[d.valueOf()]);
+            if(x.absent){
+              if( x.absent.indexOf(d.valueOf()) != -1){
+                model.absentToday.push(x.name);
+                model.reasonToday.push(x.reason[d.valueOf()]);
+              }
             }
+          })
+          model.info.faculties = model.info.faculties.sort(function(o1,o2){
+            return o1["recent_messages"] - o2["recent_messages"];
           })
           view.updateView();
         } else {
