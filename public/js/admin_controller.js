@@ -45,7 +45,11 @@ var controller = {
   },
 
   getFacultyData: function(e){
-
+    var d = new Date();
+    d.setHours(0);
+    d.setMinutes(0);
+    d.setSeconds(0);
+    d.setMilliseconds(0);
     var facultyDataRequest = new XMLHttpRequest();
 
     facultyDataRequest.onreadystatechange = function(){
@@ -53,10 +57,22 @@ var controller = {
       if(facultyDataRequest.status === 200 && facultyDataRequest.readyState === 4){
         response = JSON.parse(response);
         model.selectedFaculty = response;
+        model.selectedFaculty.classes_today = {};
+        if(model.selectedFaculty.current_classes && model.selectedFaculty.current_classes.length>0){
+          model.selectedFaculty.current_classes.forEach(function(cl,i){
+            if(cl.schedule){
+              model.selectedFaculty.classes_today[cl.class] = cl.schedule[d.getDay()-1];
+            } else {
+              model.selectedFaculty.classes_today[cl.class] = "unknown";
+            }
+          })
+        } else {
+          model.selectedFaculty.classes_today = "Not Set Yet";
+        }
         view.showSelectedFacultyData();
       }
     }
-
+    console.log(model.selectedFaculty);
     facultyDataRequest.open('GET','http://localhost:3000/admin/getFacultyData/' + model.selectedFaculty._id ,true);
     facultyDataRequest.send(null);
   },
@@ -249,6 +265,23 @@ var controller = {
     }
     logoutRequest.open('GET','http://localhost:3000/login/logout',true);
     logoutRequest.send(null);
+  },
+
+  sendFacultySms: function(){
+    var obj = {};
+    obj.text = document.getElementById('sms-text').value;
+    obj.mobile = model.selectedFaculty.mobile;
+    obj.faculty = model.selectedFaculty._id;
+    obj.user_id = model.info._id;
+
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function(){
+      if(xhr.status === 200 && xhr.readyState === 4){
+        controller.getFacultyData();
+      }
+    }
+    xhr.open('POST',"http://localhost:3000/sendsms/smsfaculty",true);
+    xhr.send(JSON.stringify(obj));
   }
 
 };

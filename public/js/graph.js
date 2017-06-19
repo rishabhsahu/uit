@@ -67,5 +67,69 @@ graph = {
         circumference: Math.PI*1.75,
       }
     })
+  },
+
+  current_classes_box: function(){
+    model.selectedFaculty.current_classes.forEach(function(x,i){
+      var e = document.getElementById(x._id);
+      if(x.classes_held.length === 0 ){
+        var chart = new Chart(e,{
+          type:"doughnut",
+          data:{
+            labels:["No Classes Yet"],
+            datasets:[{
+              label:"hello",
+              data: [1],
+              backgroundColor: ["black"]
+            }]
+          },
+          options:{
+            cutoutPercentage: 80,
+            rotation: (Math.PI)*.8,
+            circumference: Math.PI*1.5,
+          }
+        })
+      } else {
+        var chart = new Chart(e,{
+          type:"doughnut",
+          data:{
+            labels:["Taken","Not Taken"],
+            datasets:[{
+              label:"hello",
+              data: [x.classes_held.length,2],
+              backgroundColor: ["rgb(91, 205, 247)","rgb(242, 60, 60)"]
+            }]
+          },
+          options:{
+            cutoutPercentage: 80,
+            rotation: (Math.PI)*.8,
+            circumference: Math.PI*1.75,
+          }
+        })
+      }
+    })
+  },
+
+  pastSevenDays: function(){
+    var e = document.getElementById('xyz');
+    var chart = new Chart(e,{
+      type: 'line',
+      data:{
+        labels:["Past 7 Working Days","Past 21 Working Days"],
+        datasets: [{
+          label: "Past 7 Days",
+          pointBackgroundColor: "rgb(63, 117, 132)",
+          borderColor:"rgb(53, 196, 191)",
+          pointBorderWidth:"4",
+          pointHoverBorderColor:"rgb(237, 101, 185)",
+          pointHoverBorderWidth:"6",
+          data:[1,3,2,1,2],
+          lineTension:0
+        },{
+          label: "Past 21 Days",
+          data:[1,3,2,1,2]
+        }]
+      }
+    })
   }
 }

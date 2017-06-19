@@ -94,14 +94,33 @@ var view = {
   },
 
   showSelectedFacultyData: function(){
+    var sendSmsButton = "";
     console.log(model.selectedFaculty);
     if(!model.selectedFaculty.teaching_since){
       model.selectedFaculty.teaching_since = "Not Added";
     }
     if(!model.selectedFaculty.mobile){
       model.selectedFaculty.mobile = "Not Added";
+      sendSmsButton = "<div class='row text-center' style='margin-top:5px;'><div class='col-xs-12 btn btn-primary disabled' id='sendFacultySms' style='border-radius:0px' onclick='view.showSmsModal()'>send sms</div></div>";
+    } else {
+      sendSmsButton = "<div class='row text-center' style='margin-top:5px;'><div class='col-xs-12 btn btn-primary' id='sendFacultySms' style='border-radius:0px' onclick='view.showSmsModal()'>send sms</div></div>";
     }
-    var facultyInfo = "<div class='col-xs-2 col-xs-offset-1' style='background-color:white;margin-top:50px;border: solid 1px rgba(160,160,160,.6);box-shadow:2px 2px 5px rgba(160,160,160,.4)'><div class='row'><div class='col-xs-12 text-center' style='padding-top:15px;padding-bottom:15px;border-bottom:solid 1px #d0d5e0;background-color:rgb(32, 46, 81);'><img src='img/flat-face-icon-23.png' width=60%></div><div class='row text-center'><div class='col-xs-12' style='margin-top:10px'><div style='border-bottom:solid 1px rgba(160,160,160,.8)'><div class='row' style='padding-top:3px;padding-bottom:3px;'><div class='text-left col-xs-3 col-xs-offset-1'><b>Name</b></div></div><div class='row' style='padding-top:3px;padding-bottom:3px;'><div class='text-left col-xs-11 col-xs-offset-1'>" + model.selectedFaculty.name + "</div></div></div><div class='row' style='padding-top:3px;padding-bottom:3px;'><div class='text-left col-xs-3 col-xs-offset-1'><b>username</b></div></div><div style='border-bottom:solid 1px rgba(160,160,160,.8)'><div class='row' style='padding-top:3px;padding-bottom:3px;'><div class='text-left col-xs-11 col-xs-offset-1'>" + model.selectedFaculty._id + "</div></div></div><div class='row' style='padding-top:3px;padding-bottom:3px;'><div class='text-left col-xs-3 col-xs-offset-1'><b>Mobile</b></div></div><div style='border-bottom:solid 1px rgba(160,160,160,.8)'><div class='row' style='padding-top:3px;padding-bottom:3px;'><div class='text-left col-xs-11 col-xs-offset-1'>" + model.selectedFaculty.mobile + "</div></div></div></div></div>";
+
+    if(typeof(model.selectedFaculty.classes_today) === "object"){
+
+
+          var tt_string = "<div class='row'><div class='col-xs-4'>Class</div><div class='col-xs-8'>Period</div></div><div class='row text-center' style='max-height:70px;overflow-y:auto'><div class='col-xs-12'>";
+          for(var props in model.selectedFaculty.classes_today){
+            tt_string += "<div class='row text-center' style='margin-top:8px;'><div class='col-xs-3 col-xs-offset-1' style='background-color:rgba(160,160,160,.3);border-radius:3px;padding-left:2px;padding-right:2px'>" + props + "th</div><div class='col-xs-6 col-xs-offset-1' style='background-color:rgba(160,160,160,.3);border-radius:3px'>" + model.selectedFaculty.classes_today[props] + "</div></div>";
+          }
+
+          tt_string += "</div></div>";
+          var timetable = "<div class='row text-center' style='background-color:white;margin-top:5px;border: solid 1px rgba(160,160,160,.6);box-shadow:2px 2px 5px rgba(160,160,160,.4)'><div class='col-xs-12'><div class='row'><div class='col-xs-12' style='border-bottom:solid 1px rgba(160,160,160,.8)'><h4>Todays Time Table</h4></div></div><div class='row'><div class='col-xs-12' style=padding-top:5px;padding-bottom:5px;color:rgba(0,5,2,1)>" + model.days[0] + "day</div></div>" + tt_string + "</div></div>";
+    } else {
+          var timetable = "<div class='row text-center' style='background-color:white;margin-top:5px;border: solid 1px rgba(160,160,160,.6);box-shadow:2px 2px 5px rgba(160,160,160,.4)'><div class='col-xs-12'><div class='row'><div class='col-xs-12' style='border-bottom:solid 1px rgba(160,160,160,.8)'><h4>Todays Time Table</h4></div></div><div class='row'><div class='col-xs-12' style=padding-top:5px;padding-bottom:5px;color:rgba(0,5,2,1)>" + model.days[0] + "day</div></div><div class='row'><div class='col-xs-12' style='margin-top:10px;margin-bottom:15px;color:rgba(160,160,160,1)'>Time Table not set</div></div></div></div>";
+    }
+
+    var facultyInfo = "<div class='col-sm-2 col-sm-offset-1' style='margin-top:25px;'><div class='row' style='background-color:white;border: solid 1px rgba(160,160,160,.6);box-shadow:2px 2px 5px rgba(160,160,160,.4)'><div class='col-xs-12 text-center' style='padding-top:15px;padding-bottom:15px;border-bottom:solid 1px #d0d5e0;background-color:rgb(32, 46, 81);'><img src='img/flat-face-icon-23.png' width=60%></div><div class='row text-center'><div class='col-xs-12' style='margin-top:10px'><div style='border-bottom:solid 1px rgba(160,160,160,.8)'><div class='row' style='padding-top:3px;padding-bottom:3px;'><div class='text-left col-xs-3 col-xs-offset-1'><b>Name</b></div></div><div class='row' style='padding-top:3px;padding-bottom:3px;'><div class='text-left col-xs-11 col-xs-offset-1'>" + model.selectedFaculty.name + "</div></div></div><div class='row' style='padding-top:3px;padding-bottom:3px;'><div class='text-left col-xs-3 col-xs-offset-1'><b>username</b></div></div><div style='border-bottom:solid 1px rgba(160,160,160,.8)'><div class='row' style='padding-top:3px;padding-bottom:3px;'><div class='text-left col-xs-11 col-xs-offset-1'>" + model.selectedFaculty._id + "</div></div></div><div class='row' style='padding-top:3px;padding-bottom:3px;'><div class='text-left col-xs-3 col-xs-offset-1'><b>Mobile</b></div></div><div style='border-bottom:solid 1px rgba(160,160,160,.8)'><div class='row' style='padding-top:3px;padding-bottom:3px;'><div class='text-left col-xs-11 col-xs-offset-1'>" + model.selectedFaculty.mobile + "</div></div></div></div></div></div>" + sendSmsButton + timetable + "</div>";
 
     var clsInf = "";
     model.selectedFaculty.current_classes.forEach(function(x,i){
@@ -114,49 +133,14 @@ var view = {
 
     var otherInfo = "<div class='text-center col-sm-2' style='margin-top:25px' id='reportYahaDikha'><div class='row'><div class='col-xs-12'></div></div><div class='row' style='max-height:500px;overflow-y:auto;padding-right:15px;padding-left:15px'>" + clsInf + "</div></div>";
 
+    var central = "<div class='col-sm-6 col-sm-offset-1'><div class='row'><div class='col-xs-12' style='background-color:white;height:250px'><canvas id='xyz'></canvas></div></div></div>";
+
     var content = "<div id='batchListSection' class='row'><div class='col-xs-11'>";
-    content += "<div style='margin-left:10px' class='btn btn-warning' id='assignNewBatch' onclick='view.assignNewBatch()'>+ assign new Batch</div></div><div class='col-xs-1' style='margin-top:5px'><img style='cursor:pointer;color:red' width=25 src='img/delete.png' onclick='view.facultySettings()'></div></div><div class='row'>" + otherInfo + "" + facultyInfo + "</div></div>"
+    content += "<div style='margin-left:10px' class='btn btn-warning' id='assignNewBatch' onclick='view.assignNewBatch()'>+ assign new Batch</div></div><div class='col-xs-1' style='margin-top:5px'><img style='cursor:pointer;color:red' width=25 src='img/delete.png' onclick='view.facultySettings()'></div></div><div class='row'>" + otherInfo + central + facultyInfo + "</div></div>"
     document.getElementById("report_section").innerHTML = content;
 
-
-            model.selectedFaculty.current_classes.forEach(function(x,i){
-              var e = document.getElementById(x._id);
-              if(x.classes_held.length === 0 ){
-                var chart = new Chart(e,{
-                  type:"doughnut",
-                  data:{
-                    labels:["No Classes Yet"],
-                    datasets:[{
-                      label:"hello",
-                      data: [1],
-                      backgroundColor: ["black"]
-                    }]
-                  },
-                  options:{
-                    cutoutPercentage: 80,
-                    rotation: (Math.PI)*.8,
-                    circumference: Math.PI*1.5,
-                  }
-                })
-              } else {
-                var chart = new Chart(e,{
-                  type:"doughnut",
-                  data:{
-                    labels:["Taken","Not Taken"],
-                    datasets:[{
-                      label:"hello",
-                      data: [x.classes_held.length,2],
-                      backgroundColor: ["rgb(91, 205, 247)","rgb(242, 60, 60)"]
-                    }]
-                  },
-                  options:{
-                    cutoutPercentage: 80,
-                    rotation: (Math.PI)*.8,
-                    circumference: Math.PI*1.75,
-                  }
-                })
-              }
-            })
+    graph.current_classes_box();
+    graph.pastSevenDays();
 
   },
 
@@ -384,6 +368,23 @@ var view = {
 
   closeAddFacultyModal: function(){
     document.getElementById('addFacultyModal').style.display = "none";
+  },
+
+  showSmsModal: function(){
+    document.getElementById("switch").innerHTML += "<div id='smsModal' class='text-center modal col-sm-12'><div class='row'><div class='col-sm-6 col-sm-offset-3 modalContent'><div class='row modelHeader'><div class='col-xs-1 col-xs-offset-11' style='font-size:24px;font-weight:bold;cursor:pointer;padding:0px;' onclick='view.closeSendSmsModal()'>&times;</div><div class='col-sm-12'><h2>Write SMS</h2></div></div><hr><div class='row'><div class='col-xs-12' style='margin-top:10px;'><textarea id='sms-text' maxlength=160 rows=6 id='class' type='text'></textarea></div><br><div style='margin-top:15px;' class='col-xs-2 col-xs-offset-5 btn btn-danger' onclick='controller.sendFacultySms()'>Send</div></div></div></div>";
+
+    var content = "<select id='selectBatch'>";
+    var z = [];
+    model.selectedFaculty.current_classes.forEach(function(y){
+      z.push(y.batch);
+    })
+    model.info.batches.forEach(function(x){
+      if(z.indexOf(x.batch) <0 ){
+        content += "<option id='#" + x.class + "'>" + x.class + "</option>";
+      }
+    })
+    content += "</select>";
+    document.getElementById("smsModal").style.display = "block" ;
   }
 
 };
@@ -392,5 +393,6 @@ var model = {
   selectedFaculty: [],
   selectedBatch: {},
   months: ["january","february","march","april","may","june","july","august","september","october","november","december"],
-  facultyFormFields : ["Name","Username","Password"]
+  facultyFormFields : ["Name","Username","Password"],
+  days: ["Mon","Tue","Wed","Thu","Fri","Sat"]
 };
