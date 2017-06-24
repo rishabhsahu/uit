@@ -11,9 +11,11 @@ router.post('/:domain/:subdomain',function(req,res){
       res.status(500)
       res.end()
     } else {
-      db.collection(req.params.domain).update({_id:req.params.subdomain},{$addToSet:{"recentErrors":req.body.error}})
+      db.collection(req.params.domain).update({_id:req.params.subdomain},{$addToSet:{"recentErrors":req.body}},true)
       db.close()
       res.end()
     }
   })
 })
+
+module.exports = router
