@@ -11,14 +11,13 @@ router.post('/',function(req,res){
   var password = req.body.password
   mongo.connect('mongodb://localhost:27018/data',function(err,db){
     if(err){
-      console.log("err hai bc")
-      console.log(err)
+      errRequest("http://localhost:4000/errors/mongoErr","mongodb",err)
     } else {
       console.log("connected to mongodb for authentication")
       if(req.body.username.indexOf(".admin") === -1){
         db.collection("faculty").findOne({_id:username},function(err,item){
           if(err){
-            console.log(err)
+            errRequest("http://localhost:4000/errors/mongoErr","mongodb",err)
             db.close()
           } else {
             if(item == null || item == undefined){
@@ -40,7 +39,7 @@ router.post('/',function(req,res){
       } else {
         db.collection("admin").findOne({_id:username},function(err,item){
           if(err){
-            console.log(err)
+            errRequest("http://localhost:4000/errors/mongoErr","mongodb",err)
             db.close()
           } else {
             if(item == null || item == undefined){

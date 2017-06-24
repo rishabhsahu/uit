@@ -123,11 +123,11 @@ graph = {
           pointBorderWidth:"4",
           pointHoverBorderColor:"rgb(237, 101, 185)",
           pointHoverBorderWidth:"6",
-          data:[1,3,2,1,2],
+          data:[1,3,,0,0,0,02,1,2],
           lineTension:0
         },{
           label: "Past 21 Days",
-          data:[1,3,2,1,2]
+          data:[0,0,0,0,1,3,2,1,2]
         }]
       }
     })

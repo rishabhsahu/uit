@@ -49,6 +49,8 @@ var controller = {
             })
             model.classes_today = arr;
             console.log(model);
+          } else if(requestFacultyData.status === 504 && requestFacultyData.readyState === 4){
+            controller.notifyUser("Internal Server Error. Please Try again",0);
           }
           view.loadHome();
         }
@@ -73,7 +75,9 @@ var controller = {
                 break;
               case 'score': view.showScoreOptions();
             }
-      } else {}
+      } else if(attendance.status === 504 && attendance.readyState === 4){
+        controller.notifyUser("Internal Server Error. Try again",0);
+      }
     }
 
       attendance.open('GET','http://localhost:3000/faculty/getStudentList/' + _id,true);
@@ -114,10 +118,10 @@ takeAttendance: function(){
     if(controller.absent.students.indexOf(student.enroll_number)<0){
       name += "<div onclick='controller.markAbsent(event)' class='col-xs-12 text-left' style='background-color:lightgreen;text-transform:capitalize;color:grey;border-bottom:solid 1px rgba(160,160,160,.4);padding-top:10px;padding-bottom:10px;cursor:pointer' " + "id=" + student.enroll_number + ">" + student.name + "<br>" + student.enroll_number +"</div>";
     } else {
-      name += "<div onclick='controller.markAbsent(event)' class='col-xs-12 text-left' style='text-transform:capitalize;color:black;background-color:red;padding-top:10px;padding-bottom:10px;cursor:pointer' " + "id=" + student.enroll_number + ">" + student.name + "<br>" + student.enroll_number +"</div>";
+      name += "<div onclick='controller.markAbsent(event)' class='col-xs-12 text-left' style='text-transform:capitalize;color:black;background-color:rgb(239, 108, 88);padding-top:10px;padding-bottom:10px;cursor:pointer' " + "id=" + student.enroll_number + ">" + student.name + "<br>" + student.enroll_number +"</div>";
     }
   })
-  document.getElementById("main").innerHTML = "<div id='counter' onclick='controller.clearList()' style='cursor:pointer' onclick=''><div style='width:20px;height:20px;' id='count'>" + controller.absent.students.length + "</div></div><div id='attendance-options' style='cursor:pointer' onclick='view.showAttendanceOptions()'><div class='glyphicon glyphicon-calendar' style='width:20px;height:20px;color:black'></div></div><div class='col-xs-12 batches_box' id='attendance-box'><div class='row' id='student_list_box' style='background-color:white'>" + name +"</div></div></div><div id='send-button' onclick='controller.submitData()'><span style='padding:15px;background-color:rgba(56,103,211,1);border-radius:30px;border:solid 1px grey;cursor:pointer' class='glyphicon glyphicon-send'></span></div>";
+  document.getElementById("main").innerHTML = "<div id='counter' onclick='controller.clearList()' style='cursor:pointer' onclick=''><div style='width:20px;height:20px;' id='count'>" + controller.absent.students.length + "</div></div><div id='attendance-options' style='cursor:pointer' onclick='view.showAttendanceOptions()'><div class='glyphicon glyphicon-calendar' style='width:20px;height:20px;color:black'></div></div><div class='col-xs-12 batches_box' id='attendance-box'><div class='row' id='student_list_box' style='background-color:white'>" + name +"</div></div></div><div id='send-button' onclick='controller.submitData()'><span style='padding:15px;background-color:rgba(56,103,211,1);border-radius:30px;border:solid 1px grey;cursor:pointer' class='glyphicon glyphicon-send'></span></div><div id='send-message-selected' onclick='controller.sendMessageSelectedModal()'><span style='padding:15px;background-color:white;border-radius:50%;border:solid 1px grey;cursor:pointer;box-shadow: 0px 8px 10px rgba(0,0,0,.4);' class='glyphicon glyphicon-envelope'></span></div>";
   document.getElementById('main').innerHTML += "<div class='modal col-xs-12' id='attendance-options-modal' style='background-color: rgba(0,0,0,.9)'><div style='margin-top: 100px' class='row'><hr class='col-xs-8 col-xs-offset-2'><br><br><h3 style='color:white'>Select a New Date</h3><br><div class='col-xs-12'><select id='allDates'></select></div><div class='col-xs-12'><select id='allMonth'></select></div><div class='col-xs-12'><select id='allYear'></select></div></div><div class='col-xs-12' style='font-size:20px;color:white;margin-top:20px'><div class='btn btn-danger' onclick='controller.dateSelected2()'>Select</div></div></div></div>";
 
 },
@@ -131,7 +135,7 @@ markAbsent: function(e){
   var student_id = e.target.id;
   console.log(student_id);
   if(this.absent.students.indexOf(student_id)<0){
-    document.getElementById(student_id).style.backgroundColor= "red";
+    document.getElementById(student_id).style.backgroundColor= "rgb(239, 108, 88)";
     document.getElementById(student_id).style.color= "black";
     this.absent.students.push(student_id);
     document.getElementById('count').innerHTML = this.absent.students.length;
@@ -168,13 +172,18 @@ submitData: function(){
   var SAD = new XMLHttpRequest();
 
   SAD.onreadystatechange = function(){
-    if(SAD.readyState == 4 || SAD.status == 200){
-
+    if(SAD.readyState == 4 && SAD.status == 200){
       document.getElementById('take-attendance-button').style.display = "block";
       controller.absent.students = [];
       delete controller.absent.date;
       controller.facultyData();
-    } else {
+      controller.notifyUser("Attendance Data Submit. Parents of Absent students are informed",1);
+    } else if(SAD.status === 504 && SAD.readyState == 4){
+      document.getElementById('take-attendance-button').style.display = "block";
+      controller.absent.students = [];
+      delete controller.absent.date;
+      controller.facultyData();
+      controller.notifyUser("Internal Server Error. Please Try again",5);
     }
   }
 
@@ -204,11 +213,11 @@ getReport: function(){
   var requestReport = new XMLHttpRequest();
 
   requestReport.onreadystatechange = function(){
-    if(requestReport.readyState == 4 || requestReport.status == 200){
+    if(requestReport.readyState == 4 && requestReport.status == 200){
       model.reportData = JSON.parse(requestReport.response);
       var reportData = model.reportData;
       console.log(model.reportData);
-      var content2 = "<div class='modal col-xs-12 text-center' id='downloadsOptionModal'><div class='row' style='animation-name: pushup;animation-duration:.25s;position:fixed;bottom:0;height:50%;width:100%;background-color:white;border-radius: 10px'><div class='col-xs-12'><div class='row' style='margin-bottom:15px;'><div class='col-xs-12' style='border-bottom: 1px solid grey'><h3>Select list<span style='position:absolute;right: 10%;font-size: 26px;color:red;cursor:pointer' onclick='view.closeDownloadListModal()'>&times;</span></h3></div><div class='col-xs-12' style='margin-top:10px'><div class='row' style='margin-top:10px'><div class='col-xs-12'><a href='http://localhost:3000/download/attendanceOverview/" + model.selectedBatch._id + "/" + model.personalInfo._id + "/" + model.selectedBatch.subject + "' target='_blank' class='btn btn-default'>Attendance Report ( Overview )</a></div></div><div class='row' style='margin-top:10px'><div class='col-xs-12'><a href='http://localhost:3000/download/attendanceDetailed/" + model.selectedBatch._id + "/" + model.personalInfo._id + "/" +  model.selectedBatch.subject + "' target='_blank' class='btn btn-default'>Attendance Report ( Date by Date Track )</a></div></div></div></div></div></div>";
+      var content2 = "<div class='modal col-xs-12 text-center' id='downloadsOptionModal'><div class='row' style='animation-name: pushup;animation-duration:.25s;position:fixed;bottom:0;height:50%;width:100%;background-color:white;border-radius: 10px'><div class='col-xs-12'><div class='row' style='margin-bottom:15px;'><div class='col-xs-12' style='border-bottom: 1px solid grey'><h3>Select list<span style='position:absolute;right: 10%;font-size: 26px;color:rgb(239, 108, 88);cursor:pointer' onclick='view.closeDownloadListModal()'>&times;</span></h3></div><div class='col-xs-12' style='margin-top:10px'><div class='row' style='margin-top:10px'><div class='col-xs-12'><a href='http://localhost:3000/download/attendanceOverview/" + model.selectedBatch._id + "/" + model.personalInfo._id + "/" + model.selectedBatch.subject + "' target='_blank' class='btn btn-default'>Attendance Report ( Overview )</a></div></div><div class='row' style='margin-top:10px'><div class='col-xs-12'><a href='http://localhost:3000/download/attendanceDetailed/" + model.selectedBatch._id + "/" + model.personalInfo._id + "/" +  model.selectedBatch.subject + "' target='_blank' class='btn btn-default'>Attendance Report ( Date by Date Track )</a></div></div></div></div></div></div>";
       document.getElementsByTagName('body')[0].innerHTML += content2;
       var x = "<div id='downloads' onclick='view.showDownloadOptions()'><span style='width:15px;height:15px;' class='glyphicon glyphicon-download'></span></div><div class='batches_box col-xs-12' id='student_list_box'>";
       var dcs = 1;
@@ -230,9 +239,11 @@ getReport: function(){
 
         var tests = "";
         if(student[model.selectedBatch.subject].hasOwnProperty('scores')){
+          tests = "<div class='row'><div class='col-xs-3' style='margin-top:15px'>";
           student[model.selectedBatch.subject]["scores"].forEach(function(m,n){
-            tests += " <label class='label label-warning' style='color:white'>" + m.test_name + "-" + m.score + "</label> "
+            tests += "<label class='label label-warning' style='color:white;margin-right:5px;'>" + m.test_name + "-" + m.score + "</label>"
           })
+          tests += "</div></div>";
         } else {
         }
          if( (count/dcs)*100 > 75 ){
@@ -243,8 +254,8 @@ getReport: function(){
       })
       x += "</div>";
       view.showReport(x);
-    } else {
-      view.showReport("<div style='position:relative;top:75px;'>loading ...</div>");
+    } else if(requestReport.status === 504 && requestReport.readyState === 4){
+      controller.notifyUser("Internal Server Error. Try again",0);
     }
   }
 
@@ -254,6 +265,7 @@ getReport: function(){
 
 submitScores: function(){
   var obj = {scores:model.studentScoreArray,test_name:model.scoreSettings[0]["Test Name"],max_score:model.scoreSettings[1]["Maximum Score"]};
+  obj.test_id = model.selectedBatch._id + "/" + model.selectedBatch.class + "/" + model.selectedBatch.subject + "/" + obj.test_name
   var SSR = new XMLHttpRequest();
 
   SSR.onreadystatechange =  function(){
@@ -262,7 +274,13 @@ submitScores: function(){
       delete model.studentScoreArray ;
       delete model.scoreSettings ;
       controller.facultyData();
-    } else {
+      controller.notifyUser("Scores Added succesfully",1);
+    } else if(SSR.status === 504 && SSR.readyState == 4){
+      document.getElementById('take-attendance-button').style.display = "block";
+      delete model.studentScoreArray ;
+      delete model.scoreSettings ;
+      controller.facultyData();
+      controller.notifyUser("Internal Server Error. Try again",5);
     }
   }
   console.log(obj);
@@ -297,6 +315,11 @@ willBeAbsent: function(n){
     if(xhr.status === 200 && xhr.readyState === 4){
       view.closeAbsentModal();
       controller.facultyData();
+      controller.notifyUser("Marked Absent",1);
+    } else if(xhr.status === 504){
+      view.closeAbsentModal();
+      controller.facultyData();
+      controller.notifyUser("Internal Server error",0);
     }
   }
 
@@ -372,6 +395,8 @@ setSchedule: function(){
     if(xhr.readyState === 4 && xhr.status === 200){
       view.closeSetSchedule();
       view.loadReportSection();
+    } else if(xhr.status === 504 && xhr.readyState === 4){
+      controller.notifyUser("Internal Server Error. Try again",0);
     }
   }
   console.log(obj);
@@ -389,11 +414,74 @@ notifyClass: function(){
   xhr.onreadystatechange = function(){
     if(xhr.status === 200 && xhr.readyState === 4){
       view.closeNotifyClass();
+    } else if(xhr.status === 504 && xhr.readyState === 4){
+      view.closeNotifyClass();
+      controller.notifyUser("Internal Server Error. Try again",5);
     }
   }
   xhr.open('post','http://localhost:3000/sendsms/notifyclass',true);
   xhr.setRequestHeader('Content-Type','application/json');
   xhr.send(JSON.stringify(obj));
+},
+
+sendMessageSelectedModal: function(){
+  document.getElementsByTagName('body')[0].innerHTML += "<div class='col-xs-12 modal' style='background-color:black' id='notifyClass'><div class='row text-center'><div class='col-xs-8 col-xs-offset-2' style='background-color:white;border-radius:5px;margin-top:10%;'><div class='row'><div class='col-xs-12' style='border-bottom: solid 1px rgba(0,0,0,.8);margin-bottom:15px'><h3>Write Text</h3></div><div class='col-xs-12' style='padding-bottom:15px;'><textarea id='message-text' type=text maxlength='160' rows=5 style='border: solid 1px rgba(60,60,60,.5)' size=15 style='height:100px' placeholder='Notify about Test, Books etc'></textarea></div><div class='col-xs-12' style='margin-top:10px;margin-bottom:10px' onclick='controller.sendMessageSelected()'>Send</div></div></div></div><div class='row' style='margin-top:20px'><div class='col-xs-12 text-center' style='position:absolute;bottom:50px'><span class='glyphicon glyphicon-remove' style='font-size:24px;color:white' onclick='view.closeNotifyClass()'></span></div></div></div>";
+  document.getElementById('notifyClass').style.display = "block";
+},
+
+sendMessageSelected: function(){
+  var obj = {};
+  var mobiles = [];
+  obj.batch_id = model.selectedBatch._id;
+  obj.text = document.getElementById('message-text').value;
+
+  model.students.forEach(function(std,i){
+    if(controller.absent.students.indexOf(std.enroll_number.toString())>-1){
+      mobiles.push(std.mobile);
+    }
+  })
+
+  obj.mobiles = mobiles;
+  console.log(obj);
+  var xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function(){
+    if(xhr.status === 200 && xhr.readyState === 4){
+      view.closeNotifyClass();
+      controller.notifyUser("Internal Server Error. Try again",0);
+    } else if(xhr.status === 504 && xhr.readyState === 4){
+      view.closeNotifyClass();
+      controller.notifyUser("Internal Server Error. Try again",5);
+    }
+  }
+  xhr.open('post','http://localhost:3000/sendsms/messageselected',true);
+  xhr.setRequestHeader('Content-Type','application/json');
+  xhr.send(JSON.stringify(obj));
+},
+
+notifyUser: function(str,a){
+  if(a===0){
+    document.getElementById('notifText').style.backgroundColor = "red";
+    document.getElementById('notifText').innerHTML = str;
+    document.getElementById('notifyUser').style.display = "block";
+    setTimeout(function(){
+      document.getElementById('notifyUser').style.display = "none";
+    },3000);
+
+  } else if(a===1){
+    document.getElementById('notifText').style.backgroundColor = "lightgreen";
+    document.getElementById('notifText').innerHTML = str;
+    document.getElementById('notifyUser').style.display = "block";
+    setTimeout(function(){
+      document.getElementById('notifyUser').style.display = "none";
+    },3000);
+
+  } else if(a===5){
+    document.getElementById('notifText2').innerHTML = str;
+    document.getElementById('notifyError').style.display = "block";
+    setTimeout(function(){
+      document.getElementById('notifyError').style.display = "none";
+    },3000);
+  }
 }
 
 

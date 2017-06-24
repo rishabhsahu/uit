@@ -4,7 +4,7 @@
 }
 
 body {
-  background-color:rgba(160,160,160,.2);
+  background-color: white;
 }
 
 #navbar {
@@ -14,6 +14,7 @@ body {
   height: 8%;
   z-index: 1;
   color:black;
+  border-bottom: solid 1px rgba(160,160,160,.4);
 }
 
 
@@ -41,14 +42,21 @@ body {
   z-index: 6;
   position: absolute;
   border-radius: 50%;
-  background-color: #FF533D;
+  background-color: rgb(234, 30, 146);
   top: 60px;
   right: 35px;
+  box-shadow: 1px 10px 10px rgba(0,0,0,.4);
 }
 
 #send-button {
   position:absolute;
   bottom:20px;
+  right:35px;
+}
+
+#send-message-selected {
+  position:absolute;
+  bottom:80px;
   right:35px;
 }
 
@@ -59,7 +67,8 @@ body {
   position:absolute;
   top:10px;
   right:35px;
-  z-index:5
+  z-index:5;
+  box-shadow: 1px 10px 10px rgba(0,0,0,.4);
 }
 
 #downloads {
@@ -92,7 +101,7 @@ body {
 } */
 
 #mobile-navigator {
-  background-color: #01579B;
+  background-color: white;
   position: fixed;
   bottom: 0px;
   left: 0px;
@@ -114,12 +123,25 @@ body {
   position: fixed;
   left: 0px;
   top: 0px;
-  background-color: rgba(0,0,0,1);
+  background-color: rgba(0,0,0,.9);
   height: 100%;
   width: 100%;
   padding-top: 50px;
   animation-timing-function: ease-in;
   animation-name: fade-in;
+}
+
+.notif-modal {
+  display: none;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  height: 100px;
+  width: 100%;
+  padding-top: 50px;
+  animation-timing-function: ease-in;
+  animation-name: fade-in;
+  z-index: 10;
 }
 
 .modal-content {

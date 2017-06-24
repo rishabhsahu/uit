@@ -11,20 +11,20 @@ var dt = new Date()
 router.get('/requestFacultyData',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
-    console.log(err)
+    errRequest("http://localhost:3000/errors/nodejsErr/faculty","cookies",err)
     res.status(401)
     res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
-        console.log(err)
+        errRequest("http://localhost:3000/errors/nodejsErr/faculty","jwt",err)
         res.status(401)
         res.end()
       } else {
         console.log(decoded.name)
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
-            console.log(err)
+            errRequest("http://localhost:3000/errors/mongoErr/faculty","mongodb",err)
             db.close()
             res.status(500)
             res.end()
@@ -43,20 +43,20 @@ router.get('/classesheld/:college/:department/:batch',function(req,res){
   console.log(req.device)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
-    console.log(err)
+    errRequest("http://localhost:3000/errors/nodejsErr/faculty","cookies",err)
     res.status(401)
     res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
-        console.log(err)
+        errRequest("http://localhost:3000/errors/nodejsErr/faculty","jwt",err)
         res.status(401)
         res.end()
       } else {
         console.log(decoded.name)
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
-            console.log(err)
+            errRequest("http://localhost:3000/errors/mongoErr/faculty","mongodb",err)
             db.close()
             res.status(500)
             res.end()
@@ -82,26 +82,26 @@ router.get('/classesheld/:college/:department/:batch',function(req,res){
 router.get('/getStudentList/:college/:department/:batch',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
-    console.log(err)
+    errRequest("http://localhost:3000/errors/nodejsErr/faculty","cookies",err)
     res.status(401)
     res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
-        console.log(err)
+        errRequest("http://localhost:3000/errors/nodejsErr/faculty","jwt",err)
         res.status(401)
         res.end()
       } else {
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
-            console.log(err)
+            errRequest("http://localhost:3000/errors/mongoErr/faculty","mongodb",err)
             db.close()
             res.status(500)
             res.end()
           } else {
             db.collection("classes").findOne({_id:req.params.college + '/' + req.params.department + '/' + req.params.batch},function(err,item){
               if(err){
-                console.log(err)
+                errRequest("http://localhost:3000/errors/mongoErr/faculty","mongodb",err)
                 db.close()
                 res.status(404)
                 res.end()
@@ -123,13 +123,13 @@ router.post('/submitData/:college/:department/:batch',function(req,res){
   console.log(d)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
-    console.log(err)
+    errRequest("http://localhost:3000/errors/nodejsErr/faculty","cookies",err)
     res.status(401)
     res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
-        console.log(err)
+        errRequest("http://localhost:3000/errors/mongoErr/faculty","mongodb",err)
         res.status(401)
         res.end()
       } else {
@@ -138,7 +138,7 @@ router.post('/submitData/:college/:department/:batch',function(req,res){
           if(err){
             console.log(err)
             db.close()
-            res.status(500)
+            res.status(504)
             res.end()
           } else {
               data = req.body
@@ -172,9 +172,9 @@ router.post('/submitData/:college/:department/:batch',function(req,res){
                 url: api_link
               },function(err,resp,body){
                 if(err){
-                  console.log(err)
+                  errRequest("http://localhost:3000/errors/nodejsErr/faculty","request",err)
                   db.close()
-                  res.writeHead(504)
+                  res.status(504)
                   res.end()
                 } else {
                   db.collection("faculty").update({_id:decoded.name},{$inc:{"recent_messages":req.body.mobile.length}})
@@ -182,7 +182,7 @@ router.post('/submitData/:college/:department/:batch',function(req,res){
                   db.collection("admin").update({_id:"school.admin@" + decoded.name.split('@')[1],"faculties.id":decoded.name},{$inc:{"faculties.$.recent_messages":req.body.mobile.length}})
                   db.close()
                   console.log(resp)
-                  res.writeHead(200)
+                  res.status(200)
                   res.end()
                 }
               })
@@ -196,19 +196,19 @@ router.post('/submitData/:college/:department/:batch',function(req,res){
 router.get('/report/:college/:department/:batch/:subject',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
-    console.log(err)
+    errRequest("http://localhost:3000/errors/nodejsErr/faculty","cookies",err)
     res.status(401)
     res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
-        console.log(err)
+        errRequest("http://localhost:3000/errors/nodejsErr/faculty","jwt",err)
         res.status(401)
         res.end()
       } else {
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
-            console.log(err)
+            errRequest("http://localhost:3000/errors/mongoErr/faculty","mongodb",err)
             db.close()
             res.status(500)
             res.end()
@@ -235,13 +235,13 @@ router.post('/submitscores/:college/:branch/:batch/:subject',function(req,res){
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
-        console.log(err)
+        errRequest("http://localhost:3000/errors/nodejsErr/faculty","jwt",err)
         res.status(401)
         res.end()
       } else {
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
-            console.log(err)
+            errRequest("http://localhost:3000/errors/nodejsErr/faculty","mongodb",err)
             db.close()
             res.status(500)
             res.end()
@@ -256,8 +256,10 @@ router.post('/submitscores/:college/:branch/:batch/:subject',function(req,res){
               }
               console.log(score)
               var xyz = {
+                test_id: req.body.test_id,
                 test_name: req.body.test_name,
-                score: score
+                score: score,
+                max_score : req.body.max_score
               }
               var str = "student_data.$." + req.params.subject + '.scores'
               obj[str] = xyz
@@ -277,19 +279,19 @@ router.post('/markabsent',function(req,res){
   console.log(req.body)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
-    console.log(err)
+    errRequest("http://localhost:3000/errors/nodejsErr/faculty","cookies",err)
     res.status(401)
     res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
-        console.log(err)
+        errRequest("http://localhost:3000/errors/nodejsErr/faculty","jwt",err)
         res.status(401)
         res.end()
       } else {
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
-            console.log(err)
+            errRequest("http://localhost:3000/errors/nodejsErr/faculty","mongodb",err)
             db.close()
             res.status(500)
             res.end()
@@ -324,6 +326,7 @@ router.post('/setupprofile',function(req,res){
   console.log(req.body)
   var cookies = cookie.parse(req.headers.cookie || "")
   if(!cookies){
+    errRequest("http://localhost:3000/errors/nodejsErr/faculty","cookies",err)
     res.status(401)
     res.end()
   } else {
@@ -336,7 +339,7 @@ router.post('/setupprofile',function(req,res){
         console.log(decoded.name)
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
-            console.log(err)
+            errRequest("http://localhost:3000/errors/mongoErr/faculty","mongodb",err)
             res.status(500)
             res.end()
           } else {
@@ -368,19 +371,20 @@ router.post('/setschedule',function(req,res){
   console.log(req.body)
   var cookies = cookie.parse(req.headers.cookie || "")
   if(!cookies){
+    errRequest("http://localhost:3000/errors/nodejsErr/faculty","cookies",err)
     res.status(401)
     res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
-        console.log(err)
+        errRequest("http://localhost:3000/errors/nodejsErr/faculty","jwt",err)
         res.status(401)
         res.end()
       } else {
         console.log(decoded.name)
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
-            console.log(err)
+            errRequest("http://localhost:3000/errors/mongoErr/faculty","mongodb",err)
             res.status(500)
             res.end()
           } else {
@@ -409,6 +413,19 @@ router.post('/setschedule',function(req,res){
   }
 })
 
+function errRequest(u,m,o){
+  var ed = (new Date()).valueOf
+  request({
+    method:"post",
+    url: u,
+    ContentType: "application/json",
+    body: JSON.stringify(o),
+    time: ed
+  },function(err,resp,body){
+
+  })
+
+}
 
 module.exports = router
 
