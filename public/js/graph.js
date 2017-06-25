@@ -111,7 +111,10 @@ graph = {
   },
 
   pastSevenDays: function(){
-    var e = document.getElementById('xyz');
+    var d1 = [];
+    var d2 = [];
+
+    var e = document.getElementById('pastSevenDays');
     var chart = new Chart(e,{
       type: 'line',
       data:{

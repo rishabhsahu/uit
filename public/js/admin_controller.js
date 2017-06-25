@@ -77,7 +77,7 @@ var controller = {
     facultyDataRequest.send(null);
   },
 
-  getBatchData: function(e){
+  getBatchData: function(e,i){
     e = e.target.id;
     console.log(e);
 
@@ -86,7 +86,12 @@ var controller = {
       var response = batchDataRequest.response;
       if(batchDataRequest.status === 200 && batchDataRequest.readyState === 4){
         response = JSON.parse(response);
-        view.renderBatchData(response.student_data,e);
+        if(i===0){
+          view.renderBatchData(response.student_data,e);
+        } else {
+          model.selectedBatch = response;
+          view.showClassData();
+        }
       }
     }
 
@@ -159,11 +164,9 @@ var controller = {
     newBatchData.send(file);
   },
 
-  assignFacultyNewBatch: function(){
+  assignFacultyNewBatch: function(n){
     var batch = document.getElementById('selectBatch').value;
-    batch = batch.replace('#','');
     var obj = {};
-    obj.class = batch;
     obj.subject = document.getElementById('assignedSubject').value;
     model.info.batches.forEach(function(x){
       if(x.class == batch){
@@ -179,19 +182,24 @@ var controller = {
       if(newBatchData.status === 200 && newBatchData.readyState === 4 ){
         var response = newBatchData.response;
         document.getElementById("assignFacultyNewBatchModal").style.display = "none" ;
-        controller.getFacultyData();
+        getFacultyData(n);
       } else if( newBatchData.status === 500 && newBatchData.readyState === 4 ){
         document.getElementById("assignFacultyNewBatchModal").style.display = "none" ;
         alert('Internal server Error. Please try again. If issue continues, try again after time later');
-        controller.getFacultyData();
+        getFacultyData(n);
       } else if( newBatchData.status != 500 && newBatchData.status != 200 && newBatchData.readyState === 4){
         document.getElementById("assignFacultyNewBatchModal").style.display = "none" ;
         alert('error. Check your Internet Connection');
-        controller.getFacultyData();
+        getFacultyData(n);
       }
     }
 
-    newBatchData.open('POST','http://localhost:3000/admin/assignFacultyNewBatch/' + model.selectedFaculty._id,true);
+    if(n === 0){
+      newBatchData.open('POST','http://localhost:3000/admin/assignFacultyNewBatch/' + model.selectedFaculty._id,true);
+    } else {
+      var nmt = document.getElementById('selectFaculty').value;
+      newBatchData.open('POST','http://localhost:3000/admin/assignFacultyNewBatch/' + nmt ,true);
+    }
     newBatchData.setRequestHeader('Content-type','application/json');
     newBatchData.send(JSON.stringify(obj));
   },
@@ -282,8 +290,20 @@ var controller = {
     }
     xhr.open('POST',"http://localhost:3000/sendsms/smsfaculty",true);
     xhr.send(JSON.stringify(obj));
+  },
+
+  batchSelected: function(e){
+    this.getBatchData(e,1);
   }
 
 };
+
+function getFacultyData(n){
+  if(n===0){
+    controller.getFacultyData();
+  } else {
+    view.showClassData();
+  }
+}
 
 window.onload = controller.departmentData;

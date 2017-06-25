@@ -414,7 +414,7 @@ notifyClass: function(){
   xhr.onreadystatechange = function(){
     if(xhr.status === 200 && xhr.readyState === 4){
       view.closeNotifyClass();
-    } else if(xhr.status === 504 && xhr.readyState === 4){
+    } else if(xhr.status === 504){
       view.closeNotifyClass();
       controller.notifyUser("Internal Server Error. Try again",5);
     }
@@ -447,7 +447,7 @@ sendMessageSelected: function(){
   xhr.onreadystatechange = function(){
     if(xhr.status === 200 && xhr.readyState === 4){
       view.closeNotifyClass();
-      controller.notifyUser("Internal Server Error. Try again",0);
+      controller.notifyUser("SMS sent to selected students",1);
     } else if(xhr.status === 504 && xhr.readyState === 4){
       view.closeNotifyClass();
       controller.notifyUser("Internal Server Error. Try again",5);

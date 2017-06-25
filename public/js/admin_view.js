@@ -10,13 +10,15 @@ var view = {
       absentFaculties += "</div></div></div></div>";
     }
 
-    var left = "<div class='col-xs-5' style='background-color:white;border-radius:3px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='row'><div class='col-xs-12' style='border-bottom:solid 1px rgba(160,160,160,.4)'><h3 style='color:rgba(60,60,60,.8)'>Total Faculties</h3></div><div class='col-xs-12 text-success' style='font-size:48px'>" + model.info.faculties.length + "</div></div></div><div class='col-xs-6 col-xs-offset-1' style='background-color:white;border-radius:3px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='row'><div class='col-xs-12' style='border-bottom:solid 1px rgba(160,160,160,.4)'><h3 style='color:rgba(60,60,60,.8)'>Faculties Absent</h3></div><div class='col-xs-12 text-danger' style='font-size:48px'>" + model.absentToday.length + "</div></div></div>";
+    var header_options = "<div class='col-xs-10 col-xs-offset-1 text-center' style='background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='row'><div id='assignFacultyNewBatchModal' class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.assignNewSubject()'>New Subject</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)'>Message Faculties</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)'>Notify Parents</div><div class='col-xs-3'>Settings</div></div></div>";
 
-    var top = "<div class='col-xs-3'><div class='row' style='border-right:solid 1px rgba(160,160,160,1)'><div class='col-xs-12'><h4 style='color:rgba(60,60,60,.8)'>SMS sent this month</h4></div><div class='col-xs-12 text-success' style='font-size:48px'>" + model.info.recent_messages + "</div></div></div><div class='col-xs-3'><div class='row' style='border-right:solid 1px rgba(160,160,160,1)'><div class='col-xs-12'><h4 style='color:rgba(60,60,60,.8)'>Total SMS sent till date</h4></div><div class='col-xs-12 text-danger' style='font-size:48px'>" + model.info.recent_messages + "</div></div></div><div class='col-xs-3'><div class='row'><div class='col-xs-12'><h5 style='color:rgba(60,60,60,.8)'>Faculty with most SMS sent</h5></div>" + "<div class='col-xs-12'><h5 style='color:rgba(40,40,40,1);border-right:solid 1px rgba(160,160,160,1);'>" + model.info.faculties[0].name + "</h5></div><div class='col-xs-12 text-success' style='font-size:20px'>" + model.info.recent_messages + "</div></div></div><div class='col-xs-3''><div class='row'><div class='col-xs-12'><h4 style='color:rgba(60,60,60,.8)'>SMS left</h4></div><div class='col-xs-12 text-primary' style='font-size:28px'>unlimited</div></div></div>";
 
-     var content = "<div class='col-xs-10 col-xs-offset-1 text-center' style='margin-top:15px;background-color:white;border-radius:3px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='row'>" + top + "</div></div><div id='report_left' class='col-xs-6 col-xs-offset-1 text-center' style='margin-top:15px'><div class='row'>" + left + "</div>" + absentFaculties + "</div>";
+        var left = "<div class='col-xs-8'><div class='row'><div class='col-xs-10 col-xs-offset-2' style='margin-top:25px'><canvas id='pastSevenDays'></canvas></div></div></div>";
+        var right = "<div class='col-xs-2 col-xs-offset-1' style='margin-top:50px;'><div class='row'><div class='col-xs-12'><div class='row' style='background-color:white;border-radius:3px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Total Classes</h4></div><div class='col-xs-12 text-primary' style='font-size:48px;'>" + model.info.batches.length + "<span style='font-size:24px;color:rgb(80,80,80)'>th</span></div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Strength</h4></div><div class='col-xs-12' style='font-size:48px;color:rgb(66, 206, 244)'>" + "0" + "<span style='font-size:24px;color:rgb(80,80,80)'>th</span></div></div></div></div></div>";
 
-     document.getElementById('report_section').innerHTML = content;
+    var content = "<div class='col-xs-12 text-center' style='margin-top:15px'>" + "<div class='row' style='margin-bottom:15px'>" + header_options + "</div>" + "<div class='row'>" + left + right + "</div></div>";
+
+    document.getElementById('report_section').innerHTML = content;
     /*
     var facultiesList = "";
     var batchesList = "";
@@ -37,7 +39,7 @@ var view = {
 
     document.getElementById("switch").innerHTML += "<div id='deassignbatchModal' class='text-center modal col-sm-12'><div class='row' style='padding-top:100px;'><div class='col-sm-4 col-sm-offset-4 modalContent' style='padding:20px;font-size: 20px;'>Are you sure you want to De-assign Faculty this Batch?<br><div class='text-success' style='font-size:16px;'>note- You can however Re-assign Faculty this Batch and get the data back</div></div></div><div class='row' style='padding-top:20px;'><div class='col-sm-4 col-sm-offset-4'><div class='row'><div class='col-sm-2 col-sm-offset-3 btn btn-danger' onclick='controller.deassignbatch()'>Yes</div><div class='btn btn-success col-sm-2 col-sm-offset-2' onclick='view.closeDeassignBatchModal()'>No</div></div></div></div></div>";
 
-    //end of faculty Settings modal
+    graph.pastSevenDays();
 
     model.info.faculties.forEach(function(faculty,i){
       document.getElementsByClassName("faculty_names")[i].onclick = controller.facultySelected;
@@ -64,31 +66,36 @@ var view = {
 
   showFacultyNames: function(){
     var names = "";
-    model.info.faculties.forEach(function(x,i){
-      if( (i+1-1)%3 == 0 || (i+1-1)%3 == 3 ){
-        names += "<div class='col-xs-3 faculty_name' id='" + x.id + "' onclick='controller.facultySelected(event)' style='margin-top:15px'>" + x.name + "</div>";
-      } else {
-        names += "<div class='col-xs-3 col-xs-offset-1 faculty_name' id='" + x.id + "' onclick='controller.facultySelected(event)' style='margin-top:15px'>" + x.name + "</div>";
-      }
-    })
+    if(model.info.faculties){
+      model.info.faculties.forEach(function(x,i){
+        if( (i+1-1)%3 == 0 || (i+1-1)%3 == 3 ){
+          names += "<div class='col-xs-3 faculty_name' id='" + x.id + "' onclick='controller.facultySelected(event)' style='margin-top:15px'>" + x.name + "</div>";
+        } else {
+          names += "<div class='col-xs-3 col-xs-offset-1 faculty_name' id='" + x.id + "' onclick='controller.facultySelected(event)' style='margin-top:15px'>" + x.name + "</div>";
+        }
+      })
+    }
     var content = "<div class='col-sm-12 text-center'><div class='row' style='margin-top:15px'><div class='col-xs-4 col-xs-offset-4 faculty_name' style='font-weight:bold;border-radius:3px;background-color:rgb(209, 35, 35);' onclick='view.showAddFacultyModal()'> + Add New Faculty</div></div><div class='row' style='max-height:500px;overflow-y:auto;margin-top:15px'>" + names + "</div></div>";
     document.getElementById('report_section').innerHTML = content;
   },
 
   showClasses: function(){
       var names = "";
-      var classes = model.info.batches;
-      classes.sort(function(x,i){
-        return x.class-i.class;
-      })
+      var classes;
+      if(model.info.batches){
+        classes = model.info.batches;
+        classes.sort(function(x,i){
+          return x.class-i.class;
+        })
 
-      classes.forEach(function(x,i){
-        if( (i+1-1)%3 == 0 || (i+1-1)%3 == 3 ){
-          names += "<div class='col-xs-3 faculty_name' id='" + x._id + "' onclick='controller.batchSelected(event)' style='margin-top:15px'>" + x.class + "</div>";
-        } else {
-          names += "<div class='col-xs-3 col-xs-offset-1 faculty_name' id='" + x._id + "' onclick='controller.batchSelected(event)' style='margin-top:15px'>" + x.class + "</div>";
-        }
-      })
+        classes.forEach(function(x,i){
+          if( (i+1-1)%3 == 0 || (i+1-1)%3 == 3 ){
+            names += "<div class='col-xs-3 faculty_name' id='" + x._id + "' onclick='controller.batchSelected(event)' style='margin-top:15px'>" + x.class + "</div>";
+          } else {
+            names += "<div class='col-xs-3 col-xs-offset-1 faculty_name' id='" + x._id + "' onclick='controller.batchSelected(event)' style='margin-top:15px'>" + x.class + "</div>";
+          }
+        })
+      }
       var content = "<div class='col-sm-12 text-center'><div class='row' style='margin-top:15px'><div class='col-xs-4 col-xs-offset-4 faculty_name' style='font-weight:bold;border-radius:3px;background-color:rgb(209, 35, 35);' onclick='view.showAddBatchModal()'> + Add New Batch</div></div><div class='row' style='max-height:500px;overflow-y:auto;margin-top:15px'>" + names + "</div></div>";
       document.getElementById('report_section').innerHTML = content;
   },
@@ -125,9 +132,9 @@ var view = {
     var clsInf = "";
     model.selectedFaculty.current_classes.forEach(function(x,i){
       if(x.classes_held.length != 0){
-        clsInf += "<div class='col-xs-12 card' style='border-radius:3px;margin-top: 10px;margin-right: 10px;background-color:rgba(255,255,255,.7);box-shadow:2px 2px 5px rgba(160,160,160,.4);cursor:pointer' onclick='controller.getBatchData(event)'><canvas id='" + x._id + "'></canvas><div class='col-xs-12' style='font-size:12px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.2);font-weight:bold;'><span style='font-size:14px'>" + x.class + "</span>th Class</div></div>";
+        clsInf += "<div class='col-xs-12 card' style='border-radius:3px;margin-top: 10px;margin-right: 10px;background-color:rgba(255,255,255,.7);box-shadow:2px 2px 5px rgba(160,160,160,.4);cursor:pointer' onclick='controller.getBatchData(event,0)'><canvas id='" + x._id + "'></canvas><div class='col-xs-12' style='font-size:12px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.2);font-weight:bold;'><span style='font-size:14px'>" + x.class + "</span>th Class</div></div>";
       } else {
-        clsInf += "<div class='col-xs-12 card' style='border-radius:3px;margin-top: 10px;margin-right: 10px;background-color:rgba(255,255,255,.7);box-shadow:2px 2px 5px rgba(160,160,160,.4);cursor:pointer' onclick='controller.getBatchData(event)'><canvas id='" + x._id + "'></canvas><div class='row'><div class='col-xs-12' style='font-size:12px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.2);font-weight:bold;'><span style='font-size:14px'>" + x.class + "</span>th Class</div></div></div>";
+        clsInf += "<div class='col-xs-12 card' style='border-radius:3px;margin-top: 10px;margin-right: 10px;background-color:rgba(255,255,255,.7);box-shadow:2px 2px 5px rgba(160,160,160,.4);cursor:pointer' onclick='controller.getBatchData(event,0)'><canvas id='" + x._id + "'></canvas><div class='row'><div class='col-xs-12' style='font-size:12px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.2);font-weight:bold;'><span style='font-size:14px'>" + x.class + "</span>th Class</div></div></div>";
       }
     })
 
@@ -306,8 +313,13 @@ var view = {
   },
 
   showAddBatchModal: function(){
-    document.getElementById("switch").innerHTML += "<div id='addBatchModal' class='text-center modal col-sm-12'><div class='row'><div class='col-sm-8 col-sm-offset-2 modalContent'><div class='row modelHeader'><div class='col-xs-1 col-xs-offset-11' style='font-size:24px;font-weight:bold;cursor:pointer;padding:0px;' onclick='view.closeAddBatchModal()'>&times;</div><div class='col-sm-12'><h2>Create New Batch</h2></div></div><hr><div class='row'><div class='col-xs-5 col-xs-offset-1'><img class='img-responsive' src='img/addBatchSample.JPG'></div><div class='col-xs-4 col-xs-offset-1'>upload .txt file containing data of each student of the Batch in the format given below <b>(Sample picture on the left)</b>,<br><br><code>Roll Number,Name,Mobile</code><br><br>where each student data should begin with new row.</div></div><br>" +
-    "<div class='row' style='margin-top:24px;'><div class='col-xs-12'><b>batch</b>: <input id='year' type='text' maxlength='4' size='4'><br>(batch should be starting year for the batch. ex: if batch started in year 2014, then '2014')</div><div class='col-xs-12' style='margin-top:10px;'><b>class</b>: <input id='class' id='class' type='text' maxlength='2' size='2'></div><div class='col-xs-4 col-xs-offset-5' style='margin-top:10px;'><input type='file' style='margin-top:10px;' accept='text/plain' name='student_list' id='student_list'></div><br><div style='margin-top:15px;' class='col-xs-2 col-xs-offset-5 btn btn-danger' onclick='controller.addNewBatch()'>Send</div></div></div></div>";
+    var stri = "<select id='class'><option value='KG-1'>KG-1</option><option value='KG-2'>KG-2</option>";
+    for(var i=1;i<13;i++){
+      stri += "<option value='" + i.toString() + "'>" + i + "</option>";
+    }
+    stri += "</select>";
+    document.getElementById("switch").innerHTML += "<div id='addBatchModal' class='text-center modal col-sm-12'><div class='row'><div class='col-sm-8 col-sm-offset-2 modalContent'><div class='row modelHeader'><div class='col-xs-1 col-xs-offset-11' style='font-size:24px;font-weight:bold;cursor:pointer;padding:0px;' onclick='view.closeAddBatchModal()'>&times;</div><div class='col-sm-12'><h2>Create New Class</h2></div></div><hr><div class='row'><div class='col-xs-5 col-xs-offset-1'><img class='img-responsive' src='img/addBatchSample.JPG'></div><div class='col-xs-4 col-xs-offset-1'>upload .txt file containing data of each student of the Batch in the format given below <b>(Sample picture on the left)</b>,<br><br><code>Roll Number,Name,Mobile</code><br><br>where each student data should begin with new row.</div></div><br>" +
+    "<div class='row' style='margin-top:24px;'><div class='col-xs-12'><b>batch</b>: <input id='year' type='text' maxlength='4' size='4'><br>(batch should be ending year for the batch. ex: if batch ending in year 2014, then '2014')</div><div class='col-xs-12' style='margin-top:10px;'><b>class</b>: " + stri + "</div><div class='col-xs-12' style='margin-top:10px;'><b>Section</b>: <input type='text' maxlength='4' size='4'></div><div class='col-xs-4 col-xs-offset-5' style='margin-top:10px;'><input type='file' style='margin-top:10px;' accept='text/plain' name='student_list' id='student_list'></div><br><div style='margin-top:15px;' class='col-xs-2 col-xs-offset-5 btn btn-danger' onclick='controller.addNewBatch()'>Send</div></div></div></div>";
     document.getElementById("addBatchModal").style.display = "block" ;
   },
 
@@ -350,19 +362,18 @@ var view = {
 
   assignNewBatch: function(){
 
-    document.getElementById("switch").innerHTML += "<div id='assignFacultyNewBatchModal' class='text-center modal col-sm-12'><div class='row'><div class='col-sm-8 col-sm-offset-2 modalContent'><div class='row modelHeader'><div class='col-xs-1 col-xs-offset-11' style='font-size:24px;font-weight:bold;cursor:pointer;padding:0px;' onclick='view.closeAssignNewBatchModal()'>&times;</div><div class='col-sm-12'><h2>assign new batch</h2></div></div><hr><div class='row'><div class='col-xs-12' style='margin-top:10px;'><b>Class</b> <div id='batchList'></div></div><div class='col-xs-12' style='margin-top:10px;'><b>Subject</b>: <input id='assignedSubject' id='class' type='text'></div><br><div style='margin-top:15px;' class='col-xs-2 col-xs-offset-5 btn btn-danger' onclick='controller.assignFacultyNewBatch()'>ADD</div></div></div></div>";
+    document.getElementsByTagName("body")[0].innerHTML += "<div id='assignFacultyNewBatchModal' class='text-center modal col-sm-12'><div class='row'><div class='col-sm-8 col-sm-offset-2 modalContent'><div class='row modelHeader'><div class='col-xs-1 col-xs-offset-11' style='font-size:24px;font-weight:bold;cursor:pointer;padding:0px;' onclick='view.closeAssignNewBatchModal()'>&times;</div><div class='col-sm-12'><h2>assign new batch</h2></div></div><hr><div class='row'><div class='col-xs-12' style='margin-top:10px;'><b>Class</b> <div id='batchList'></div></div><div class='col-xs-12' style='margin-top:10px;'><b>Subject</b>: <input id='assignedSubject' id='class' type='text'></div><br><div style='margin-top:15px;' class='col-xs-2 col-xs-offset-5 btn btn-danger' onclick='controller.assignFacultyNewBatch(0)'>ADD</div></div></div></div>";
 
-    var content = "<select id='selectBatch'>";
     var z = [];
-    model.selectedFaculty.current_classes.forEach(function(y){
-      z.push(y.batch);
-    })
-    model.info.batches.forEach(function(x){
-      if(z.indexOf(x.batch) <0 ){
-        content += "<option id='#" + x.class + "'>" + x.class + "</option>";
-      }
-    })
-    content += "</select>";
+      model.selectedFaculty.current_classes.forEach(function(y){
+        z.push(y.class);
+      })
+      model.info.batches.forEach(function(x){
+        if(z.indexOf(x.class) <0 ){
+          content += "<option id='#" + x.class + "'>" + x.class + "</option>";
+        }
+      })
+      content += "</select>";
     document.getElementById('batchList').innerHTML = content;
     document.getElementById("assignFacultyNewBatchModal").style.display = "block" ;
   },
@@ -379,8 +390,14 @@ var view = {
     document.getElementById("addBatchModal").style.display = "none" ;
   },
 
-  closeAssignNewBatchModal: function(){
-    document.getElementById("assignFacultyNewBatchModal").style.display = "none" ;
+  closeAssignNewBatchModal: function(n){
+    if(n===0){
+      document.getElementById("assignFacultyNewBatchModal").style.display = "none" ;
+      view.showSelectedFacultyData();
+    } else {
+      document.getElementById("assignClassNewSubjectModal").style.display = "none" ;
+      view.showClassData();
+    }
   },
 
   closeFacultySettingModal: function(){
@@ -414,6 +431,28 @@ var view = {
     })
     content += "</select>";
     document.getElementById("smsModal").style.display = "block" ;
+  },
+
+  showClassData: function(){
+    var header_options = "<div class='col-xs-10 col-xs-offset-1 text-center' style='background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='row'><div id='assignFacultyNewBatchModal' class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.assignNewSubject()'>New Subject</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)'>Message Whole Class</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)'>Message Selected</div><div class='col-xs-3'>Settings</div></div></div>";
+
+
+        var left = "<div class='col-xs-8'><div class='row'><div class='col-xs-10 col-xs-offset-2' style='margin-top:25px'><canvas id='pastSevenDays'></canvas></div></div></div>";
+        var right = "<div class='col-xs-2 col-xs-offset-1' style='margin-top:50px;'><div class='row'><div class='col-xs-12'><div class='row' style='background-color:white;border-radius:3px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Class</h4></div><div class='col-xs-12 text-primary' style='font-size:48px;'>" + model.selectedBatch.class + "<span style='font-size:24px;color:rgb(80,80,80)'>th</span></div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Strength</h4></div><div class='col-xs-12' style='font-size:48px;color:rgb(66, 206, 244)'>" + model.selectedBatch.students.length + "<span style='font-size:24px;color:rgb(80,80,80)'>th</span></div></div></div></div></div>";
+
+    var content = "<div class='col-xs-12 text-center' style='margin-top:15px'>" + "<div class='row' style='margin-bottom:15px'>" + header_options + "</div>" + "<div class='row'>" + left + right + "</div></div>";
+
+    document.getElementById('report_section').innerHTML = content;
+    graph.pastSevenDays();
+  },
+
+  assignNewSubject: function(){
+    var faculties = "";
+    model.info.faculties.forEach(function(x,i){
+      faculties += "<option value='" + x.id + "'>" + x.name + "</option>";
+    })
+    document.getElementsByTagName("body")[0].innerHTML += "<div id='assignClassNewSubjectModal' class='text-center modal col-sm-12'><div class='row'><div class='col-sm-8 col-sm-offset-2 modalContent'><div class='row modelHeader'><div class='col-xs-1 col-xs-offset-11' style='font-size:24px;font-weight:bold;cursor:pointer;padding:0px;' onclick='view.closeAssignNewBatchModal(1)'>&times;</div><div class='col-sm-12'><h2>assign new batch</h2></div></div><hr><div class='row' style='padding-top:10px;padding-bottom:10px'><div class='col-xs-3 col-xs-offset-3'><b>Class</b></div><div class='col-xs-3'><select id='selectBatch'><option id='#" + model.selectedBatch.class + "'>" + model.selectedBatch.class + "</option></select></div></div><div class='row' style='padding-top:10px;padding-bottom:10px'><div class='col-xs-3 col-xs-offset-3'><b>Faculty</b></div><div class='col-xs-3'><select id='selectFaculty'>" + faculties + "</select></div></div><div class='col-xs-12' style='margin-top:10px;'><b>Subject</b>: <input id='assignedSubject' id='class' type='text'></div><br><div style='margin-top:15px;' class='col-xs-2 col-xs-offset-5 btn btn-danger' onclick='controller.assignFacultyNewBatch(1)'>ADD</div></div></div></div>";
+    document.getElementById('assignClassNewSubjectModal').style.display = "block";
   }
 
 };

@@ -254,7 +254,7 @@ var view = {
     document.getElementById('mobile-home-section').style.color = "grey";
     document.getElementById('mobile-report-section').style.color = "grey";
     document.getElementById('mobile-personal-section').style.color = "black";
-    if(model.profileSetUp === 0){
+    if(model.personalInfo.profileSetUp === 0){
       document.getElementById('main').innerHTML = "<div class='col-xs-12' style='margin-top:30%'><div class='row'><div class='col-xs-10 col-xs-offset-1' style='background-color:white;border-radius:5px;font-size:18px;padding:10px;margin-bottom:10px'>We need to know little more about you. Please provide us some more information</div></div><div class='row'><div class='col-xs-8 col-xs-offset-2'><div class='btn btn-primary' onclick='view.setUpProfile()'>Set up Profile</div></div></div></div>"
     } else {
       console.log(model);

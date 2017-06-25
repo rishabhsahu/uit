@@ -25,8 +25,8 @@ router.post('/notifyclass',function(req,res){
             url: api_url
           },function(err,resp,body){
             if(!err){
-                      db.collection("faculty").update({_id:decoded.name},{$inc:{"recent_messages":req.body.mobile.length}})
-                      db.collection("admin").update({_id:"school.admin@" + decoded.name.split('@')[1]},{$inc:{"recent_messages":req.body.mobile.length}})
+                      db.collection("faculty").update({_id:decoded.name},{$inc:{"recent_messages":req.body.mobiles.length}})
+                      db.collection("admin").update({_id:"school.admin@" + decoded.name.split('@')[1]},{$inc:{"recent_messages":req.body.mobiles.length}})
                       db.close()
                       res.status(200)
                       res.end()
@@ -49,7 +49,7 @@ router.post('/notifyclass',function(req,res){
         }
       })
     } else {
-      console.logor(err)
+      console.log(err)
       res.status(200)
       res.end()
     }
@@ -110,7 +110,7 @@ router.post('/messageselected',function(req,res){
 
           mongo.connect('mongodb://localhost:27018/data',function(err,db){
             if(!err){
-                  db.collection("faculty").update({_id:decoded.name},{$inc:{"recent_messages":req.body.mobile.length}})
+                  db.collection("faculty").update({_id:decoded.name},{$inc:{"recent_messages":req.body.mobiles.length}})
                   db.collection("admin").update({_id:"school.admin@" + decoded.name.split('@')[1]},{$inc:{"recent_messages":req.body.mobiles.length}})
                   db.close()
                   res.status(200)
