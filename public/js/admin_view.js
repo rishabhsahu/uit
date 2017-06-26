@@ -3,18 +3,18 @@ var view = {
     document.getElementById('school_name').innerHTML = model.info.name;
     var absentFaculties = "";
     if(model.absentToday.length >0){
-      absentFaculties = "<div class='row'><div class='col-xs-12' style='border-radius:3px;background-color:white;margin-top:20px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='row'><div class='col-xs-12' style='border-bottom:solid 1px rgba(160,160,160,.4)'><h4 style='color:rgb(60,60,60)'>Absent faculties</h4></div></div><div class='row' style='padding-bottom:5px'><div class='col-xs-10 col-xs-offset-1' style='max-height:110px;overflow-y:auto'>";
+      absentFaculties = "<div class='row'><div class='col-xs-8 col-xs-offset-3' style='border-radius:3px;background-color:white;margin-top:20px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='row'><div class='col-xs-12' style='border-bottom:solid 1px rgba(160,160,160,.4)'><h4 style='color:rgb(60,60,60)'>Absent faculties</h4></div></div><div class='row' style='padding-bottom:5px'><div class='col-xs-10 col-xs-offset-1' style='max-height:110px;overflow-y:auto'>";
       model.absentToday.forEach(function(x,i){
         absentFaculties += "<div class='row' style='padding-top:5px;padding-bottom:5px;overflow-y:auto;margin-top:5px;background-color:rgba(160,160,160,.2);border-radius:3px'><div class='col-xs-6' style='border-right:solid 1px white'>" + x + "</div><div class='col-xs-6'>" + model.reasonToday[i] + "</div></div>";
       })
       absentFaculties += "</div></div></div></div>";
     }
 
-    var header_options = "<div class='col-xs-10 col-xs-offset-1 text-center' style='background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='row'><div id='assignFacultyNewBatchModal' class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.assignNewSubject()'>New Subject</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)'>Message Faculties</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)'>Notify Parents</div><div class='col-xs-3'>Settings</div></div></div>";
+    var header_options = "<div class='col-xs-10 col-xs-offset-1 text-center' style='background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;box-shadow:1px 1px 5px rgba(160,160,160,.8);color:rgb(110,110,110);font-weight:bold;cursor:pointer'><div class='row'><div id='assignFacultyNewBatchModal' class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.showAddFacultyModal()'>New Faculty</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.showAddBatchModal()'>New Class</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)'>Message Faculties</div><div class='col-xs-3'>Notify Parents</div></div></div>";
 
 
-        var left = "<div class='col-xs-8'><div class='row'><div class='col-xs-10 col-xs-offset-2' style='margin-top:25px'><canvas id='pastSevenDays'></canvas></div></div></div>";
-        var right = "<div class='col-xs-2 col-xs-offset-1' style='margin-top:50px;'><div class='row'><div class='col-xs-12'><div class='row' style='background-color:white;border-radius:3px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Total Classes</h4></div><div class='col-xs-12 text-primary' style='font-size:48px;'>" + model.info.batches.length + "<span style='font-size:24px;color:rgb(80,80,80)'>th</span></div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Strength</h4></div><div class='col-xs-12' style='font-size:48px;color:rgb(66, 206, 244)'>" + "0" + "<span style='font-size:24px;color:rgb(80,80,80)'>th</span></div></div></div></div></div>";
+        var left = "<div class='col-xs-8'>" + absentFaculties + "<div class='row'><div class='col-xs-10 col-xs-offset-2' style='margin-top:25px'><canvas id='pastSevenDays'></canvas></div></div></div>";
+        var right = "<div class='col-xs-2 col-xs-offset-1' style='margin-top:50px;'><div class='row'><div class='col-xs-12'><div class='row' style='background-color:white;border-radius:3px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Total Classes</h4></div><div class='col-xs-12 text-primary' style='font-size:48px;'>" + model.info.batches.length + "</div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Total Faculties</h4></div><div class='col-xs-12' style='font-size:48px;color:rgb(66, 206, 244)'>" + model.info.faculties.length + "</div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Total Students</h4></div><div class='col-xs-12' style='font-size:48px;color:rgb(66, 206, 244)'>" + "0" + "</div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Data/Reports</h4></div><div class='col-xs-12' style='border-bottom:solid 1px rgb(190,190,190);font-size:12px;cursor:pointer;padding-top:5px;padding-bottom:5px;color:rgb(80,80,80)'>Download</div><div class='col-xs-12' style='font-size:12px;cursor:pointer;padding-top:5px;padding-bottom:5px;color:rgb(80,80,80)'>Save to Google Drive</div></div></div></div></div>";
 
     var content = "<div class='col-xs-12 text-center' style='margin-top:15px'>" + "<div class='row' style='margin-bottom:15px'>" + header_options + "</div>" + "<div class='row'>" + left + right + "</div></div>";
 
@@ -434,16 +434,33 @@ var view = {
   },
 
   showClassData: function(){
-    var header_options = "<div class='col-xs-10 col-xs-offset-1 text-center' style='background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='row'><div id='assignFacultyNewBatchModal' class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.assignNewSubject()'>New Subject</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)'>Message Whole Class</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)'>Message Selected</div><div class='col-xs-3'>Settings</div></div></div>";
+
+      if(model.selectedBatch.current_faculties != null){
+        var subjects = "<div class='row' style='margin-top:25px'><div class='col-xs-11 col-xs-offset-1'><div class='row'>";
+        var sn=0;
+        for(var sub in model.selectedBatch.current_faculties){
+          if(sn === 0){
+            model.selectedFaculty._id = model.selectedBatch.current_faculties[sub];
+          }
+          subjects += "<div id='" + model.selectedBatch.current_faculties[sub] + "' class='col-xs-1 tabs' onclick='controller.selectThisFaculty(event)'>" + sub + "</div>";
+          sn++;
+        }
+
+         subjects += "</div></div></div>";
+      } else {
+        var subject = "";
+      }
+
+    var header_options = "<div class='col-xs-8 text-center' style='position:fixed;top:25px;right:100px;z-index:1;background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='row'><div id='assignFacultyNewBatchModal' class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.assignNewSubject()'>New Subject</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)'>Message Whole Class</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)'>Message Selected</div><div class='col-xs-3'>Settings</div></div></div>";
 
 
-        var left = "<div class='col-xs-8'><div class='row'><div class='col-xs-10 col-xs-offset-2' style='margin-top:25px'><canvas id='pastSevenDays'></canvas></div></div></div>";
-        var right = "<div class='col-xs-2 col-xs-offset-1' style='margin-top:50px;'><div class='row'><div class='col-xs-12'><div class='row' style='background-color:white;border-radius:3px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Class</h4></div><div class='col-xs-12 text-primary' style='font-size:48px;'>" + model.selectedBatch.class + "<span style='font-size:24px;color:rgb(80,80,80)'>th</span></div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Strength</h4></div><div class='col-xs-12' style='font-size:48px;color:rgb(66, 206, 244)'>" + model.selectedBatch.students.length + "<span style='font-size:24px;color:rgb(80,80,80)'>th</span></div></div></div></div></div>";
+        var left = "<div class='col-xs-8' style='height:500px;overflow-y:auto;padding-right:75px;margin-top:25px;'><div class='row'><div class='col-xs-10 col-xs-offset-2' style='margin-top:25px'><canvas id='pastSevenDays'></canvas></div></div><div class='row' id='classStudentData' style='margin-top:35px'></div></div>";
+        var right = "<div class='col-xs-2' style='position:fixed;right:45px;margin-top:50px;'><div class='row'><div class='col-xs-12'><div class='row' style='background-color:white;border-radius:3px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Class</h4></div><div class='col-xs-12 text-primary' style='font-size:300%;'>" + model.selectedBatch.class + "<span style='font-size:24px;color:rgb(80,80,80)'>th</span></div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Strength</h4></div><div class='col-xs-12' style='font-size:48px;color:rgb(66, 206, 244)'>" + model.selectedBatch.students.length + "<span style='font-size:24px;color:rgb(80,80,80)'>th</span></div></div></div></div></div>";
 
-    var content = "<div class='col-xs-12 text-center' style='margin-top:15px'>" + "<div class='row' style='margin-bottom:15px'>" + header_options + "</div>" + "<div class='row'>" + left + right + "</div></div>";
+    var content = "<div class='col-xs-12 text-center' style='margin-top:15px;margin-bottom:15px'>" + "<div class='row' style='margin-bottom:15px'>" + header_options + "</div>" + "<div class='row'><div class='col-xs-12' style='margin-top:45px'>" + subjects + "</div></div><div class='row'><div style='overflow:none'>" + left + "</div>" + right + "</div></div>";
 
     document.getElementById('report_section').innerHTML = content;
-    graph.pastSevenDays();
+    controller.selectThisFaculty(1);
   },
 
   assignNewSubject: function(){

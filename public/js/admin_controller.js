@@ -69,7 +69,11 @@ var controller = {
         } else {
           model.selectedFaculty.classes_today = "Not Set Yet";
         }
-        view.showSelectedFacultyData();
+        if(e === 2){
+          controller.renderClassData2();
+        } else {
+          view.showSelectedFacultyData();
+        }
       }
     }
     console.log(model.selectedFaculty);
@@ -105,6 +109,53 @@ var controller = {
     console.log(e);
 
     view.showStudentData(e);
+  },
+
+  selectThisFaculty: function(e){
+    if(typeof e != "object"){
+      getFacultyData(2);
+    } else {
+      model.selectedFaculty._id = e.target.id;
+      console.log(document.getElementsByClassName('tabs'))
+
+      document.getElementById(model.selectedFaculty._id).style.backgroundColor = "rgb(203, 208, 216)";
+      document.getElementById(model.selectedFaculty._id).style.border = "solid 1px rgba(180,180,180,1)";
+      getFacultyData(2);
+    }
+
+  },
+
+  renderClassData2: function(){
+    console.log(model);
+    var ch;
+    var sn = "";
+    model.selectedFaculty.current_classes.forEach(function(x,i){
+      if(x._id === model.selectedBatch._id){
+        ch = x.classes_held.length;
+        sn = x.subject;
+      }
+    })
+    var stdnm = "";
+    var cp,cl;
+    model.selectedBatch.student_data.forEach(function(x,i){
+      if(x[sn]){
+        if(x[sn].absent){
+          cp = ch - x[sn].absent.length;
+        } else {
+          cp = ch;
+        }
+      } else {
+        cp = ch
+      }
+      stdnm += "<div class='row' style='padding-top:7px;padding-bottom:7px'><div class='col-xs-4'>" + x.name + "</div><div class='col-xs-4'>" + cp + "</div><div class='col-xs-4'>" + cp/ch*100 + "</div></div>";
+    })
+    if(ch === 0){
+      cl = "rgb(160,160,160)"
+    } else {
+      cl = "rgb(0,0,0,.9)";
+    }
+    document.getElementById('classStudentData').innerHTML = "<div class='col-xs-10 col-xs-offset-2' style='background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);color:" + cl + "'><div class='row' style='color:rgba(0,0,0,.7);font-weight:bold;border-bottom:solid 1px rgba(160,160,160,.5)'><div class='col-xs-4'><h4>Name</h4></div><div class='col-xs-4'><h4>Present</h4></div><div class='col-xs-4'><h4>Attendance</h4></div></div><div class='row' style='height:200px;overflow-y:auto'><div class='col-xs-12'>" + stdnm + "</div></div></div>";
+    graph.pastSevenDays();
   },
 
   addNewFaculty: function(){
@@ -299,8 +350,8 @@ var controller = {
 };
 
 function getFacultyData(n){
-  if(n===0){
-    controller.getFacultyData();
+  if(n!=1){
+    controller.getFacultyData(n);
   } else {
     view.showClassData();
   }
