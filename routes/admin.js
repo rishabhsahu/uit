@@ -153,7 +153,7 @@ router.post('/addnewbatch/:college/:department/:batch/:cls',function(req,res){
         class_data.students = std
         class_data.student_data = std
         class_data.prev_faculties = {}
-        class_data.current_faculties = {}
+        class_data.current_faculties = []
         console.log(class_data)
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
@@ -228,7 +228,7 @@ router.post('/assignFacultyNewBatch/:faculty_id',function(req,res){
                 console.log("added")
                 var o1 = {}
                 o1[req.body.subject] = req.params.faculty_id
-                db.collection('classes').update({_id:req.body._id},{$set:{"current_faculties":o1}})
+                db.collection('classes').update({_id:req.body._id},{$addToSet:{"current_faculties":o1}})
                 db.close()
                 res.status(200)
                 res.end()

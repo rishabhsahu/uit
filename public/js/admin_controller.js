@@ -82,8 +82,6 @@ var controller = {
   },
 
   getBatchData: function(e,i){
-    e = e.target.id;
-    console.log(e);
 
     var batchDataRequest = new XMLHttpRequest();
     batchDataRequest.onreadystatechange = function(){
@@ -91,7 +89,7 @@ var controller = {
       if(batchDataRequest.status === 200 && batchDataRequest.readyState === 4){
         response = JSON.parse(response);
         if(i===0){
-          view.renderBatchData(response.student_data,e);
+          view.renderBatchData(response,i);
         } else {
           model.selectedBatch = response;
           view.showClassData();
@@ -99,7 +97,7 @@ var controller = {
       }
     }
 
-    batchDataRequest.open("GET","http://localhost:3000/admin/getBatchData/" + e,true);
+    batchDataRequest.open("GET","http://localhost:3000/admin/getBatchData/" + model.selectedBatch._id,true);
     batchDataRequest.send(null);
   },
 
@@ -112,27 +110,48 @@ var controller = {
   },
 
   selectThisFaculty: function(e){
-    if(typeof e != "object"){
-      getFacultyData(2);
-    } else {
-      model.selectedFaculty._id = e.target.id;
-      console.log(document.getElementsByClassName('tabs'))
-
-      document.getElementById(model.selectedFaculty._id).style.backgroundColor = "rgb(203, 208, 216)";
-      document.getElementById(model.selectedFaculty._id).style.border = "solid 1px rgba(180,180,180,1)";
-      getFacultyData(2);
+    if(typeof e === "object"){
+      model.SF = {};
+      model.SF._id = e.target.id;
+      for(var props in document.getElementsByClassName('tabs')){
+        if(!isNaN(props)){
+        document.getElementsByClassName('tabs')[props].style.backgroundColor = "white";
+        }
+      }
+      document.getElementById(model.SF._id).style.backgroundColor = "rgb(203, 208, 216)";
+      document.getElementById(model.SF._id).style.border = "solid 1px rgba(180,180,180,1)";
     }
+
+    var d = new Date();
+    d.setHours(0);
+    d.setMinutes(0);
+    d.setSeconds(0);
+    d.setMilliseconds(0);
+    var facultyDataRequest = new XMLHttpRequest();
+
+    facultyDataRequest.onreadystatechange = function(){
+      var response = facultyDataRequest.response;
+      if(facultyDataRequest.status === 200 && facultyDataRequest.readyState === 4){
+        response = JSON.parse(response);
+        model.SF = response;
+        controller.renderClassData2();
+      }
+    }
+    facultyDataRequest.open('GET','http://localhost:3000/admin/getFacultyData/' + model.SF._id ,true);
+    facultyDataRequest.send(null);
 
   },
 
   renderClassData2: function(){
-    console.log(model);
-    var ch;
+    var ch,sch;
     var sn = "";
-    model.selectedFaculty.current_classes.forEach(function(x,i){
+    model.SF.current_classes.forEach(function(x,i){
       if(x._id === model.selectedBatch._id){
         ch = x.classes_held.length;
         sn = x.subject;
+        if(x.schedule){
+          sch = x.schedule;
+        }
       }
     })
     var stdnm = "";
@@ -147,14 +166,27 @@ var controller = {
       } else {
         cp = ch
       }
-      stdnm += "<div class='row' style='padding-top:7px;padding-bottom:7px'><div class='col-xs-4'>" + x.name + "</div><div class='col-xs-4'>" + cp + "</div><div class='col-xs-4'>" + cp/ch*100 + "</div></div>";
+      var t = cp/ch*100
+      if(isNaN(t)){
+        t=0;
+      }
+      stdnm += "<div class='row' style='padding-top:7px;padding-bottom:7px'><div class='col-xs-4'>" + x.name + "</div><div class='col-xs-4'>" + cp + "</div><div class='col-xs-4'>" + t + "</div></div>";
     })
     if(ch === 0){
       cl = "rgb(160,160,160)"
     } else {
       cl = "rgb(0,0,0,.9)";
     }
-    document.getElementById('classStudentData').innerHTML = "<div class='col-xs-10 col-xs-offset-2' style='background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);color:" + cl + "'><div class='row' style='color:rgba(0,0,0,.7);font-weight:bold;border-bottom:solid 1px rgba(160,160,160,.5)'><div class='col-xs-4'><h4>Name</h4></div><div class='col-xs-4'><h4>Present</h4></div><div class='col-xs-4'><h4>Attendance</h4></div></div><div class='row' style='height:200px;overflow-y:auto'><div class='col-xs-12'>" + stdnm + "</div></div></div>";
+    if(sch && sch.length!=0){
+      var schdg = "<div class='row' style='margin-top:3px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160)'><h3>Time Table</h3></div><div class='col-xs-12'><div class='row' style='padding-top:5px;padding-bottom:5px'>";
+      sch.forEach(function(x,i){
+        schdg += "<div class='col-xs-2'><div class='row'><div class='col-xs-12'><span style='border-bottom: solid 1px rgb(200,200,200)'>" + model.days[i] + "</span></div></div><div class='row'><div class='col-xs-12' style='color:rgb(110,110,110)'>" + x + "</div></div></div>";
+      })
+      schdg += "</div></div></div>";
+    } else {
+      schdg = "";
+    }
+    document.getElementById('classStudentData').innerHTML = "<div class='col-xs-10 col-xs-offset-2'><div class='row'><div class='col-xs-12'><div class='row'><div class='col-xs-4' style='padding-top:5px;padding-bottom:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);'><span style='color:rgb(70,70,70);font-weight:bold'>Classes Held</span> - <span style='font-size:16px'>" + ch + "</span></div></div></div></div><div class='row' style='margin-top:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);color:" + cl + "'><div class='col-xs-12'><div class='row' style='color:rgba(0,0,0,.7);font-weight:bold;border-bottom:solid 1px rgba(160,160,160,.5)'><div class='col-xs-4'><h4>Name</h4></div><div class='col-xs-4'><h4>Present</h4></div><div class='col-xs-4'><h4>Attendance</h4></div></div><div class='row' style='height:200px;overflow-y:auto'><div class='col-xs-12'>" + stdnm + "</div></div></div></div>" + schdg + "</div>";
     graph.pastSevenDays();
   },
 
@@ -344,6 +376,7 @@ var controller = {
   },
 
   batchSelected: function(e){
+    model.selectedBatch._id = e.target.id;
     this.getBatchData(e,1);
   }
 
