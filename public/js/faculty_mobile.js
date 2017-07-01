@@ -1,48 +1,49 @@
 var view = {
   loadHome: function(){
 
-    document.getElementById('mobile-home-section').style.color = "black";
-    document.getElementById('mobile-report-section').style.color = "grey";
-    document.getElementById('mobile-personal-section').style.color = "grey";
-    var d = new Date()
-    d.setHours(0)
-    d.setMinutes(0)
-    d.setSeconds(0)
-    d.setMilliseconds(0)
-    var status = "white";
-    var absent = "";
+      document.getElementById('mobile-home-section').style.color = "black";
+      document.getElementById('mobile-report-section').style.color = "grey";
+      document.getElementById('mobile-personal-section').style.color = "grey";
+      var d = new Date()
+      d.setHours(0)
+      d.setMinutes(0)
+      d.setSeconds(0)
+      d.setMilliseconds(0)
+      var status = "white";
+      var absent = "";
 
-      if(model.personalInfo.absent && model.personalInfo.absent.length != 0){
-        if(model.personalInfo.absent.indexOf(d.valueOf())>-1){
-          absent = "<div class='col-xs-12' style='background-color:white;border-radius:3px;font-size:16px;border:solid 1px rgba(160,160,160,.5)'><div class='row' style='margin-top:5px;margin-bottom:15px'><div class='col-xs-12 text-danger'>You marked yourself Absent/Busy for today</div></div><div class='row' style='margin-bottom:5px'><div class='col-xs-12 text-center' style='text-decoration:underline'>Mark present</div></div></div>";
-          status = "rgb(239, 62, 62)";
+        if(model.personalInfo.absent && model.personalInfo.absent.length != 0){
+          if(model.personalInfo.absent.indexOf(d.valueOf())>-1){
+            absent = "<div class='col-xs-12' style='background-color:white;border-radius:3px;font-size:16px;border:solid 1px rgba(110,110,110,.45);box-shadow:0px 1px 10px rgba(160,160,160,.8)'><div class='row' style='margin-top:5px;margin-bottom:15px'><div class='col-xs-12 text-danger'>You marked yourself Absent/Busy for today</div></div><div class='row' style='margin-bottom:5px'><div class='col-xs-12 text-center' style='text-decoration:underline'>Mark present</div></div></div>";
+            status = "rgb(239, 62, 62)";
+          } else {
+            absent = "<div class='col-xs-12' style='border-radius:3px;'><div class='row'><div class='col-xs-12'><h4 class='btn btn-danger' onclick='view.showAbsentOption()'>Will be Absent</h4></div></div><div class='row'><div class='col-xs-12' style='border-radius:3px;'><h4 class='btn btn-primary' onclick=''>Will be Present</h4></div></div></div>";
+            status = "white";
+          }
         } else {
-          absent = "<div class='col-xs-12' style='border-radius:3px;'><div class='row'><div class='col-xs-12'><h4 class='btn btn-danger' onclick='view.showAbsentOption()'>Will be Absent</h4></div></div><div class='row'><div class='col-xs-12' style='border-radius:3px;'><h4 class='btn btn-primary' onclick=''>Will be Present</h4></div></div></div>";
-          status = "white";
+          absent = "<div class='col-xs-12'><div class='row'><div class='col-xs-12'><h4 class='btn btn-danger' onclick='view.showAbsentOption()'>Will be Absent</h4></div></div><div class='row'><div class='col-xs-12' style='border-radius:3px;'><h4 class='btn btn-primary' onclick=''>Will be Present</h4></div></div></div></div>";
         }
+
+        var content = "<div style='padding-left:10px;padding-right:10px;'><div class='col-xs-12' style='border-radius:3px;margin-bottom:5px;padding-top:5px;padding-bottom:5px;margin-top:15px;border:solid 1px rgba(110,110,110,.45);box-shadow:0px 1px 10px rgba(160,160,160,.8);background-color:" + status + ";border: solid 1px rgba(160,160,160,.5);font-size:16px;text-transform:capitalize;color:black;font-size:18px'>" + model.personalInfo.name + "</div><div class='col-xs-12'><div class='row' id='home_section'></div></div></div>";
+
+      document.getElementById('main').innerHTML = content;
+      var ctd = "";
+      if(model.classes_today.length != 0 ){
+        ctd = "<div class='row'><div class='col-xs-12' style='font-size:24px;font-weight:bold;color:rgba(0,0,0,.65);'>" + model.classes_today.length + " Classes today</div></div><div class='row' style='margin-top:10px;margin-bottom:5px'>";
+        model.classes_today.forEach(function(c,n){
+          ctd += "<div class='col-xs-3' style='border-radius:3px;color:rgba(0,0,0,.6);padding:0px;'><div class='row' style='padding:0px;margin:0px'><div class='col-xs-12' style='padding:0px;color:rgba(0,0,0,.7);font-size:16px'>" + c.class + "th<sub>class</sub></div><div class='col-xs-12' style='padding:0px;color:rgba(0,0,0,.5);font-size:12px'>" + c.period + "th<sub>period</sub></div><div class='col-xs-12' style='margin-top:5px;font-size:16;color:red;'><span class='glyphicon glyphicon-remove'></span></div></div></div>";
+        })
+        ctd += "</div></div>";
       } else {
-        absent = "<div class='row'><div class='col-xs-12' style='border-radius:3px;border:solid 1px rgba(160,160,160,.5)'><div class='row'><div class='col-xs-12'><h4 class='btn btn-danger' onclick='view.showAbsentOption()'>Will be Absent</h4></div></div><div class='row'><div class='col-xs-12' style='border-radius:3px;'><h4 class='btn btn-primary' onclick=''>Will be Present</h4></div></div></div></div>";
+        ctd = "<div class='row'><div class='col-xs-8 col-xs-offset-2' style='font-size:24px;font-weight:bold;color:rgb(244, 83, 66)'>! Schedule Not Available</div><div class='col-xs-12' style='color:rgba(0,0,0,1)'>set up now</div></div></div>";
       }
+      console.log(model);
 
-      var content = "<div style='padding-left:10px;padding-right:10px;'><div class='col-xs-12' style='border-radius:3px;margin-bottom:5px;padding-top:5px;padding-bottom:5px;margin-top:15px;border:solid 1px rgba(160,160,160,.5);background-color:" + status + ";border: solid 1px rgba(160,160,160,.5);font-size:16px;text-transform:capitalize;color:black;font-size:18px'>" + model.personalInfo.name + "</div><div class='col-xs-12'><div class='row' id='home_section'></div></div></div>";
+      var content2 = "<div class='col-xs-12' style='padding-bottom:10px;border-radius:3px;margin-bottom:5px;padding-top:7px;background-color:white;border:solid 1px rgba(110,110,110,.45);box-shadow:0px 1px 10px rgba(160,160,160,.8)'>" + ctd + absent;
+      document.getElementById('home_section').innerHTML = content2;
+      content = "<div id='notifyUser' class='notif-modal'><div class='row text-center'><div class='col-xs-8 col-xs-offset-2' style='opacity:.95;border-radius:3px;padding-top:5px;padding-bottom:5px' id='notifText'></div></div></div><div id='notifyError' class='col-xs-12 modal'><div class='row text-center' style='padding-top:120px'><div class='col-xs-8 col-xs-offset-2' style='padding-top:10px;padding-bottom:10px;;border-radius:3px;background-color:white' id='notifText2'></div></div></div>";
+      document.getElementsByTagName('body')[0].innerHTML += content;
 
-    document.getElementById('main').innerHTML = content;
-    var ctd = "";
-    if(model.classes_today.length != 0 ){
-      ctd = "<div class='row'><div class='col-xs-12' style='font-size:24px;font-weight:bold;color:rgba(0,0,0,.7)'>" + model.classes_today.length + " Classes today</div></div><div class='row' style='margin-top:10px;margin-bottom:5px'>";
-      model.classes_today.forEach(function(c,n){
-        ctd += "<div class='col-xs-3' style='border-radius:3px;color:rgba(0,0,0,.6);padding:0px;'><div class='row' style='padding:0px;margin:0px'><div class='col-xs-12' style='padding:0px;color:rgba(0,0,0,.7);font-size:16px'>" + c.class + "th<sub>class</sub></div><div class='col-xs-12' style='padding:0px;color:rgba(0,0,0,.5);font-size:12px'>" + c.period + "th<sub>period</sub></div><div class='col-xs-12' style='margin-top:5px;font-size:16;color:red;'><span class='glyphicon glyphicon-remove'></span></div></div></div>";
-      })
-      ctd += "</div></div>";
-    } else {
-      ctd = "<div class='row'><div class='col-xs-8 col-xs-offset-2' style='font-size:24px;font-weight:bold;color:rgb(244, 83, 66)'>! Schedule Not Available</div><div class='col-xs-12' style='color:rgba(0,0,0,1)'>set up now</div></div></div>";
-    }
-    console.log(model);
-
-    var content2 = "<div class='col-xs-12' style='padding-bottom:10px;border-radius:3px;margin-bottom:5px;padding-top:7px;background-color:white;border:solid 1px rgba(160,160,160,.5);'>" + ctd + absent;
-    document.getElementById('home_section').innerHTML = content2;
-    content = "<div id='notifyUser' class='notif-modal'><div class='row text-center'><div class='col-xs-8 col-xs-offset-2' style='opacity:.95;border-radius:3px;padding-top:5px;padding-bottom:5px' id='notifText'></div></div></div><div id='notifyError' class='col-xs-12 modal'><div class='row text-center' style='padding-top:120px'><div class='col-xs-8 col-xs-offset-2' style='padding-top:10px;padding-bottom:10px;;border-radius:3px;background-color:white' id='notifText2'></div></div></div>";
-    document.getElementsByTagName('body')[0].innerHTML += content;
   },
 
   showDownloadOptions: function(){
@@ -108,7 +109,7 @@ var view = {
       } else {
         classes_timing += "<div class='col-xs-12' style='color:rgba(0,0,0,.6);font-size:18px'>No schedule found</div>";
       }
-      contentX += "<div class='row text-center' style='margin-bottom:5px;border: solid 1px rgba(200,200,200,.2);border-radius:5px'><div class='col-xs-12' style='background-color:white;border:solid 1px rgba(160,160,160,.5)'><div class='row'><div class='col-xs-4' style='font-size:44px;padding-top:10px'><div class='row'><div class='col-xs-12;' style='color:rgba(0,0,0,.55);color:rgba(0,0,0,.8);'>" + x.class + "<span style='font-size:24px'>th</span></div></div></div><div class='col-xs-7'><h2 style='margin-top:10px;color:rgba(0,0,0,.7);margin-bottom:0px;'>" + x.subject + "</h2><div class='row' style='margin-top:0px'><div class='col-xs-12' style='font-size:13px;color:rgba(0,0,0,.4)'>strength -</div></div></div></div><div class='row' style='margin-top:10px;border-bottom:solid 1px rgba(0,0,0,.1);padding-bottom:10px;padding-right:5px'>" + classes_timing + "</div><div class='row' style='padding-top:10px;padding-bottom:10px;font-size:18px;margin-top:0px'><div class='col-xs-4'><span class='glyphicon glyphicon-envelope' style='color:#4286f4'></span></div><div class='col-xs-4 lelo' id='report#"+x._id+"'><span id='report#"+x._id+"' class='glyphicon glyphicon-circle-arrow-right'></span></div><div class='col-xs-4' id='options#"+x._id+"' onclick='view.showBatchOptionModal(event)'><span id='options#"+x._id+"' class='glyphicon glyphicon glyphicon-option-horizontal'></span></div></div></div></div>";
+      contentX += "<div class='row text-center' style='margin-bottom:5px;border: solid 1px rgba(200,200,200,.2);border-radius:5px'><div class='col-xs-12' style='background-color:white;border:solid 1px rgba(110,110,110,.45);box-shadow:0px 1px 10px rgba(160,160,160,.8)'><div class='row'><div class='col-xs-4' style='font-size:44px;padding-top:10px'><div class='row'><div class='col-xs-12;' style='color:rgba(0,0,0,.55);color:rgba(0,0,0,.8);'>" + x.class + "<span style='font-size:24px'>th</span></div></div></div><div class='col-xs-7'><h2 style='margin-top:10px;color:rgba(0,0,0,.7);margin-bottom:0px;'>" + x.subject + "</h2><div class='row' style='margin-top:0px'><div class='col-xs-12' style='font-size:13px;color:rgba(0,0,0,.4)'>strength -</div></div></div></div><div class='row' style='margin-top:10px;border-bottom:solid 1px rgba(0,0,0,.1);padding-bottom:10px;padding-right:5px'>" + classes_timing + "</div><div class='row' style='padding-top:10px;padding-bottom:10px;font-size:18px;margin-top:0px'><div class='col-xs-4'><span class='glyphicon glyphicon-envelope' style='color:#4286f4'></span></div><div class='col-xs-4 lelo' id='report#"+x._id+"'><span id='report#"+x._id+"' class='glyphicon glyphicon-circle-arrow-right'></span></div><div class='col-xs-4' id='options#"+x._id+"' onclick='view.showBatchOptionModal(event)'><span id='options#"+x._id+"' class='glyphicon glyphicon glyphicon-option-horizontal'></span></div></div></div></div>";
     })
     document.getElementById('batches_cards').innerHTML = contentX;
     model.personalInfo.current_classes.forEach(function(x,i){
@@ -255,7 +256,7 @@ var view = {
     document.getElementById('mobile-report-section').style.color = "grey";
     document.getElementById('mobile-personal-section').style.color = "black";
     if(model.personalInfo.profileSetUp === 0){
-      document.getElementById('main').innerHTML = "<div class='col-xs-12' style='margin-top:30%'><div class='row'><div class='col-xs-10 col-xs-offset-1' style='background-color:white;border-radius:5px;font-size:18px;padding:10px;margin-bottom:10px'>We need to know little more about you. Please provide us some more information</div></div><div class='row'><div class='col-xs-8 col-xs-offset-2'><div class='btn btn-primary' onclick='view.setUpProfile()'>Set up Profile</div></div></div></div>"
+      document.getElementById('main').innerHTML = "<div class='col-xs-12' style='margin-top:30%'><div class='row'><div class='col-xs-10 col-xs-offset-1' style='background-color:white;border-radius:3px;font-size:18px;padding:10px;margin-bottom:10px;border:solid 1px rgba(110,110,110,.45);box-shadow:0px 1px 10px rgba(160,160,160,.8)'>We need to know little more about you. Please provide us some more information</div></div><div class='row'><div class='col-xs-8 col-xs-offset-2'><div class='btn btn-primary' onclick='view.setUpProfile()'>Set up Profile</div></div></div></div>"
     } else {
       console.log(model);
       var firstName = "<div class='row' style='background-color:white;padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.3)'><div class='col-xs-12 text-left' style='color:rgb(77, 215, 249)'>First Name</div><div class='col-xs-12 text-left' style='color:rgba(60,60,60,.8)'>" + model.personalInfo.first + "</div></div>";
@@ -273,21 +274,38 @@ var view = {
   },
 
   setUpProfile: function(){
-    var firstName = "<div class='row' style='background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;border-bottom: solid 1px rgba(160,160,160,.5)'><div class='col-xs-4'>First Name</div><div class='col-xs-6'><input id='first' class='required' size=15 type=text style='border: solid 1px rgba(160,160,160,.8);border-radius:3px' onblur='controller.check(event)'></div><div class='col-xs-2 showRequiredError' id='showRequiredError#first'></div></div>";
+    var dt = "<Select id='birthDate'>";
+    for(var i=1;i<32;i++){
+      dt += "<option value=" + i + ">" + i + "</option>";
+    }
+    dt += "</select>";
+    var mn = "<Select id='birthMonth'>";
+    for(var i=1;i<13;i++){
+      mn += "<option value=" + i + ">" + i + "</option>";
+    }
+    mn += "</select>";
+    var y = "<Select id='birthYear'>";
+    for(var i=(new Date()).getFullYear()-18;i>(new Date()).getFullYear()-80;i--){
+      y += "<option value=" + i + ">" + i + "</option>";
+    }
+    y += "</select>";
+    var firstName = "<div class='row text-center prf_stup_fields'><div class='col-xs-10'>First Name</div><div class='col-xs-2 showRequiredError' id='showRequiredError#first'></div><div class='col-xs-12'><input id='first' class='required' type=text onblur='controller.check(event)'></div></div>";
 
-    var lastName = "<div class='row' style='background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;border-bottom: solid 1px rgba(160,160,160,.5)'><div class='col-xs-4'>Last Name</div><div class='col-xs-6'><input id='last' class='required' size=15 type=text style='border: solid 1px rgba(160,160,160,.8);border-radius:3px' onblur='controller.check(event)'></div><div class='col-xs-2 showRequiredError' id='showRequiredError#last'></div></div>";
+    var lastName = "<div class='row text-center prf_stup_fields'><div class='col-xs-10'>Last Name</div><div class='col-xs-2 showRequiredError' id='showRequiredError#last'></div><div class='col-xs-12'><input id='last' class='required' type=text onblur='controller.check(event)'></div></div>";
 
-    var mobile = "<div class='row' style='background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;border-bottom: solid 1px rgba(160,160,160,.5)'><div class='col-xs-4'>Mobile</div><div class='col-xs-6'><input id='mobile' class='required' size=15 maxlength=10 type=text style='border: solid 1px rgba(160,160,160,.8);border-radius:3px' onblur='controller.check(event)'></div><div class='col-xs-2 showRequiredError' id='showRequiredError#mobile'></div></div>";
+    var dob = "<div class='row text-center prf_stup_fields'><div class='col-xs-10'>Date of Birth</div><div class='col-xs-12 text-center'>" + dt + mn + y + "</div></div>";
 
-    var address = "<div class='row' style='background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;border-bottom: solid 1px rgba(160,160,160,.5)'><div class='col-xs-4'>Address</div><div class='col-xs-6'><input id='address' size=15 type=text style='border: solid 1px rgba(160,160,160,.8);border-radius:3px'></div></div>";
+    var mobile = "<div class='row text-center prf_stup_fields'><div class='col-xs-10'>Mobile</div><div class='col-xs-2 showRequiredError' id='showRequiredError#mobile'></div><div class='col-xs-12'><input id='mobile' class='required' maxlength=10 type=text onblur='controller.check(event)'></div></div>";
 
-    var email = "<div class='row' style='background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;border-bottom: solid 1px rgba(160,160,160,.5)'><div class='col-xs-4'>E-Mail Id</div><div class='col-xs-6'><input id='email' class='required' size=15 type=text style='border: solid 1px rgba(160,160,160,.8);border-radius:3px' onblur='controller.check(event)'></div><div class='col-xs-2 showRequiredError' id='showRequiredError#email'></div></div>";
+    var address = "<div class='row text-center prf_stup_fields'><div class='col-xs-10'>Address</div><div class='col-xs-12'><input id='address' type=text></div></div>";
 
-    var password = "<div class='row' style='background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;border-bottom: solid 1px rgba(160,160,160,.5)'><div class='col-xs-4'>New Password</div><div class='col-xs-6'><input id='password' class='required' size=15 type=password style='border: solid 1px rgba(160,160,160,.8);border-radius:3px' onblur='controller.check(event)'></div><div class='col-xs-2 showRequiredError' id='showRequiredError#password'></div></div>";
+    var email = "<div class='row text-center prf_stup_fields'><div class='col-xs-10'>E-Mail Id</div><div class='col-xs-2 showRequiredError' id='showRequiredError#email'></div><div class='col-xs-12'><input id='email' class='required' type=text onblur='controller.check(event)'></div></div>";
 
-    var reEnterPassword = "<div class='row' style='background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;border-bottom: solid 1px rgba(160,160,160,.5)'><div class='col-xs-4'>Re-enter Password</div><div class='col-xs-6'><input size=15 class='required' id='reEnterPassword' type=password style='border: solid 1px rgba(160,160,160,.8);border-radius:3px' onblur='controller.check(event)'></div><div class='col-xs-2 showRequiredError' id='showRequiredError#reEnterPassword'></div></div>";
+    var password = "<div class='row text-center prf_stup_fields'><div class='col-xs-10'>New Password</div><div class='col-xs-2 showRequiredError' id='showRequiredError#password'></div><div class='col-xs-12'><input id='password' class='required' type=password onblur='controller.check(event)'></div></div>";
 
-    document.getElementById('main').innerHTML = "<div class='col-xs-12' style='height:94%;overflow-y:auto;'>" + firstName + lastName + mobile + address + email + password + reEnterPassword + "<div class='row' style='background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;border-bottom: solid 1px rgba(160,160,160,.5)'><div class='col-xs-12' onclick='controller.checkAll()'><h4>Submit</h4></div></div></div>"
+    var reEnterPassword = "<div class='row text-center prf_stup_fields'><div class='col-xs-10'>Re-enter Password</div><div class='col-xs-2 showRequiredError' id='showRequiredError#reEnterPassword'></div><div class='col-xs-12'><input class='required' id='reEnterPassword' type=password onblur='controller.check(event)'></div></div>";
+
+    document.getElementById('main').innerHTML = "<div class='col-xs-12' style='height:94%;overflow-y:auto;'><div class='row' style='padding-left:10px;padding-right:10px'><div class='col-xs-12'>" + firstName + lastName + dob + mobile + address + email + password + reEnterPassword + "</div></div><div class='row' style='padding-left:10px;padding-right:10px'><div class='col-xs-12'><div class='row text-center prf_stup_fields'><div class='col-xs-12' onclick='controller.checkAll()' style='background-color:white;border-radius:3px;'><h4>Submit</h4></div></div></div></div></div>"
     var i = 0;
 
   },
@@ -313,7 +331,7 @@ var view = {
 
   notifyClass: function(){
     document.getElementById('batchOptionModal').style.display = "none";
-    document.getElementsByTagName('body')[0].innerHTML += "<div class='col-xs-12 modal' style='background-color:black' id='notifyClass'><div class='row text-center'><div class='col-xs-8 col-xs-offset-2' style='background-color:white;border-radius:5px;margin-top:10%;'><div class='row'><div class='col-xs-12' style='border-bottom: solid 1px rgba(0,0,0,.8);margin-bottom:15px'><h3>Write Text</h3></div><div class='col-xs-12' style='padding-bottom:15px;'><textarea id='notify-text' type=text maxlength='160' rows=5 style='border: solid 1px rgba(60,60,60,.5)' size=15 style='height:100px' placeholder='Notify about Test, Books etc'></textarea></div><div class='col-xs-12' style='margin-top:10px;margin-bottom:10px' onclick='controller.notifyClass()'>Send</div></div></div></div><div class='row' style='margin-top:20px'><div class='col-xs-12 text-center' style='position:absolute;bottom:50px'><span class='glyphicon glyphicon-remove' style='font-size:24px;color:white' onclick='view.closeNotifyClass()'></span></div></div></div>";
+    document.getElementsByTagName('body')[0].innerHTML += "<div class='col-xs-12 modal' style='background-color:black' id='notifyClass'><div class='row text-center'><div class='col-xs-8 col-xs-offset-2' style='background-color:white;border-radius:5px;margin-top:10%;'><div class='row'><div class='col-xs-12' style='border-bottom: solid 1px rgba(0,0,0,.8);margin-bottom:15px'><h3>Write Text</h3></div><div class='col-xs-12' style='padding-bottom:15px;'><textarea id='notify-text' type=text maxlength='160' rows=5 style='border: solid 1px rgba(60,60,60,.5)' style='height:100px' placeholder='Notify about Test, Books etc'></textarea></div><div class='col-xs-12' style='margin-top:10px;margin-bottom:10px' onclick='controller.notifyClass()'>Send</div></div></div></div><div class='row' style='margin-top:20px'><div class='col-xs-12 text-center' style='position:absolute;bottom:50px'><span class='glyphicon glyphicon-remove' style='font-size:24px;color:white' onclick='view.closeNotifyClass()'></span></div></div></div>";
     document.getElementById('notifyClass').style.display = "block";
   }
 };

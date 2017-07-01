@@ -349,7 +349,7 @@ router.post('/setupprofile',function(req,res){
                   var obj = {}
                   obj[props] = req.body[props]
                   db.collection('faculty').update({_id:decoded.name},{$set:obj})
-                  db.collection('faculty').update({_id:decoded.name},{$set:{"setUpProfile":1}})
+                  db.collection('faculty').update({_id:decoded.name},{$set:{"profileSetUp":1}})
                 }
                 db.close()
                 res.status(200)

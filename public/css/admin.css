@@ -70,34 +70,41 @@
 	.admin-navigation-options {
 		padding-bottom:12px;
 		padding-top:12px;
-		color:white;
+		margin-top: 2px;
+		border-radius: 3px;
+		color:rgb(50,50,50);
 		font-size:14px;
-		font-family:Lato;
+		font-family:Roboto;
 		cursor:pointer;
+		font-weight: bold;
+		border: solid 1px rgba(200,200,200,.8);
+		box-shadow:2px 2px 5px rgba(160,160,160,.4);
+		background-color: lightgrey;
 	}
 
 	.admin-navigation-options:hover {
-		background-color: rgba(14, 23, 35,1);
-		color:rgba(255,255,255,.7);
+		background-color: rgb(97, 143, 226);
 	}
 
 			#first_section {
 				height: 100%;
-				background-color: #01579B; //rgba(14, 23, 35,.98)
+				background-color: white; //rgba(14, 23, 35,.98)
 			}
 
 			.faculty_name {
 				background-color:white;
 				text-transform:capitalize;
-				padding-top:20px;
-				padding-bottom:20px;
+				padding-top:10px;
+				padding-bottom:10px;
 				border: solid 1px rgba(160,160,160,.8);
 				cursor: pointer;
+				color: black;
+				font-size: 20px;
+				color: rgb(40,40,40);
 			}
 
 			.faculty_name:hover {
-				background-color: #01579B;
-				color: white;
+				background-color: rgb(97, 143, 226);
 			}
 
 
@@ -129,8 +136,9 @@
 
 			#report_section {
 				height: 100%;
-				background-color: #cbcfd8;
+				background-color: rgb(220, 225, 234);
 				overflow-y: auto;
+				border-left: solid 1px rgba(160,160,160,.6);
 			}
 
 			#studentDataReport {
@@ -182,6 +190,19 @@
 						padding-top:5px;
 						padding-bottom:5px;
 						cursor:pointer
+					}
+
+					.notif-modal {
+					  display: none;
+					  position: fixed;
+					  left: 0px;
+					  top: 0px;
+					  height: 100px;
+					  width: 100%;
+					  padding-top: 50px;
+					  animation-timing-function: ease-in;
+					  animation-name: fade-in;
+					  z-index: 10;
 					}
 
 					::-webkit-scrollbar {

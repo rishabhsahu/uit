@@ -7,7 +7,7 @@ var controller = {
       getDepartmentData.onreadystatechange = function(){
         var response = getDepartmentData.response;
         if(getDepartmentData.status === 200 && getDepartmentData.readyState === 4){
-          var response = JSON.parse(response)
+          var response = JSON.parse(response);
           model.info = response;
           model.absentToday = [];
           model.reasonToday = [];
@@ -29,8 +29,8 @@ var controller = {
             return o1["recent_messages"] - o2["recent_messages"];
           })
           view.updateView();
-        } else {
-
+        } else if(getDepartmentData.status === 500 && getDepartmentData.readyState === 4){
+            view.notifyUser("Internal Server Error",1);
         }
 
     }
@@ -74,6 +74,10 @@ var controller = {
         } else {
           view.showSelectedFacultyData();
         }
+      } else if(facultyDataRequest.status === 500 && facultyDataRequest.readyState === 4){
+        view.notifyUser("Internal Server Error",1);
+      } else if(facultyDataRequest.status != 200 && facultyDataRequest.status != 500 && facultyDataRequest.readyState === 4){
+        view.notifyUser("Unexpected error occured",1);
       }
     }
     console.log(model.selectedFaculty);
@@ -81,19 +85,21 @@ var controller = {
     facultyDataRequest.send(null);
   },
 
-  getBatchData: function(e,i){
+  getBatchData: function(i){
 
     var batchDataRequest = new XMLHttpRequest();
     batchDataRequest.onreadystatechange = function(){
       var response = batchDataRequest.response;
       if(batchDataRequest.status === 200 && batchDataRequest.readyState === 4){
         response = JSON.parse(response);
-        if(i===0){
-          view.renderBatchData(response,i);
-        } else {
+        if(i===1){
           model.selectedBatch = response;
           view.showClassData();
+        } else {
+        view.renderBatchData(response,i);
         }
+      } else if(batchDataRequest.status === 500 && batchDataRequest.readyState === 4){
+        view.notifyUser("Internal Server Error",1);
       }
     }
 
@@ -170,7 +176,7 @@ var controller = {
       if(isNaN(t)){
         t=0;
       }
-      stdnm += "<div class='row' style='padding-top:7px;padding-bottom:7px'><div class='col-xs-4'>" + x.name + "</div><div class='col-xs-4'>" + cp + "</div><div class='col-xs-4'>" + t + "</div></div>";
+      stdnm += "<div class='row' style='padding-top:7px;padding-bottom:7px'><div class='col-xs-4'>" + x.name + "</div><div class='col-xs-4'>" + cp + "</div><div class='col-xs-4'>" + Math.ceil(t) + "</div></div>";
     })
     if(ch === 0){
       cl = "rgb(160,160,160)"
@@ -184,40 +190,47 @@ var controller = {
       })
       schdg += "</div></div></div>";
     } else {
-      schdg = "";
+      schdg = "<div class='row' style='margin-top:3px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);'><div class='col-xs-12 text-danger'><h2 style='margin-top:10px;margin-bottom:10px'>Schedule not Set</h2></div></div></div>";
     }
-    document.getElementById('classStudentData').innerHTML = "<div class='col-xs-10 col-xs-offset-2'><div class='row'><div class='col-xs-12'><div class='row'><div class='col-xs-4' style='padding-top:5px;padding-bottom:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);'><span style='color:rgb(70,70,70);font-weight:bold'>Classes Held</span> - <span style='font-size:16px'>" + ch + "</span></div></div></div></div><div class='row' style='margin-top:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);color:" + cl + "'><div class='col-xs-12'><div class='row' style='color:rgba(0,0,0,.7);font-weight:bold;border-bottom:solid 1px rgba(160,160,160,.5)'><div class='col-xs-4'><h4>Name</h4></div><div class='col-xs-4'><h4>Present</h4></div><div class='col-xs-4'><h4>Attendance</h4></div></div><div class='row' style='height:200px;overflow-y:auto'><div class='col-xs-12'>" + stdnm + "</div></div></div></div>" + schdg + "</div>";
+    document.getElementById('classStudentData').innerHTML = "<div class='col-xs-10 col-xs-offset-2'><div class='row'><div class='col-xs-12'><div class='row'><div class='col-xs-4' style='padding-top:5px;padding-bottom:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);'><span style='color:rgb(70,70,70);font-weight:bold'>Classes Held</span> - <span style='font-size:16px'>" + ch + "</span></div><div class='col-xs-8' style='padding-top:5px;padding-bottom:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);'><span style='color:rgb(70,70,70);font-weight:bold'>Faculty</span> - <span style='font-size:16px'>" + model.SF.name + "</span></div></div></div></div><div class='row' style='margin-top:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);color:" + cl + "'><div class='col-xs-12'><div class='row' style='color:rgba(0,0,0,.7);font-weight:bold;border-bottom:solid 1px rgba(160,160,160,.5)'><div class='col-xs-4'><h4>Name</h4></div><div class='col-xs-4'><h4>Present</h4></div><div class='col-xs-4'><h4>Attendance</h4></div></div><div class='row' style='height:200px;overflow-y:auto'><div class='col-xs-12'>" + stdnm + "</div></div></div></div>" + schdg + "</div>";
     graph.pastSevenDays();
   },
 
   addNewFaculty: function(){
     var obj = {};
-    obj.name = document.getElementsByTagName("input")[0].value;
-    obj["_id"] = document.getElementsByTagName("input")[0].value.replace(" ","") + "@" + model.info.college;
-    obj.password = document.getElementsByTagName("input")[2].value;
-    obj.college = model.info.college;
-    obj.deparment = model.info.department;
-    obj.current_classes = [];
-    obj.profileSetUp = 0;
-    console.log(obj);
-    var newFacultyData = new XMLHttpRequest();
+    if(document.getElementById('Name').value && document.getElementById('Password').value.length !=0 ){
+      obj.name = document.getElementById('Name').value;
+      obj["_id"] = document.getElementById('Name').value.replace(" ","") + "@" + model.info.college;
+      obj.password = document.getElementById('Password').value;
+      obj.college = model.info.college;
+      obj.deparment = model.info.department;
+      obj.current_classes = [];
+      obj.profileSetUp = 0;
+      console.log(obj);
+      var newFacultyData = new XMLHttpRequest();
 
-    newFacultyData.onreadystatechange = function(){
-      if(newFacultyData.status === 200 && newFacultyData.readyState === 4 ){
-        document.getElementById("addFacultyModal").style.display = "none" ;
-        controller.departmentData();
-      } else if(newFacultyData.status === 500 && newFacultyData.readyState === 4){
-        alert("Internal server Error");
-        controller.departmentData();
-      } else if(newFacultyData.status != 200 && newFacultyData.status !== 500 && newFacultyData.readyState === 4){
-        alert('error.Check your internet connection');
-        controller.departmentData();
+      newFacultyData.onreadystatechange = function(){
+        if(newFacultyData.status === 200 && newFacultyData.readyState === 4 ){
+          view.closeAddFacultyModal()
+          controller.departmentData();
+          view.notifyUser("Faculty Added",1);
+        } else if(newFacultyData.status === 500 && newFacultyData.readyState === 4){
+          view.closeAddFacultyModal()
+          controller.departmentData();
+          view.notifyUser("Internal Server Error",0);
+        } else if(newFacultyData.status != 200 && newFacultyData.status !== 500 && newFacultyData.readyState === 4){
+          view.closeAddFacultyModal()
+          controller.departmentData();
+          view.notifyUser("Enexpected error occured",1);
+        }
       }
-    }
 
-    newFacultyData.open('POST','http://localhost:3000/admin/addnewfaculty',true);
-    newFacultyData.setRequestHeader('Content-type','application/json');
-    newFacultyData.send(JSON.stringify(obj));
+      newFacultyData.open('POST','http://localhost:3000/admin/addnewfaculty',true);
+      newFacultyData.setRequestHeader('Content-type','application/json');
+      newFacultyData.send(JSON.stringify(obj));
+    } else {
+
+    }
   },
 
   addNewBatch: function(){
@@ -229,16 +242,17 @@ var controller = {
 
     newBatchData.onreadystatechange = function(){
       if(newBatchData.status === 200 && newBatchData.readyState === 4 ){
-        document.getElementById("addBatchModal").style.display = "none" ;
+        view.closeAddBatchModal()
         controller.departmentData();
+        view.notifyUser("Batch Added Succesfully",1);
       } else if(newBatchData.status === 500 && newBatchData.readyState === 4){
-        document.getElementById("addBatchModal").style.display = "none" ;
-        alert("Internal server Error");
+        view.closeAddBatchModal()
         controller.departmentData();
+        view.notifyUser("Internal Server Error Occured while creating Batch",0);
       } else if(newBatchData.status != 200 && newBatchData.status !== 500 && newBatchData.readyState === 4){
-        document.getElementById("addBatchModal").style.display = "none" ;
-        alert('error.Check your internet connection');
+        view.closeAddBatchModal()
         controller.departmentData();
+        view.notifyUser("Faculty Added",5);
       }
     }
 
@@ -264,14 +278,15 @@ var controller = {
     newBatchData.onreadystatechange = function(){
       if(newBatchData.status === 200 && newBatchData.readyState === 4 ){
         var response = newBatchData.response;
-        document.getElementById("assignFacultyNewBatchModal").style.display = "none" ;
+        view.closeAssignNewBatchModal(1)
         getFacultyData(n);
+        view.notifyUser("New Batch Assigned to Faculty",1);
       } else if( newBatchData.status === 500 && newBatchData.readyState === 4 ){
-        document.getElementById("assignFacultyNewBatchModal").style.display = "none" ;
-        alert('Internal server Error. Please try again. If issue continues, try again after time later');
+        view.closeAssignNewBatchModal(1)
         getFacultyData(n);
+        view.notifyUser("Internal Server Error",0);
       } else if( newBatchData.status != 500 && newBatchData.status != 200 && newBatchData.readyState === 4){
-        document.getElementById("assignFacultyNewBatchModal").style.display = "none" ;
+        view.closeAssignNewBatchModal(1)
         alert('error. Check your Internet Connection');
         getFacultyData(n);
       }
@@ -377,7 +392,7 @@ var controller = {
 
   batchSelected: function(e){
     model.selectedBatch._id = e.target.id;
-    this.getBatchData(e,1);
+    this.getBatchData(1);
   }
 
 };
@@ -386,7 +401,8 @@ function getFacultyData(n){
   if(n!=1){
     controller.getFacultyData(n);
   } else {
-    view.showClassData();
+    view.closeAssignNewBatchModal();
+    controller.getBatchData(2);
   }
 }
 

@@ -16,14 +16,14 @@ var view = {
       document.getElementById('school_name').innerHTML = model.info.name;
       var absentFaculties = "";
       if(model.absentToday.length >0){
-        absentFaculties = "<div class='row'><div class='col-xs-9 col-xs-offset-2' style='border-radius:3px;background-color:white;margin-top:20px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='row'><div class='col-xs-12 text-danger' style='border-bottom:solid 1px rgba(160,160,160,.4)'><h4>Absent faculties</h4></div></div><div class='row' style='padding-bottom:5px'><div class='col-xs-10 col-xs-offset-1' style='max-height:110px;overflow-y:auto'>";
+        absentFaculties = "<div class='row'><div class='col-xs-9 col-xs-offset-2' style='border-radius:3px;background-color:white;margin-top:20px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='row'><div class='col-xs-12 text-danger' style='border-bottom:solid 1px rgba(160,160,160,.4)'><h4>Absent faculties</h4></div></div><div class='row' style='padding-bottom:5px'><div class='col-xs-10 col-xs-offset-1' style='max-height:110px;overflow-y:auto'>";
         model.absentToday.forEach(function(x,i){
           absentFaculties += "<div class='row' style='padding-top:5px;padding-bottom:5px;overflow-y:auto;margin-top:5px;background-color:rgba(160,160,160,.2);border-radius:3px'><div class='col-xs-6' style='border-right:solid 1px white'>" + x + "</div><div class='col-xs-6'>" + model.reasonToday[i] + "</div></div>";
         })
         absentFaculties += "</div></div></div></div>";
       }
 
-      var absents = "<div class='row'><div class='col-xs-9 col-xs-offset-2' style='border-radius:3px;background-color:white;margin-top:5px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='row'><div class='col-xs-12 text-danger' style='border-bottom:solid 1px rgba(160,160,160,.4)'><h4>Faculties with Number of Absents</h4></div></div><div class='row' style='padding-bottom:5px'><div class='col-xs-10 col-xs-offset-1' style='max-height:110px;overflow-y:auto'>";
+      var absents = "<div class='row'><div class='col-xs-9 col-xs-offset-2' style='border:solid 1px rgba(160,160,160,.8);border-radius:3px;background-color:white;margin-top:5px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='row'><div class='col-xs-12 text-danger' style='border-bottom:solid 1px rgba(160,160,160,.4)'><h4>Faculties with Number of Absents</h4></div></div><div class='row' style='padding-bottom:5px'><div class='col-xs-10 col-xs-offset-1' style='max-height:110px;overflow-y:auto'>";
       var t = model.info.faculties;
       t.sort(function(a,b){
         if(a.absent){
@@ -51,11 +51,11 @@ var view = {
       })
       absents += "</div></div></div></div>";
 
-      var header_options = "<div class='col-xs-10 col-xs-offset-1 text-center' style='background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;box-shadow:1px 1px 5px rgba(160,160,160,.8);color:rgb(110,110,110);font-weight:bold;cursor:pointer'><div class='row'><div id='assignFacultyNewBatchModal' class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.showAddFacultyModal()'>New Faculty</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.showAddBatchModal()'>New Class</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)'>Message Faculties</div><div class='col-xs-3'>Notify Parents</div></div></div>";
+      var header_options = "<div class='col-xs-10 col-xs-offset-1 text-center' style='background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);color:rgb(110,110,110);font-weight:bold;cursor:pointer'><div class='row'><div id='assignFacultyNewBatchModal' class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.showAddFacultyModal()'>New Faculty</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.showAddBatchModal()'>New Class</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)'>Message Faculties</div><div class='col-xs-3'>Notify Parents</div></div></div>";
 
 
           var left = "<div class='col-xs-9' style='max-height:5510px;overflow-y:auto;'>" + absentFaculties + absents + "<div class='row'><div class='col-xs-10 col-xs-offset-2' style='margin-top:25px'></div></div></div>";
-          var right = "<div class='col-xs-2 col-xs-offset-1' style='margin-top:50px;'><div class='row'><div class='col-xs-12'><div class='row' style='background-color:white;border-radius:3px;box-shadow:1px 1px 5px rgba(160,160,160,.8);cursor:pointer' onclick='view.showClasses()'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Total Classes</h4></div><div class='col-xs-12 text-primary' style='font-size:48px;'>" + model.info.batches.length + "</div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;box-shadow:1px 1px 5px rgba(160,160,160,.8);cursor:pointer' onclick='view.showFacultyNames()'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Total Faculties</h4></div><div class='col-xs-12' style='font-size:48px;color:rgb(66, 206, 244)'>" + model.info.faculties.length + "</div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Total Students</h4></div><div class='col-xs-12' style='font-size:48px;color:rgb(66, 206, 244)'>" + "0" + "</div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Data/Reports</h4></div><div class='col-xs-12' style='border-bottom:solid 1px rgb(190,190,190);font-size:12px;cursor:pointer;padding-top:5px;padding-bottom:5px;color:rgb(80,80,80)'>Download</div><div class='col-xs-12' style='font-size:12px;cursor:pointer;padding-top:5px;padding-bottom:5px;color:rgb(80,80,80)'>Save to Google Drive</div></div></div></div></div>";
+          var right = "<div class='col-xs-2 col-xs-offset-1' style='margin-top:50px;'><div class='row'><div class='col-xs-12'><div class='row' style='background-color:white;border-radius:3px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);cursor:pointer' onclick='view.showClasses()'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Total Classes</h4></div><div class='col-xs-12 text-primary' style='font-size:48px;'>" + model.info.batches.length + "</div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);cursor:pointer' onclick='view.showFacultyNames()'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Total Faculties</h4></div><div class='col-xs-12' style='font-size:48px;color:rgb(66, 206, 244)'>" + model.info.faculties.length + "</div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Total Students</h4></div><div class='col-xs-12' style='font-size:48px;color:rgb(66, 206, 244)'>" + "0" + "</div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Data/Reports</h4></div><div class='col-xs-12' style='border-bottom:solid 1px rgb(190,190,190);font-size:12px;cursor:pointer;padding-top:5px;padding-bottom:5px;color:rgb(80,80,80)'>Download</div><div class='col-xs-12' style='font-size:12px;cursor:pointer;padding-top:5px;padding-bottom:5px;color:rgb(80,80,80)'>Save to Google Drive</div></div></div></div></div>";
 
       var content = "<div class='col-xs-12 text-center' style='margin-top:15px'>" + "<div class='row' style='margin-bottom:15px'>" + header_options + "</div>" + "<div class='row'>" + left + right + "</div></div>";
 
@@ -80,9 +80,14 @@ var view = {
 
       document.getElementById("switch").innerHTML += "<div id='deassignbatchModal' class='text-center modal col-sm-12'><div class='row' style='padding-top:100px;'><div class='col-sm-4 col-sm-offset-4 modalContent' style='padding:20px;font-size: 20px;'>Are you sure you want to De-assign Faculty this Batch?<br><div class='text-success' style='font-size:16px;'>note- You can however Re-assign Faculty this Batch and get the data back</div></div></div><div class='row' style='padding-top:20px;'><div class='col-sm-4 col-sm-offset-4'><div class='row'><div class='col-sm-2 col-sm-offset-3 btn btn-danger' onclick='controller.deassignbatch()'>Yes</div><div class='btn btn-success col-sm-2 col-sm-offset-2' onclick='view.closeDeassignBatchModal()'>No</div></div></div></div></div>";
 
+      document.getElementsByTagName('body')[0].innerHTML += "<div id='notifyUser' class='notif-modal'><div class='text-center' style='position:fixed;right:50px;top:60px;'><div style='border:solid 1px rgba(110,110,110,.6);border-radius:5px;opacity:.8;border-radius:3px;padding:15px' id='notifText'></div></div></div><div id='notifyError' class='modal'><div class='text-center' style='position:fixed;right:25px;top:120px'><div style='border:solid 1px rgba(110,110,110,.6);border-radius:5px;opacity:.8;border-radius:3px;padding:15px' id='notifText2'></div></div></div>";
+
+      /*
       model.info.faculties.forEach(function(faculty,i){
         document.getElementsByClassName("faculty_names")[i].onclick = controller.facultySelected;
       });
+      */
+
     }
   },
 
@@ -109,13 +114,13 @@ var view = {
     if(model.info.faculties){
       model.info.faculties.forEach(function(x,i){
         if( (i+1-1)%3 == 0 || (i+1-1)%3 == 3 ){
-          names += "<div class='col-xs-3 faculty_name' id='" + x.id + "' onclick='controller.facultySelected(event)' style='margin-top:15px'>" + x.name + "</div>";
+          names += "<div class='col-xs-3 faculty_name' id='" + x.id + "' onclick='controller.facultySelected(event)' style='margin-top:15px;border:solid 1px rgba(160,160,160,.8);box-shadow:2px 2px 5px rgba(160,160,160,.4);border-radius:3px'><h4>" + x.name + "</h4></div>";
         } else {
-          names += "<div class='col-xs-3 col-xs-offset-1 faculty_name' id='" + x.id + "' onclick='controller.facultySelected(event)' style='margin-top:15px'>" + x.name + "</div>";
+          names += "<div class='col-xs-3 col-xs-offset-1 faculty_name' id='" + x.id + "' onclick='controller.facultySelected(event)' style='margin-top:15px;border:solid 1px rgba(160,160,160,.8);box-shadow:2px 2px 5px rgba(160,160,160,.4);border-radius:3px'><h4>" + x.name + "</h4></div>";
         }
       })
     }
-    var content = "<div class='col-sm-12 text-center'><div class='row' style='margin-top:15px'><div class='col-xs-4 col-xs-offset-4 faculty_name' style='font-weight:bold;border-radius:3px;background-color:rgb(209, 35, 35);' onclick='view.showAddFacultyModal()'> + Add New Faculty</div></div><div class='row' style='max-height:500px;overflow-y:auto;margin-top:15px'>" + names + "</div></div>";
+    var content = "<div class='col-sm-12 text-center'><div class='row' style='margin-top:15px'><div class='col-xs-4 col-xs-offset-4 faculty_name' style='font-weight:bold;border:solid 1px rgba(160,160,160,.8);box-shadow:2px 2px 5px rgba(160,160,160,.4);border-radius:3px;background-color:rgb(209, 35, 35);' onclick='view.showAddFacultyModal()'> + Add New Faculty</div><div class='col-xs-1 col-xs-offset-1 glyphicon faculty_name glyphicon-arrow-left' style='font-weight:bold;border:solid 1px rgba(160,160,160,.8);box-shadow:2px 2px 5px rgba(160,160,160,.4);border-radius:3px;' onclick='controller.departmentData()'></div></div><div class='row' style='max-height:500px;overflow-y:auto;margin-top:15px'>" + names + "</div></div>";
     document.getElementById('report_section').innerHTML = content;
   },
 
@@ -129,14 +134,14 @@ var view = {
         })
 
         classes.forEach(function(x,i){
-          if( (i+1-1)%3 == 0 || (i+1-1)%3 == 3 ){
-            names += "<div class='col-xs-3 faculty_name' id='" + x._id + "' onclick='controller.batchSelected(event)' style='margin-top:15px'>" + x.class + "</div>";
+          if( (i)%4 == 0 || (i)%4 == 4 ){
+            names += "<div class='col-xs-2 faculty_name' id='" + x._id + "' onclick='controller.batchSelected(event)' style='margin-top:15px;border:solid 1px rgba(160,160,160,.8);box-shadow:2px 2px 5px rgba(160,160,160,.4);border-radius:3px'>" + x.class + "</div>";
           } else {
-            names += "<div class='col-xs-3 col-xs-offset-1 faculty_name' id='" + x._id + "' onclick='controller.batchSelected(event)' style='margin-top:15px'>" + x.class + "</div>";
+            names += "<div class='col-xs-2 col-xs-offset-1 faculty_name' id='" + x._id + "' onclick='controller.batchSelected(event)' style='margin-top:15px;border:solid 1px rgba(160,160,160,.8);box-shadow:2px 2px 5px rgba(160,160,160,.4);border-radius:3px'>" + x.class + "</div>";
           }
         })
       }
-      var content = "<div class='col-sm-12 text-center'><div class='row' style='margin-top:15px'><div class='col-xs-4 col-xs-offset-4 faculty_name' style='font-weight:bold;border-radius:3px;background-color:rgb(209, 35, 35);' onclick='view.showAddBatchModal()'> + Add New Batch</div></div><div class='row' style='max-height:500px;overflow-y:auto;margin-top:15px'>" + names + "</div></div>";
+      var content = "<div class='col-sm-12 text-center'><div class='row' style='margin-top:15px'><div class='col-xs-4 col-xs-offset-4 faculty_name' style='font-weight:bold;background-color:rgb(209, 35, 35);border:solid 1px rgba(160,160,160,.8);box-shadow:2px 2px 5px rgba(160,160,160,.4);border-radius:3px' onclick='view.showAddBatchModal()'> + Add New Batch</div><div class='col-xs-1 col-xs-offset-1 glyphicon faculty_name glyphicon-arrow-left' style='font-weight:bold;border:solid 1px rgba(160,160,160,.8);box-shadow:2px 2px 5px rgba(160,160,160,.4);border-radius:3px;' onclick='controller.departmentData()'></div></div><div class='row' style='max-height:500px;overflow-y:auto;margin-top:15px'>" + names + "</div></div>";
       document.getElementById('report_section').innerHTML = content;
   },
 
@@ -172,9 +177,9 @@ var view = {
     var clsInf = "";
     model.selectedFaculty.current_classes.forEach(function(x,i){
       if(x.classes_held.length != 0){
-        clsInf += "<div class='col-xs-12 card' style='border-radius:3px;margin-top: 10px;margin-right: 10px;background-color:rgba(255,255,255,.7);box-shadow:2px 2px 5px rgba(160,160,160,.4);cursor:pointer' onclick='controller.getBatchData(event,0)'><canvas id='" + x._id + "'></canvas><div class='col-xs-12' style='font-size:12px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.2);font-weight:bold;'><span style='font-size:14px'>" + x.class + "</span>th Class</div></div>";
+        clsInf += "<div class='col-xs-12 card' style='border-radius:3px;margin-top: 10px;margin-right: 10px;background-color:rgba(255,255,255,.7);border:solid 1px rgba(160,160,160,.8);box-shadow:2px 2px 5px rgba(160,160,160,.4);cursor:pointer' onclick='controller.getBatchData(event,0)'><canvas id='" + x._id + "'></canvas><div class='col-xs-12' style='font-size:12px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.2);font-weight:bold;'><span style='font-size:14px'>" + x.class + "</span>th Class</div></div>";
       } else {
-        clsInf += "<div class='col-xs-12 card' style='border-radius:3px;margin-top: 10px;margin-right: 10px;background-color:rgba(255,255,255,.7);box-shadow:2px 2px 5px rgba(160,160,160,.4);cursor:pointer' onclick='controller.getBatchData(event,0)'><canvas id='" + x._id + "'></canvas><div class='row'><div class='col-xs-12' style='font-size:12px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.2);font-weight:bold;'><span style='font-size:14px'>" + x.class + "</span>th Class</div></div></div>";
+        clsInf += "<div class='col-xs-12 card' style='border-radius:3px;margin-top: 10px;margin-right: 10px;background-color:rgba(255,255,255,.7);border:solid 1px rgba(160,160,160,.8);box-shadow:2px 2px 5px rgba(160,160,160,.4);cursor:pointer' onclick='controller.getBatchData(event,0)'><canvas id='" + x._id + "'></canvas><div class='row'><div class='col-xs-12' style='font-size:12px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.2);font-weight:bold;'><span style='font-size:14px'>" + x.class + "</span>th Class</div></div></div>";
       }
     })
 
@@ -336,12 +341,11 @@ var view = {
     var x = "";
     model.facultyFormFields.forEach(function(field){
       if(field!="Username"){
-        x += "<div class='col-sm-4'><div class='row'><h5 class='col-sm-12'>" + field + "</h5></div><div class='row'><div class='col-sm-12'><input name='" + field + "' type='text' id='" + field +"'></div></div></div>"
+        x += "<div class='col-sm-4'><div class='row'><b><div class='col-sm-12' style='color:rgb(90,90,90)'>" + field + " <span class='glyphicon glyphicon-asterisk' style='color:red;font-size:12px'></span></div></b></div><div class='row'><div class='col-sm-12'><input name='" + field + "' type='text' id='" + field +"'></div></div></div>"
       } else {
-        x += "<div class='col-sm-4'><div class='row'><h5 class='col-sm-12'>Username</h5></div><div class='row'><div class='col-sm-12'><input name='Username' type='text' id='Username'>" + "@" + model.info.college +"</div></div></div>"
+        x += "<div class='col-sm-4'><div class='row'><b><div class='col-sm-12' style='color:rgb(90,90,90)'>Username</div><b></div><div class='row'><div class='col-sm-12'><input name='Username' type='text' id='Username'>" + "@" + model.info.college +"</div></div></div>"
       }
     })
-
     document.getElementById("switch").innerHTML += "<div id='addFacultyModal' class='text-center modal col-sm-12'><div class='row'><div class='col-sm-8 col-sm-offset-2 modalContent'><div class='row modelHeader'><div class='col-xs-1 col-xs-offset-11' style='font-size:24px;font-weight:bold;cursor:pointer;padding:0px;' onclick='view.closeAddFacultyModal()'>&times;</div><div class='col-sm-12'><h2>Add New Faculty</h2></div></div><hr><div class='row modalBody'><div class='col-sm-12'><div class='row facultyAddForm'>" + x +"</div><div class='col-sm-2 col-sm-offset-5' style='margin-top: 15px;'><button type='submit' class='btn btn-block btn-danger' onclick='controller.addNewFaculty()'>submit</button></div></div></div><div class='row text-center' style='margin-top:12px;'><div class='col-xs-5'><hr></div><div class='col-xs-2' style='font-size:24px;'>or</div><div class='col-xs-5'><hr></div></div><div class='row'><h3 class='col-xs-12' style='margin-bottom:24px'>To add more than one Faculty</h3>" +
     "<div class='col-xs-5 col-xs-offset-1'><img class='img-responsive' src='img/addFacultySample.jpg'></div><div class='col-xs-4 col-xs-offset-1 text-justify'>upload .txt file containing data of each faculty in this format, where each faculty data should begin with new row<br><code>Name,Gender,Mobile Number,</code></div></div><div class='row'></div><div class='row' style='margin-top:24px;'><div class='col-xs-2 col-xs-offset-4'><input type='file'></div></div><div class='row text-center' style='margin-top:8px'><div class='btn btn-danger disabled' onclick='view.close()'>Send</div></div></div></div>";
 
@@ -402,8 +406,6 @@ var view = {
 
   assignNewBatch: function(){
 
-    document.getElementsByTagName("body")[0].innerHTML += "<div id='assignFacultyNewBatchModal' class='text-center modal col-sm-12'><div class='row'><div class='col-sm-8 col-sm-offset-2 modalContent'><div class='row modelHeader'><div class='col-xs-1 col-xs-offset-11' style='font-size:24px;font-weight:bold;cursor:pointer;padding:0px;' onclick='view.closeAssignNewBatchModal()'>&times;</div><div class='col-sm-12'><h2>assign new batch</h2></div></div><hr><div class='row'><div class='col-xs-12' style='margin-top:10px;'><b>Class</b> <div id='batchList'></div></div><div class='col-xs-12' style='margin-top:10px;'><b>Subject</b>: <input id='assignedSubject' id='class' type='text'></div><br><div style='margin-top:15px;' class='col-xs-2 col-xs-offset-5 btn btn-danger' onclick='controller.assignFacultyNewBatch(0)'>ADD</div></div></div></div>";
-
     var z = [];
       model.selectedFaculty.current_classes.forEach(function(y){
         z.push(y.class);
@@ -416,7 +418,8 @@ var view = {
         }
       })
       content += "</select>";
-    document.getElementById('batchList').innerHTML = content;
+
+          document.getElementsByTagName("body")[0].innerHTML += "<div id='assignFacultyNewBatchModal' class='text-center modal col-sm-12'><div class='row'><div class='col-sm-8 col-sm-offset-2 modalContent'><div class='row modelHeader'><div class='col-xs-1 col-xs-offset-11' style='font-size:24px;font-weight:bold;cursor:pointer;padding:0px;' onclick='view.closeAssignNewBatchModal()'>&times;</div><div class='col-sm-12'><h2>assign new batch</h2></div></div><hr><div class='row'><div class='col-xs-12' style='margin-top:10px;'><b>Class</b> " + content + "</div><div class='col-xs-12' style='margin-top:10px;'><b>Subject</b>: <input id='assignedSubject' id='class' type='text'></div><br><div style='margin-top:15px;' class='col-xs-2 col-xs-offset-5 btn btn-danger' onclick='controller.assignFacultyNewBatch(0)'>ADD</div></div></div></div>";
     document.getElementById("assignFacultyNewBatchModal").style.display = "block" ;
   },
 
@@ -430,15 +433,18 @@ var view = {
 
   closeAddBatchModal: function(){
     document.getElementById("addBatchModal").style.display = "none" ;
+    document.getElementById("addBatchModal").parentNode.removeChild(document.getElementById("addBatchModal"));
   },
 
   closeAssignNewBatchModal: function(n){
     if(n===0){
       document.getElementById("assignFacultyNewBatchModal").style.display = "none" ;
+      document.getElementById("assignFacultyNewBatchModal").parentNode.removeChild(document.getElementById("assignFacultyNewBatchModal"));
       view.showSelectedFacultyData();
     } else {
       document.getElementById("assignClassNewSubjectModal").style.display = "none" ;
-      view.showClassData();
+      document.getElementById("assignClassNewSubjectModal").parentNode.removeChild(document.getElementById("assignClassNewSubjectModal"));
+      controller.getBatchData(1);
     }
   },
 
@@ -456,6 +462,7 @@ var view = {
 
   closeAddFacultyModal: function(){
     document.getElementById('addFacultyModal').style.display = "none";
+    document.getElementById("addFacultyModal").parentNode.removeChild(document.getElementById("addFacultyModal"));
   },
 
   showSmsModal: function(){
@@ -477,7 +484,20 @@ var view = {
 
   showClassData: function(){
     var left;
-    var right = "<div class='col-xs-2' style='position:fixed;right:45px;margin-top:50px;'><div class='row'><div class='col-xs-12'><div class='row' style='background-color:white;border-radius:3px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Class</h4></div><div class='col-xs-12 text-primary' style='font-size:300%;'>" + model.selectedBatch.class + "<span style='font-size:24px;color:rgb(80,80,80)'>th</span></div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;box-shadow:1px 1px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Strength</h4></div><div class='col-xs-12' style='font-size:48px;color:rgb(66, 206, 244)'>" + model.selectedBatch.students.length + "</div></div></div></div></div>";
+    var clsnm;
+    var th;
+    if(model.selectedBatch.class>3){
+      th = "<span style='font-size:24px;color:rgb(80,80,80)'>th</span>";
+    } else if(model.selectedBatch.class == "KG-1" || model.selectedBatch.class == "KG-2"){
+      th = "";
+    } else {
+      switch(model.selectedBatch.class){
+        case "1": th = "<span style='font-size:24px;color:rgb(80,80,80)'>st</span>"; break;
+        case "2": th = "<span style='font-size:24px;color:rgb(80,80,80)'>nd</span>"; break;
+        case "3": th = "<span style='font-size:24px;color:rgb(80,80,80)'>rd</span>"; break;
+      }
+    }
+    var right = "<div class='col-xs-2' style='position:fixed;right:45px;margin-top:50px;'><div class='row'><div class='col-xs-12'><div class='row' style='background-color:white;border-radius:3px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Class</h4></div><div class='col-xs-12 text-primary' style='font-size:300%;'>" + model.selectedBatch.class + th + "</div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Strength</h4></div><div class='col-xs-12' style='font-size:48px;color:rgb(66, 206, 244)'>" + model.selectedBatch.students.length + "</div></div></div></div></div>";
     console.log(model);
       if(model.selectedBatch.current_faculties.length != 0){
         var subjects = "<div class='row' style='margin-top:25px'><div class='col-xs-11 col-xs-offset-1'><div class='row'>";
@@ -489,7 +509,7 @@ var view = {
             model.SF._id = x[Object.keys(x)[0]];
             subjects += "<div id='" + x[Object.keys(x)[0]] + "' class='col-xs-1 tabs' style='background-color:rgb(203, 208, 216)' onclick='controller.selectThisFaculty(event)'>" + Object.keys(x)[0] + "</div>";
           } else {
-            subjects += "<div id='" + x[Object.keys(x)[0]] + "' class='col-xs-1 tabs' onclick='controller.selectThisFaculty(event)' style='background-color:rgb(203, 208, 216)'>" + Object.keys(x)[0] + "</div>";
+            subjects += "<div id='" + x[Object.keys(x)[0]] + "' class='col-xs-1 tabs' onclick='controller.selectThisFaculty(event)' style='background-color:white'>" + Object.keys(x)[0] + "</div>";
           }
 
         })
@@ -498,11 +518,11 @@ var view = {
 
          left = "<div class='col-xs-9' style='height:500px;overflow-y:auto;padding-right:75px;margin-top:25px;'><div class='row'><div class='col-xs-10 col-xs-offset-2' style='margin-top:25px'><canvas id='pastSevenDays'></canvas></div></div><div class='row' id='classStudentData' style='margin-top:35px'></div></div>";
       } else {
-        left = "<div class='col-xs-9' style='margin-top:150px;'><div class='row'><div class='col-xs-6 col-xs-offset-3' style='background-color:white;border-radius:3px;box-shadow:1px 1px 5px rgba(160,160,160,.8);border:solid 1px rgba(160,160,160,.8)'><div class='row'><div class='col-xs-12'><h3 class='text-danger'>No Subject Added</h3></div></div><div class='row'><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;color:rgb(0,0,0,.6);cursor:pointer' onclick='view.assignNewSubject()'><u>Assign New Subject</u></div></div></div></div></div>";
+        left = "<div class='col-xs-9' style='margin-top:150px;'><div class='row'><div class='col-xs-6 col-xs-offset-3' style='background-color:white;border-radius:3px;box-shadow:1px 2px 5px rgba(160,160,160,.8);border:solid 1px rgba(160,160,160,.8)'><div class='row'><div class='col-xs-12'><h3 class='text-danger'>No Subject Added</h3></div></div><div class='row'><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;color:rgb(0,0,0,.6);cursor:pointer' onclick='view.assignNewSubject()'><u>Assign New Subject</u></div></div></div></div></div>";
         subjects = ""
       }
 
-    var header_options = "<div class='col-xs-8 text-center' style='position:fixed;top:15px;right:120px;z-index:1;background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;box-shadow:1px 1px 5px rgba(160,160,160,.8);cursor:pointer;font-weight:bold;color:rgb(110,110,110)'><div class='row'><div id='assignFacultyNewBatchModal' class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.assignNewSubject()'>New Subject</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)'>Message Whole Class</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)'>Message Selected</div><div class='col-xs-3'>Settings</div></div></div><div class='glyphicon glyphicon-arrow-left' style='position:fixed;right:20px;top:15px;padding:10px;background-color:white;border-radius:3px;box-shadow:1px 1px 5px rgba(160,160,160,.8);font-size:20px;color:rgb(70,70,70);cursor:pointer' onclick='view.showClasses()'></div>";
+    var header_options = "<div class='col-xs-8 text-center' style='position:fixed;top:15px;right:120px;z-index:1;background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);cursor:pointer;font-weight:bold;color:rgb(110,110,110)'><div class='row'><div id='assignFacultyNewBatchModal' class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.assignNewSubject()'>New Subject</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.messageWholeClassModal()'>Message Whole Class</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)'>Message Selected</div><div class='col-xs-3'>Settings</div></div></div><div class='glyphicon glyphicon-arrow-left' style='position:fixed;right:20px;top:15px;padding:10px;background-color:white;border-radius:3px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);font-size:20px;color:rgb(70,70,70);cursor:pointer' onclick='view.showClasses()'></div>";
 
     var content = "<div class='col-xs-12 text-center' style='margin-bottom:15px'>" + "<div class='row' style='margin-bottom:15px'>" + header_options + "</div>" + "<div class='row'><div class='col-xs-12' style='margin-top:45px'>" + subjects + "</div></div><div class='row'><div style='overflow:none'>" + left + "</div>" + right + "</div></div>";
 
@@ -512,8 +532,17 @@ var view = {
 
   assignNewSubject: function(){
     var faculties = "";
+    var cr_f = [];
+    if(model.selectedBatch.current_faculties){
+      model.selectedBatch.current_faculties.forEach(function(x,i){
+        cr_f.push(x[Object.keys(x)[0]]);
+      })
+    }
+    console.log(cr_f);
     model.info.faculties.forEach(function(x,i){
-      faculties += "<option value='" + x.id + "'>" + x.name + "</option>";
+      if(cr_f.indexOf(x.id)<0){
+        faculties += "<option value='" + x.id + "'>" + x.name + "</option>";
+      }
     })
     if(document.getElementById('assignClassNewSubjectModal')){
       var elm = document.getElementById('assignClassNewSubjectModal');
@@ -521,6 +550,60 @@ var view = {
     }
     document.getElementsByTagName("body")[0].innerHTML += "<div id='assignClassNewSubjectModal' class='text-center modal col-sm-12'><div class='row'><div class='col-sm-8 col-sm-offset-2 modalContent'><div class='row modelHeader'><div class='col-xs-1 col-xs-offset-11' style='font-size:24px;font-weight:bold;cursor:pointer;padding:0px;' onclick='view.closeAssignNewBatchModal(1)'>&times;</div><div class='col-sm-12'><h2>assign new batch</h2></div></div><hr><div class='row' style='padding-top:10px;padding-bottom:10px'><div class='col-xs-3 col-xs-offset-3'><b>Class</b></div><div class='col-xs-3'><select id='selectBatch'><option id='#" + model.selectedBatch.class + "'>" + model.selectedBatch.class + "</option></select></div></div><div class='row' style='padding-top:10px;padding-bottom:10px'><div class='col-xs-3 col-xs-offset-3'><b>Faculty</b></div><div class='col-xs-3'><select id='selectFaculty'>" + faculties + "</select></div></div><div class='col-xs-12' style='margin-top:10px;'><b>Subject</b>: <input id='assignedSubject' id='class' type='text'></div><br><div style='margin-top:15px;' class='col-xs-2 col-xs-offset-5 btn btn-danger' onclick='controller.assignFacultyNewBatch(1)'>ADD</div></div></div></div>";
     document.getElementById('assignClassNewSubjectModal').style.display = "block";
+  },
+
+  notifyUser: function(str,a){
+    if(a===0){
+      document.getElementById('notifText').style.backgroundColor = "red";
+      document.getElementById('notifText').innerHTML = str;
+      document.getElementById('notifyUser').style.display = "block";
+      setTimeout(function(){
+        document.getElementById('notifyUser').style.display = "none";
+      },3000);
+
+    } else if(a===1){
+      document.getElementById('notifText').style.backgroundColor = "lightgreen";
+      document.getElementById('notifText').style.opacity = ".6";
+      document.getElementById('notifText').innerHTML = str;
+      document.getElementById('notifyUser').style.display = "block";
+      setTimeout(function(){
+        document.getElementById('notifyUser').style.display = "none";
+      },3000);
+
+    } else if(a===5){
+      document.getElementById('notifText2').innerHTML = str;
+      document.getElementById('notifyError').style.display = "block";
+      setTimeout(function(){
+        document.getElementById('notifyError').style.display = "none";
+      },3000);
+    }
+  },
+
+  messageWholeClassModal: function(){
+    if(document.getElementById('messageClassModal')){
+      document.getElementById('messageClassModal').parentNode.removeChild(document.getElementById('messageClassModal'));
+    }
+    var names = "";
+    model.selectedBatch.students.forEach(function(x,i){
+      names += "<div class='col-xs-8 col-xs-offset-2' style='color:rgb(90,90,90);padding-top:10px;padding-bottom:10px;margin-top:3px;margin-bottom:3px;border-bottom:solid 1px rgba(160,160,160,.5);cursor:pointer;border-radius:5px' onclick='view.selectName(event)' id='" + x.enroll_number + "'>" + x.name + "</div>";
+    })
+    document.getElementsByTagName('body')[0].innerHTML += "<div class='text-center col-xs-12 modal' id='messageClassModal'><div class='row' style='margin-top:50px'><div class='col-xs-8 col-xs-offset-2' class='name_selection' style='background-color:white;border-radius:3px;padding-top:20px;padding-bottom:20px'><div class='row'><div class='col-xs-4' style='border-right: solid 1px rgba(200,200,200,1);'><div class='row' style='padding-top:10px;padding-bottom:10px;'><div class='col-xs-8 col-xs-offset-2' style='border-bottom:solid 1px rgba(200,200,200,.6);'><div class='row'><div class='col-xs-4 text-right'><input type='checkbox' name='selectAll' value='true'></div><div class='col-xs-8 text-left' style='color:rgb(110,110,110);font-size:18px;'>Select All</div></div></div></div><div class='row' style='height:250px;overflow-y:auto;padding-left:10px;padding-right:10px;margin-top:15px'>" + names + "</div></div><div class='col-xs-4' style='border-right: solid 1px rgba(200,200,200,1);'><div class='row' style='padding-top:10px;padding-bottom:10px;'><div class='col-xs-8 col-xs-offset-2' style='color:rgb(110,110,110);'><div class='row'><div class='col-xs-12' style='font-size:18px;border-bottom:solid 1px rgba(200,200,200,.6);'>Selected</div></div></div></div><div class='row' style='padding-top:15px'><div class='col-xs-8 col-xs-offset-2' id='selectedNames' style='height:250px;overflow-y:auto;'></div></div></div><div class='col-xs-4'><div class='row' style='padding-top:10px;padding-bottom:10px;'><div class='col-xs-8 col-xs-offset-2' style='color:rgb(110,110,110);'><div class='row'><div class='col-xs-12' style='font-size:18px;border-bottom:solid 1px rgba(200,200,200,.6);'>Text</div></div></div></div><div class='row' style='padding-top:15px'><div class='col-xs-8 col-xs-offset-2'><textarea placeholder='Enter Text Message' rows=10 cols=15 maxlength=160 style='border-radius:5px;'></textarea></div></div></div></div></div></div><div class='row' style='margin-top:50px'><div class='col-xs-2 col-xs-offset-5'><div style='background-color:rgb(30, 90, 188);padding-top:10px;padding-bottom:10px;border-radius:2px;font-size:18px;color:white;border:solid 1px rgba(90,90,90,.8);cursor:pointer'>Send</div></div></div></div>";
+    document.getElementById('messageClassModal').style.display = "block";
+  },
+
+  selectName: function(e){
+    if(model.selectedNames.indexOf(e.target.id)<0){
+      model.selectedNames.push(e.target.id);
+      e.target.style.backgroundColor = "rgb(83, 176, 226)";
+      e.target.style.color = "white";
+      document.getElementById('selectedNames').innerHTML += "<div class='col-xs-12' style='color:white;padding-top:10px;padding-bottom:10px;margin-top:3px;margin-bottom:3px;border:solid 1px rgba(160,160,160,.4);box-shadow:0px 1px 3px rgba(160,160,160,.4);cursor:pointer;background-color:rgb(83, 176, 226);border-radius:5px' id='#" + e.target.id + "'>" + e.target.innerHTML + "</div>";
+    } else {
+      model.selectedNames.splice(model.selectedNames.indexOf(e.target.id),1);
+      e.target.style.backgroundColor = "white";
+      e.target.style.color = "rgb(90,90,90)";
+      document.getElementById('#' + e.target.id).parentNode.removeChild(document.getElementById('#' + e.target.id));
+    }
+    console.log(model.selectedNames);
   }
 
 };
@@ -530,5 +613,6 @@ var model = {
   selectedBatch: {},
   months: ["january","february","march","april","may","june","july","august","september","october","november","december"],
   facultyFormFields : ["Name","Username","Password"],
-  days: ["Mon","Tue","Wed","Thu","Fri","Sat"]
+  days: ["Mon","Tue","Wed","Thu","Fri","Sat"],
+  selectedNames: []
 };
