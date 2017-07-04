@@ -38,6 +38,7 @@ var controller = {
           model.personalInfo.last = response.last;
           model.personalInfo.mobile = response.mobile;
           model.personalInfo.email = response.email;
+          model.personalInfo.dob = response.dob;
           model.personalInfo.profileSetUp = response.profileSetUp;
           model.personalInfo._id = response._id;
 
@@ -73,7 +74,10 @@ var controller = {
             switch(model.route){
               case 'attendance': controller.takeAttendance();
                 break;
-              case 'score': view.showScoreOptions();
+              case 'score':
+                document.getElementById('batchOptionModal').style.display = "none";
+                view.showScoreOptions();
+                break;
             }
       } else if(attendance.status === 504 && attendance.readyState === 4){
         controller.notifyUser("Internal Server Error. Try again",0);
@@ -97,15 +101,12 @@ routes: function(e){
   console.log(model.route);
   switch(model.route){
     case 'attendance':
-      document.getElementById('take-attendance-button').style.display = "block";
-      document.getElementById('batchListModal').style.display = "none";
+      document.getElementById('batchOptionModal').style.display = "none";
       controller.getStudentList();
       break;
     case 'report': controller.getReport();
       break;
     case 'score':
-      document.getElementById('take-attendance-button').style.display = "block";
-      document.getElementById('batchListModal').style.display = "none";
       controller.getStudentList();
       break;
   }
@@ -217,9 +218,9 @@ getReport: function(){
       model.reportData = JSON.parse(requestReport.response);
       var reportData = model.reportData;
       console.log(model.reportData);
-      var content2 = "<div class='modal col-xs-12 text-center' id='downloadsOptionModal'><div class='row' style='animation-name: pushup;animation-duration:.25s;position:fixed;bottom:0;height:50%;width:100%;background-color:white;border-radius: 10px'><div class='col-xs-12'><div class='row' style='margin-bottom:15px;'><div class='col-xs-12' style='border-bottom: 1px solid grey'><h3>Select list<span style='position:absolute;right: 10%;font-size: 26px;color:rgb(239, 108, 88);cursor:pointer' onclick='view.closeDownloadListModal()'>&times;</span></h3></div><div class='col-xs-12' style='margin-top:10px'><div class='row' style='margin-top:10px'><div class='col-xs-12'><a href='http://localhost:3000/download/attendanceOverview/" + model.selectedBatch._id + "/" + model.personalInfo._id + "/" + model.selectedBatch.subject + "' target='_blank' class='btn btn-default'>Attendance Report ( Overview )</a></div></div><div class='row' style='margin-top:10px'><div class='col-xs-12'><a href='http://localhost:3000/download/attendanceDetailed/" + model.selectedBatch._id + "/" + model.personalInfo._id + "/" +  model.selectedBatch.subject + "' target='_blank' class='btn btn-default'>Attendance Report ( Date by Date Track )</a></div></div></div></div></div></div>";
+      var content2 = "<div class='modal col-xs-12 text-center' id='downloadsOptionModal'><div class='row' style='animation-name: pushup;animation-duration:.25s;position:fixed;bottom:0;height:50%;width:100%;background-color:white;border-radius: 10px'><div class='col-xs-12'><div class='row' style='margin-bottom:15px;'><div class='col-xs-12' style='border-bottom: 1px solid grey'><h3>Select list<span style='position:absolute;right: 10%;font-size: 26px;color:rgb(239, 108, 88);cursor:pointer' onclick='view.closeDownloadListModal()'>&times;</span></h3></div><div class='col-xs-12' style='margin-top:10px'><div class='row' style='margin-top:10px'><div class='col-xs-12'><a href='http://localhost:3000/download/attendanceOverview/" + model.selectedBatch._id + "/" + model.personalInfo._id + "/" + model.selectedBatch.subject + "' target='_blank' class='btn btn-default'>Attendance Report ( Overview )</a></div></div><div class='row' style='margin-top:10px'><div class='col-xs-12'><a href='http://localhost:3000/download/attendanceDetailed/" + model.selectedBatch._id + "/" + model.personalInfo._id + "/" +  model.selectedBatch.subject + "' target='_blank' class='btn btn-default'>Attendance Report ( Date by Date Track )</a></div></div></div></div></div></div></div>";
       document.getElementsByTagName('body')[0].innerHTML += content2;
-      var x = "<div id='downloads' onclick='view.showDownloadOptions()'><span style='width:15px;height:15px;' class='glyphicon glyphicon-download'></span></div><div class='row'><div class='col-xs-12' id='student_list_box'><div class='batches_box col-xs-10 col-xs-offset-1'>";
+      var x = "<div id='downloads' onclick='view.showDownloadOptions()'><span class='glyphicon glyphicon-download' style='font-size:24px;padding:5px;'></span></div><div class='row' style='overflow-x: hidden'><div class='col-xs-12' id='student_list_box'>";
       var dcs = 1;
 
       reportData.student_data.forEach(function(student){
@@ -246,13 +247,8 @@ getReport: function(){
           tests += "</div></div>";
         } else {
         }
-         if( (count/dcs)*100 > 75 ){
-           x += "<div class='row text-left' style='border:solid 1px lightgrey;padding-top:5px;padding-bottom:5px;margin-top:10px;cursor:pointer;background-color:white;border:solid 1px rgba(160,160,160,.8);box-shadow:0px 2px 10px rgba(160,160,160,.8);border-radius:3px;font-family:Roboto'><div class='col-xs-10 col-xs-offset-1'><div class='' style='font-size:13px;text-transform:capitalize;'><b>" + student.name + "</b></div></div><br><div class='col-xs-12' style='font-size:12px'>" + student.enroll_number + "</div><br><div class='col-xs-12'>" + count + "/" + dcs + " <div class='label label-success'>" + Math.ceil((count/dcs)*100) + "</div> " + tests + " </div></div>";
-         } else {
-           x += "<div class='row text-left' style='border:solid 1px lightgrey;padding-top:5px;padding-bottom:5px;margin-top:10px;cursor:pointer;background-color:white;border:solid 1px rgba(160,160,160,.8);box-shadow:0px 2px 10px rgba(160,160,160,.8);border-radius:3px;font-family:Roboto'><div class='col-xs-10 col-xs-offset-1'><div class='' style='font-size:13px;text-transform:capitalize;'><b>" + student.name + "</b></div></div><br><div class='col-xs-12' style='font-size:12px'>" + student.enroll_number + "</div><br><div class='col-xs-12'>" + count + "/" + dcs + " <div class='label label-danger'>" + Math.ceil((count/dcs)*100) + "</div> " + tests + " </div></div>";
-         }
+           x += "<div class='row'><div class='col-xs-10 col-xs-offset-1' style='border:solid 1px lightgrey;padding-top:5px;padding-bottom:5px;margin-top:10px;cursor:pointer;background-color:rgb(232, 234, 237);border:solid 1px rgba(160,160,160,.8);box-shadow:0px 2px 10px rgba(160,160,160,.8);border-radius:3px;font-family:Roboto'><div class='row text-left'><div class='col-xs-12'><span class='' style='font-size:16px;text-transform:capitalize;'><b>" + student.name + "</b></span></div></div><div class='row'><div class='col-xs-8'><div class='row text-left'><div class='col-xs-12' style='font-size:12px'>" + student.enroll_number + "</div><br><div class='col-xs-12'>" + count + "/" + dcs + " <div class='label label-success'>" + Math.ceil((count/dcs)*100) + "</div> " + tests + " </div></div></div><div class='col-xs-4 glyphicon glyphicon-envelope' style='font-size:18px;color:rgb(10,10,10)'></div></div></div></div>";
       })
-      x += "</div></div></div>";
       view.showReport(x);
     } else if(requestReport.status === 504 && requestReport.readyState === 4){
       controller.notifyUser("Internal Server Error. Try again",0);
@@ -292,6 +288,7 @@ submitScores: function(){
 addScoreSetting: function(){
   var obj = {};
   obj[model.scoreSettinglist[model.scoreSettingCount]] = document.getElementById('scoreSettingInput').value;
+  document.getElementById('scoreSettingInput').value = "";
   model.scoreSettings.push(obj);
   model.scoreSettingCount++ ;
   if(model.scoreSettingCount === model.scoreSettinglist.length){
