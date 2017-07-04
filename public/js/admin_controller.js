@@ -25,9 +25,7 @@ var controller = {
               }
             }
           })
-          model.info.faculties = model.info.faculties.sort(function(o1,o2){
-            return o1["recent_messages"] - o2["recent_messages"];
-          })
+
           view.updateView();
         } else if(getDepartmentData.status === 500 && getDepartmentData.readyState === 4){
             view.notifyUser("Internal Server Error",1);
@@ -243,16 +241,16 @@ var controller = {
     newBatchData.onreadystatechange = function(){
       if(newBatchData.status === 200 && newBatchData.readyState === 4 ){
         view.closeAddBatchModal()
-        controller.departmentData();
         view.notifyUser("Batch Added Succesfully",1);
+        controller.departmentData();
       } else if(newBatchData.status === 500 && newBatchData.readyState === 4){
         view.closeAddBatchModal()
         controller.departmentData();
         view.notifyUser("Internal Server Error Occured while creating Batch",0);
       } else if(newBatchData.status != 200 && newBatchData.status !== 500 && newBatchData.readyState === 4){
         view.closeAddBatchModal()
-        controller.departmentData();
         view.notifyUser("Faculty Added",5);
+        controller.departmentData();
       }
     }
 
@@ -278,13 +276,13 @@ var controller = {
     newBatchData.onreadystatechange = function(){
       if(newBatchData.status === 200 && newBatchData.readyState === 4 ){
         var response = newBatchData.response;
-        view.closeAssignNewBatchModal(1)
-        getFacultyData(n);
+        view.closeAssignNewBatchModal(1);
         view.notifyUser("New Batch Assigned to Faculty",1);
+        getFacultyData(n);
       } else if( newBatchData.status === 500 && newBatchData.readyState === 4 ){
         view.closeAssignNewBatchModal(1)
-        getFacultyData(n);
         view.notifyUser("Internal Server Error",0);
+        getFacultyData(n);
       } else if( newBatchData.status != 500 && newBatchData.status != 200 && newBatchData.readyState === 4){
         view.closeAssignNewBatchModal(1)
         alert('error. Check your Internet Connection');
