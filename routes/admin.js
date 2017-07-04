@@ -191,7 +191,7 @@ router.post('/addnewfaculty',function(req,res){
           res.end()
         } else {
           db.collection('faculty').insert(req.body)
-          db.collection('admin').update({_id:decoded.name},{$addToSet:{"faculties":{"id": req.body._id,"name": req.body.name}}})
+          db.collection('admin').update({_id:decoded.name},{$addToSet:{"faculties":{"id": req.body._id,"name": req.body.name,"recent_messages":{},"total_messages":{}}}})
           console.log('new faculty added')
           res.status(200)
           res.end()
