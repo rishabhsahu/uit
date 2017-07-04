@@ -79,7 +79,7 @@
 		font-weight: bold;
 		border: solid 1px rgba(200,200,200,.8);
 		box-shadow:2px 2px 5px rgba(160,160,160,.4);
-		background-color: lightgrey;
+		background-color: rgb(201, 206, 214);
 	}
 
 	.admin-navigation-options:hover {
