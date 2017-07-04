@@ -173,13 +173,20 @@ router.post('/submitData/:college/:department/:batch',function(req,res){
               },function(err,resp,body){
                 if(err){
                   errRequest("http://localhost:3000/error/nodejsErr/faculty","request",err)
+                  db.collection('SMS_failed').insert({_id:(new Date()).valueOf(),"url":api_link})
                   db.close()
                   res.status(504)
                   res.end()
                 } else {
                   db.collection("faculty").update({_id:decoded.name},{$inc:{"recent_messages":req.body.mobile.length}})
-                  db.collection("admin").update({_id:"school.admin@" + decoded.name.split('@')[1]},{$inc:{"recent_messages":req.body.mobile.length}})
-                  db.collection("admin").update({_id:"school.admin@" + decoded.name.split('@')[1],"faculties.id":decoded.name},{$inc:{"faculties.$.recent_messages":req.body.mobile.length}})
+                  var xltd = {}
+                  var d = new Date()
+                  d.setSeconds(0)
+                  d.setHours(0)
+                  d.setMinutes(0)
+                  xltd[d.valueOf()] = req.body.mobile.length
+                  db.collection("admin").update({_id:"school.admin@" + decoded.name.split('@')[1]},{$inc:{"recent_messages":xltd}})
+                  db.collection("admin").update({_id:"school.admin@" + decoded.name.split('@')[1],"faculties.id":decoded.name},{$inc:{"faculties.$.recent_messages":xltd}})
                   db.close()
                   console.log(resp)
                   res.status(200)
