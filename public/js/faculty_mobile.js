@@ -17,11 +17,11 @@ var view = {
             absent = "<div class='col-xs-12'><div class='row' id='batch_list_header' style='margin-bottom:5px;border-radius:3px'><h3 class='col-xs-12'><span style='border-bottom:solid 1px rgb(160,160,160);color:rgba(130,130,130)'>Todays Status</span></h3></div></div><div class='col-xs-12' style='border-radius:3px;font-size:18px;border:solid 1px rgb(239, 62, 62);box-shadow:0px 1px 10px rgba(160,160,160,.8);background-color:white;color:rgb(239, 62, 62);padding-top:10px;padding-bottom:10px;'><div class='row' style='margin-top:3px;margin-bottom:15px;'><div class='col-xs-12'>You marked yourself Absent/Busy for today</div></div></div><div class='col-xs-12' style='border-radius:3px;font-size:18px;border:solid 1px rgba(110,110,110,.45);box-shadow:0px 1px 10px #FFA000;background-color:#0D47A1;color:white;margin-top:3px;padding-top:10px;padding-bottom:10px'><div class='row'><div class='col-xs-12'>Mark Present</div></div></div>";
             status = "rgb(239, 62, 62)";
           } else {
-            absent = "<div class='col-xs-12' style='border-radius:3px;border:solid 1px rgba(110,110,110,.45);box-shadow:0px 1px 10px rgba(160,160,160,.8);padding-top:10px;padding-bottom:10px'><div class='row'><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-danger' onclick='view.showAbsentOption()'>Will be Absent</div></div><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-primary' onclick=''>Will be Present</div></div></div></div>";
+            absent = "<div class='col-xs-12' style='border-radius:3px;border:solid 1px rgba(110,110,110,.45);box-shadow:0px 1px 10px rgba(160,160,160,.8);padding-top:10px;padding-bottom:10px'><div class='row'><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-danger' onclick='view.showAbsentOption()'>Absent</div></div><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-primary' onclick=''>Present</div></div></div></div>";
             status = "white";
           }
         } else {
-          absent = "<div class='col-xs-12'><div class='row'><div class='col-xs-12'><h4 class='btn btn-danger' onclick='view.showAbsentOption()'>Will be Absent</h4></div></div><div class='row'><div class='col-xs-12' style='border-radius:3px;'><h4 class='btn btn-primary' onclick=''>Will be Present</h4></div></div></div></div>";
+          absent = "<div class='col-xs-12' style='border-radius:3px;border:solid 1px rgba(110,110,110,.45);box-shadow:0px 1px 10px rgba(160,160,160,.8);padding-top:10px;padding-bottom:10px'><div class='row'><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-danger' onclick='view.showAbsentOption()'>Absent</div></div><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-primary' onclick=''>Present</div></div></div></div>";
         }
 
         var content = "<div style='padding-left:10px;padding-right:10px;animation-name:homeSec;animation-duration:.25s;animation-timing-function:ease-out'><div class='col-xs-12' style='border-radius:3px;margin-bottom:5px;padding-top:5px;padding-bottom:5px;margin-top:5px;border:solid 1px rgba(110,110,110,.45);box-shadow:0px 1px 10px rgba(160,160,160,.8);background-color:" + status + ";border: solid 1px rgba(160,160,160,.5);font-size:16px;text-transform:capitalize;color:black;font-size:18px'>" + model.personalInfo.name + "</div><div class='col-xs-12'><div class='row' id='home_section'></div></div><div class='col-xs-12' id='mainX' style='margin-top:5px'><div></div></div>";
@@ -90,7 +90,6 @@ var view = {
     abc2 += "</div></div>";
     document.getElementById('hola').innerHTML = abc2;
     document.getElementById('batchListModal').style.display = "block";
-    document.getElementById('take-attendance-button').style.display = "none";
   },
 
 
@@ -122,35 +121,38 @@ var view = {
    document.getElementById('mobile-home-section').style.color = "black";
    document.getElementById('mobile-personal-section').style.color = "grey";
    document.getElementById('mobile-report-section').style.color = "grey";
-    document.getElementById('take-attendance-button').style.display = "none";
     var content = "<div class='row'><div class='col-xs-12 batches_box;' style='overflow-x:hidden;display:fixed;margin-top:5px;'><div class='row' id='batch_list_header' style='margin-bottom:5px;border-radius:3px'><h3 class='col-xs-12'><span style='border-bottom:solid 1px rgb(160,160,160);color:rgba(130,130,130)'>Batches You Teach</h3></div><div id='batches_cards' style='margin-bottom:10px'></div></div></div>";
     document.getElementById('mainX').innerHTML = content;
     var contentX = "";
-    model.personalInfo.current_classes.forEach(function(x,i){
-      var days = ["Mon","Tue","Wed","Thu","Fri","Sat"];
-      var classes_timing = "";
-      if(x.schedule && x.schedule.length !=0){
-        x.schedule.forEach(function(z,n){
-          classes_timing += "<div class='col-xs-2' style='color:rgba(0,0,0,.7);'><div class='row'><div class='col-xs-12' style='padding:0'>" + days[n] + "</div><div class='col-xs-12' style='font-size:10px;color:rgba(0,0,0,.6);padding:0'>" + z + "th</div></div></div>";
-        })
-      } else {
-        classes_timing += "<div class='col-xs-12' style='color:rgba(0,0,0,.6);font-size:18px'>No schedule found</div>";
-      }
-      var th;
-      if(x.class>3){
-        th = "<span style='font-size:24px;color:rgb(80,80,80)'>th</span>";
-      } else if(x.class == "KG-1" || x.class == "KG-2"){
-        th = "";
-      } else {
-        switch(x.class){
-          case "1": th = "<span style='font-size:24px;color:rgb(80,80,80)'>st</span>"; break;
-          case "2": th = "<span style='font-size:24px;color:rgb(80,80,80)'>nd</span>"; break;
-          case "3": th = "<span style='font-size:24px;color:rgb(80,80,80)'>rd</span>"; break;
+    if(model.personalInfo.current_classes && model.personalInfo.current_classes.length>0){
+      model.personalInfo.current_classes.forEach(function(x,i){
+        var days = ["Mon","Tue","Wed","Thu","Fri","Sat"];
+        var classes_timing = "";
+        if(x.schedule && x.schedule.length !=0){
+          x.schedule.forEach(function(z,n){
+            classes_timing += "<div class='col-xs-2' style='color:rgba(0,0,0,.7);'><div class='row'><div class='col-xs-12' style='padding:0'>" + days[n] + "</div><div class='col-xs-12' style='font-size:10px;color:rgba(0,0,0,.6);padding:0'>" + z + "th</div></div></div>";
+          })
+        } else {
+          classes_timing += "<div class='col-xs-12' style='color:rgba(0,0,0,.6);font-size:18px'>No schedule found</div>";
         }
-      }
+        var th;
+        if(x.class>3){
+          th = "<span style='font-size:24px;color:rgb(80,80,80)'>th</span>";
+        } else if(x.class == "KG-1" || x.class == "KG-2"){
+          th = "";
+        } else {
+          switch(x.class){
+            case "1": th = "<span style='font-size:24px;color:rgb(80,80,80)'>st</span>"; break;
+            case "2": th = "<span style='font-size:24px;color:rgb(80,80,80)'>nd</span>"; break;
+            case "3": th = "<span style='font-size:24px;color:rgb(80,80,80)'>rd</span>"; break;
+          }
+        }
 
-      contentX += "<div class='row text-center' style='border-radius:3px;margin-bottom:10px;border:solid 1px rgba(110,110,110,.8);box-shadow:1px 1px 10px rgba(160,160,160,.8);background-color:white;'><div class='col-xs-12'><div class='row'><div class='col-xs-4' style='font-size:32px;padding-top:10px'><div class='row'><div class='col-xs-12;' style='color:rgba(0,0,0,.55);color:rgba(0,0,0,.6);'>" + x.class + th + "</div></div></div><div class='col-xs-7'><h1 style='margin-top:10px;color:rgba(0,0,0,.7);margin-bottom:0px;'>" + x.subject + "</h1><div class='row' style='margin-top:0px'></div></div></div><div class='row' style='margin-top:10px;border-bottom:solid 1px rgba(0,0,0,.1);padding-bottom:10px;padding-right:5px'>" + classes_timing + "</div><div class='row' style='padding-top:10px;padding-bottom:10px;font-size:18px;margin-top:0px'><div class='col-xs-4'><span class='glyphicon glyphicon-envelope' style='color:#4286f4'></span></div><div class='col-xs-4 lelo' id='report#"+x._id+"'><span id='report#"+x._id+"' class='glyphicon glyphicon-circle-arrow-right'></span></div><div class='col-xs-4' id='options#"+x._id+"' onclick='view.showBatchOptionModal(event)'><span id='options#"+x._id+"' class='glyphicon glyphicon glyphicon-option-horizontal'></span></div></div></div></div>";
-    })
+        contentX += "<div class='row text-center' style='border-radius:3px;margin-bottom:10px;border:solid 1px rgba(110,110,110,.45);box-shadow:1px 1px 10px rgba(160,160,160,.8);background-color:white;'><div class='col-xs-12'><div class='row'><div class='col-xs-4' style='font-size:32px;padding-top:10px'><div class='row'><div class='col-xs-12;' style='color:rgba(0,0,0,.55);color:rgba(0,0,0,.6);'>" + x.class + th + "</div></div></div><div class='col-xs-7'><h1 style='margin-top:10px;color:rgba(0,0,0,.7);margin-bottom:0px;'>" + x.subject + "</h1><div class='row' style='margin-top:0px'></div></div></div><div class='row' style='margin-top:10px;border-bottom:solid 1px rgba(0,0,0,.1);padding-bottom:10px;padding-right:5px'>" + classes_timing + "</div><div class='row' style='padding-top:10px;padding-bottom:10px;font-size:18px;margin-top:0px'><div class='col-xs-4'><span class='glyphicon glyphicon-envelope' style='color:#4286f4'></span></div><div class='col-xs-4 lelo' id='report#"+x._id+"'><span id='report#"+x._id+"' class='glyphicon glyphicon-circle-arrow-right'></span></div><div class='col-xs-4' id='options#"+x._id+"' onclick='view.showBatchOptionModal(event)'><span id='options#"+x._id+"' class='glyphicon glyphicon glyphicon-option-horizontal'></span></div></div></div></div>";
+      })
+    } else {
+      contentX = "<div class='row'><div class='col-xs-8 col-xs-offset-2' style='border-radius:3px;margin-bottom:10px;border:solid 1px rgba(110,110,110,.45);box-shadow:1px 1px 5px rgba(160,160,160,.5);background-color:white;font-size:20px;color:rgb(70,70,70,.8)'>No Batch Alloted</div></div>";
+    }
     document.getElementById('batches_cards').innerHTML = contentX;
     model.personalInfo.current_classes.forEach(function(x,i){
       document.getElementsByClassName('lelo')[i].onclick = controller.routes;
@@ -270,7 +272,6 @@ var view = {
 
   closeBatchListModal: function(){
     document.getElementById('batchListModal').style.display = "none";
-    document.getElementById('take-attendance-button').style.display = "block";
     controller.showReport();
   },
 
@@ -291,7 +292,6 @@ var view = {
   },
 
   showPersonal: function(){
-    document.getElementById('take-attendance-button').style.display = "none";
     document.getElementById('mobile-home-section').style.color = "grey";
     document.getElementById('mobile-report-section').style.color = "grey";
     document.getElementById('mobile-personal-section').style.color = "black";

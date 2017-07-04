@@ -4,7 +4,6 @@ var controller = {
 
   facultyData: function(){
     document.getElementById("main").innerHTML = "";
-    document.getElementById('take-attendance-button').style.display = "block";
     document.getElementById('mobile-home-section').style.color = "black";
     document.getElementById('mobile-report-section').style.color = "grey";
     document.getElementById('mobile-personal-section').style.color = "grey";
@@ -113,7 +112,7 @@ routes: function(e){
 },
 
 takeAttendance: function(){
-  document.getElementById('take-attendance-button').style.display = "none";
+
   var name = "";
   model.students.forEach(function(student,i){
     if(controller.absent.students.indexOf(student.enroll_number)<0){
@@ -152,7 +151,6 @@ markAbsent: function(e){
 submitData: function(){
   document.getElementById('attendance-box').style.display= 'none';
   document.getElementById('send-button').style.display= 'none';
-  document.getElementById('take-attendance-button').style.display= 'block';
   this.absent.subject = model.selectedBatch.subject;
   this.absent.mobile = [];
   model.students.forEach(function(x,i){
@@ -174,13 +172,13 @@ submitData: function(){
 
   SAD.onreadystatechange = function(){
     if(SAD.readyState == 4 && SAD.status == 200){
-      document.getElementById('take-attendance-button').style.display = "block";
+
       controller.absent.students = [];
       delete controller.absent.date;
       controller.facultyData();
       controller.notifyUser("Attendance Data Submit. Parents of Absent students are informed",1);
     } else if(SAD.status === 504 && SAD.readyState == 4){
-      document.getElementById('take-attendance-button').style.display = "block";
+
       controller.absent.students = [];
       delete controller.absent.date;
       controller.facultyData();
@@ -266,13 +264,13 @@ submitScores: function(){
 
   SSR.onreadystatechange =  function(){
     if(SSR.readyState == 4 || SSR.status == 200){
-      document.getElementById('take-attendance-button').style.display = "block";
+
       delete model.studentScoreArray ;
       delete model.scoreSettings ;
       controller.facultyData();
       controller.notifyUser("Scores Added succesfully",1);
     } else if(SSR.status === 504 && SSR.readyState == 4){
-      document.getElementById('take-attendance-button').style.display = "block";
+
       delete model.studentScoreArray ;
       delete model.scoreSettings ;
       controller.facultyData();
