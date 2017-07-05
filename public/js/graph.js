@@ -57,7 +57,7 @@ graph = {
         labels:["Taking","Not Taking"],
         datasets:[{
           label:"hello",
-          data: [model.absentToday.length,model.info.faculties.length],
+          data: [model.info.faculties.length-model.absentToday.length,model.absentToday.length],
           backgroundColor: ["rgb(91, 205, 247)","rgb(242, 60, 60)"]
         }]
       },
@@ -74,7 +74,7 @@ graph = {
       var e = document.getElementById(x._id);
       if(x.classes_held.length === 0 ){
         var chart = new Chart(e,{
-          type:"doughnut",
+          type:"pie",
           data:{
             labels:["No Classes Yet"],
             datasets:[{
@@ -84,14 +84,14 @@ graph = {
             }]
           },
           options:{
-            cutoutPercentage: 80,
+            cutoutPercentage: 85,
             rotation: (Math.PI)*.8,
             circumference: Math.PI*1.5,
           }
         })
       } else {
         var chart = new Chart(e,{
-          type:"doughnut",
+          type:"pie",
           data:{
             labels:["Taken","Not Taken"],
             datasets:[{
@@ -131,6 +131,28 @@ graph = {
         },{
           label: "Past 21 Days",
           data:[0,0,0,0,1,3,2,1,2]
+        }]
+      }
+    })
+  },
+
+  numberOfAbsents: function(){
+    var d1 = [];
+    var d2 = [];
+
+    var e = document.getElementById('daysFacultyWasAbsent');
+    var chart = new Chart(e,{
+      type: 'doughnut',
+      data:{
+        labels:["Days Faculty was Absent"],
+        datasets: [{
+          label: "Past 7 Days",
+          pointBackgroundColor: "rgb(63, 117, 132)",
+          borderColor:"rgb(53, 196, 191)",
+          pointBorderWidth:"4",
+          pointHoverBorderColor:"rgb(237, 101, 185)",
+          pointHoverBorderWidth:"6",
+          data:[model.selectedFaculty.absent.length,]
         }]
       }
     })
