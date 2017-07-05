@@ -315,10 +315,10 @@ router.post('/markabsent',function(req,res){
             db.collection('faculty').update({_id:decoded.name},{$addToSet:{"absent":d.valueOf()}})
             db.collection('faculty').update({_id:decoded.name},{$set:rsn})
 
-            db.collection('admin').update({_id:"school.admin@bbps","faculties.id":decoded.name},{$addToSet:{"faculties.$.absent":d.valueOf()}})
+            db.collection('admin').update({_id:"school.admin@" + decoded.name.split('@')[1],"faculties.id":decoded.name},{$addToSet:{"faculties.$.absent":d.valueOf()}})
             obj = {}
             obj["faculties.$.reason." + d.valueOf().toString()] = req.body.absent
-            db.collection('admin').update({_id:"school.admin@bbps","faculties.id":decoded.name},{$set:obj})
+            db.collection('admin').update({_id:"school.admin@" + decoded.name.split('@')[1],"faculties.id":decoded.name},{$set:obj})
             db.close()
             res.status(200)
             res.end()
@@ -358,6 +358,7 @@ router.post('/setupprofile',function(req,res){
                   db.collection('faculty').update({_id:decoded.name},{$set:obj})
                   db.collection('faculty').update({_id:decoded.name},{$set:{"profileSetUp":1}})
                 }
+                db.collection('admin').update({_id:"school.admin@" + decoded.name.split('@')[1],"faculties.id":decoded.name},{$set:{"faculties.$.mobile":req.body.mobile}})
                 db.close()
                 res.status(200)
                 res.end()
