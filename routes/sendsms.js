@@ -135,4 +135,91 @@ router.post('/messageselected',function(req,res){
       })
 })
 
+router.post('/sendsmstoclass',function(req,res){
+  var cookies = cookie.parse(req.headers.cookie || '')
+  jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+    if(!err){
+      var mobile = ""
+      req.body.mobiles.forEach(function(x,i){
+        mobile += x + ","
+      })
+      var api_url = "http://api.msg91.com/api/sendhttp.php?"
+      api_url += "authkey=" + authkey + "&"
+      api_url += "mobiles=" + mobile + "&message=" + encodeURIComponent(req.body.text + "\nsent via oniv.in") + "&sender=onivin&route=4"
+      request({
+        method:'get',
+        url: api_url
+      },function(err,resp,body){
+        if(!err){
+
+          mongo.connect('mongodb://localhost:27018/data',function(err,db){
+            if(!err){
+                  db.collection("faculty").update({_id:decoded.name},{$inc:{"recent_messages":req.body.mobiles.length}})
+                  db.collection("admin").update({_id:"school.admin@" + decoded.name.split('@')[1]},{$inc:{"recent_messages":req.body.mobiles.length}})
+                  db.close()
+                  res.status(200)
+                  res.end()
+                } else {
+                  console.log(err)
+                  db.close()
+                  res.status(504)
+                  res.end()
+                }
+              })
+            } else {
+              console.log(err)
+              res.status(504)
+              res.end()
+            }
+          })
+        } else {
+          res.status(504)
+          res.end()
+        }
+      })
+})
+
+router.post('/sendsmstofaculties',function(req,res){
+  var cookies = cookie.parse(req.headers.cookie || '')
+  jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+    if(!err){
+      var mobile = ""
+      req.body.mobiles.forEach(function(x,i){
+        mobile += x + ","
+      })
+      var api_url = "http://api.msg91.com/api/sendhttp.php?"
+      api_url += "authkey=" + authkey + "&"
+      api_url += "mobiles=" + mobile + "&message=" + encodeURIComponent(req.body.text + "\nsent via oniv.in") + "&sender=onivin&route=4"
+      request({
+        method:'get',
+        url: api_url
+      },function(err,resp,body){
+        if(!err){
+
+          mongo.connect('mongodb://localhost:27018/data',function(err,db){
+            if(!err){
+                  db.collection("admin").update({_id:"school.admin@" + decoded.name.split('@')[1]},{$inc:{"recent_messages":req.body.mobiles.length}})
+                  db.close()
+                  res.status(200)
+                  res.end()
+                } else {
+                  console.log(err)
+                  db.close()
+                  res.status(504)
+                  res.end()
+                }
+              })
+            } else {
+              console.log(err)
+              res.status(504)
+              res.end()
+            }
+          })
+        } else {
+          res.status(504)
+          res.end()
+        }
+      })
+})
+
 module.exports = router
