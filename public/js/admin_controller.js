@@ -209,16 +209,13 @@ var controller = {
 
       newFacultyData.onreadystatechange = function(){
         if(newFacultyData.status === 200 && newFacultyData.readyState === 4 ){
-          view.closeAddFacultyModal()
-          controller.departmentData();
+          view.closeAddFacultyModal(1)
           view.notifyUser("Faculty Added",1);
         } else if(newFacultyData.status === 500 && newFacultyData.readyState === 4){
-          view.closeAddFacultyModal()
-          controller.departmentData();
+          view.closeAddFacultyModal(1)
           view.notifyUser("Internal Server Error",0);
         } else if(newFacultyData.status != 200 && newFacultyData.status !== 500 && newFacultyData.readyState === 4){
-          view.closeAddFacultyModal()
-          controller.departmentData();
+          view.closeAddFacultyModal(1)
           view.notifyUser("Enexpected error occured",1);
         }
       }
@@ -385,12 +382,59 @@ var controller = {
       }
     }
     xhr.open('POST',"http://localhost:3000/sendsms/smsfaculty",true);
+    xhr.setRequestHeader('Content-type','application/json')
     xhr.send(JSON.stringify(obj));
   },
 
   batchSelected: function(e){
     model.selectedBatch._id = e.target.id;
     this.getBatchData(1);
+  },
+
+  sendSMStoClass: function(){
+    var ob = {}
+    ob.mobiles = model.selectedMobiles;
+    ob.text = document.getElementById('SMSclasstext').value;
+    console.log(ob);
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function(){
+      if(xhr.readyState === 4){
+        if(xhr.status === 200){
+          model.selectedMobiles = [];
+          model.selectedNames = [];
+          view.closeMessageClassModal();
+          view.notifyUser("Message sent",1);
+        }
+      } else {
+
+      }
+    }
+    xhr.open('POST',"http://localhost:3000/sendsms/sendsmstoclass",true);
+    xhr.setRequestHeader('Content-type','application/json');
+    xhr.send(JSON.stringify(ob));
+  },
+
+  sendSMStoFaculties: function(){
+    var ob = {}
+    ob.mobiles = model.selectedMobiles;
+    ob.text = document.getElementById('SMSfacultytext').value;
+    console.log(ob);
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function(){
+      if(xhr.readyState === 4){
+        if(xhr.status === 200){
+          model.selectedMobiles = [];
+          model.selectedNames = [];
+          view.closeMessageFacultiesModal();
+          view.notifyUser("Message sent",1);
+        }
+      } else {
+
+      }
+    }
+    xhr.open('POST',"http://localhost:3000/sendsms/sendsmstofaculties",true);
+    xhr.setRequestHeader('Content-type','application/json');
+    xhr.send(JSON.stringify(ob));
   }
 
 };
