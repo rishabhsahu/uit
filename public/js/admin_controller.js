@@ -196,8 +196,7 @@ var controller = {
 
   addNewFaculty: function(){
     var obj = {};
-    if(document.getElementById('Name').value && document.getElementById('Password').value.length !=0 ){
-      obj.name = document.getElementById('Name').value;
+    obj.name = document.getElementById('Name').value;
       obj["_id"] = document.getElementById('Name').value.replace(" ","") + "@" + model.info.college;
       obj.password = document.getElementById('Password').value;
       obj.college = model.info.college;
@@ -223,9 +222,6 @@ var controller = {
       newFacultyData.open('POST','http://localhost:3000/admin/addnewfaculty',true);
       newFacultyData.setRequestHeader('Content-type','application/json');
       newFacultyData.send(JSON.stringify(obj));
-    } else {
-
-    }
   },
 
   addNewBatch: function(){
@@ -435,6 +431,26 @@ var controller = {
     xhr.open('POST',"http://localhost:3000/sendsms/sendsmstofaculties",true);
     xhr.setRequestHeader('Content-type','application/json');
     xhr.send(JSON.stringify(ob));
+  },
+
+  checkAll: function(n){
+    var el = document.getElementsByClassName('showRequiredError');
+    var tl = document.getElementsByClassName('required');
+    var er=0;
+    for(var i=0;i<tl.length;i++){
+      if(tl[i].value.length===0){
+        el[i].style.color = "red";
+        er++;
+      }
+    }
+    if(er===0){
+      switch(n){
+        case 0:this.addNewFaculty();
+        break;
+
+        case 1:this.addNewBatch();
+      }
+    }
   }
 
 };
