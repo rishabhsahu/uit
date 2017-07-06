@@ -65,11 +65,4 @@ router.post('/',function(req,res){
 })
 
 
-router.get('/logout',function(req,res){
-  console.log('logout')
-  res.setHeader('Set-cookie',cookie.serialize('user','',{expires: new Date(1),httpOnly:true}))
-  res.status(200)
-  res.end()
-})
-
 module.exports = router

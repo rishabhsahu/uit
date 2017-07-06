@@ -3,6 +3,7 @@ var express=require('express')
 var app = express()
 var bp = require('body-parser')
 var device = require('express-device')
+var cookie = require('cookie')
 
 //importing routes
 var authentication = require('./routes/authentication.js')
@@ -23,6 +24,12 @@ app.use('/admin',bp.json(),admin)
 app.use('/faculty',bp.json(),faculty)
 app.use('/download',download)
 app.use('/error',bp.json(),errorRecorder)
+app.get('/logout',function(req,res){
+  console.log('logout')
+  res.setHeader('Set-cookie',cookie.serialize('user','',{expires: new Date(1),httpOnly:true}))
+  res.status(200)
+  res.end()
+})
 
 app.use(express.static('public'))
 app.use('/login',express.static('public'))
