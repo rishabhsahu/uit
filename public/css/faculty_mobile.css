@@ -158,12 +158,13 @@ body {
 }
 
 .prf_stup_fields {
-   background-color:white;
-   padding-top:10px;
-   padding-bottom:10px;
-   border-bottom:solid 1px rgba(110,110,110,.4);
-   color: #03A9F4;
+   background-color:rgb(234, 236, 239);
+   padding-top:20px;
+   padding-bottom:20px;
+   border-bottom:solid 1px rgba(110,110,110,.2);
+   color: rgb(70,70,70);
    font-size: 14px;
+   font-weight: bold;
 }
 
 .prf_stup_submit {
@@ -175,8 +176,11 @@ body {
 }
 
 input {
+  margin-top: 10px;
   border: none;
-  border-bottom: solid 1px rgb(90,90,90);
+  padding: 5px;
+  border-radius: 5px;
+  border: solid 1px rgb(90,90,90);
   font-size: 14px;
   font-weight: bold;
   font-size: 18px;
