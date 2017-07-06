@@ -38,6 +38,8 @@ var controller = {
           model.personalInfo.mobile = response.mobile;
           model.personalInfo.email = response.email;
           model.personalInfo.dob = response.dob;
+          model.personalInfo.school = response.school;
+          model.personalInfo.school_id = response.domain_name;
           model.personalInfo.profileSetUp = response.profileSetUp;
           model.personalInfo._id = response._id;
 
@@ -346,7 +348,25 @@ checkAll: function(){
     }
   }
   if(er===0){
-    this.setUpProfile();
+    if(document.getElementById('password').value === document.getElementById('reEnterPassword').value ){
+      if(document.getElementById('mobile').value.toString().length === 10){
+        var i = 0;
+        while(i<10){
+          if(Number(document.getElementById('mobile').value.toString().charAt(i)) == document.getElementById('mobile').value.toString().charAt(i)){
+            i++;
+            if(i===9){
+              this.setUpProfile();
+            }
+          } else {
+            alert("Invalid Mobile Number");
+          }
+        }
+      } else {
+        alert("Not a valid Mobile Number");
+      }
+    } else {
+      alert("password did not matched");
+    }
   }
 },
 
@@ -364,7 +384,8 @@ setUpProfile: function(){
 
   xhr.onreadystatechange = function(){
     if(xhr.status===200 && xhr.readyState===4){
-      controller.facultyData();
+      console.log(this);
+      controller.logout();
     }
   }
 
@@ -477,6 +498,17 @@ notifyUser: function(str,a){
       document.getElementById('notifyError').style.display = "none";
     },3000);
   }
+},
+
+logout: function(){
+  var logoutRequest = new XMLHttpRequest();
+  logoutRequest.onreadystatechange = function(){
+    if(logoutRequest.readyState === 4 && logoutRequest.status === 200){
+      window.location = "http://localhost:3000";
+    }
+  }
+  logoutRequest.open('GET','http://localhost:3000/logout',true);
+  logoutRequest.send();
 }
 
 

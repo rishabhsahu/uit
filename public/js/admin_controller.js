@@ -1,5 +1,5 @@
 var controller = {
-  departmentData: function(){
+  sectionData: function(){
     var getDepartmentData = new XMLHttpRequest();
     if(!getDepartmentData){
       console.log(err)
@@ -197,10 +197,11 @@ var controller = {
   addNewFaculty: function(){
     var obj = {};
     obj.name = document.getElementById('Name').value;
-      obj["_id"] = document.getElementById('Name').value.replace(" ","") + "@" + model.info.college;
+      obj["_id"] = document.getElementById('Name').value.replace(" ","") + "@" + model.info.domain_name;
       obj.password = document.getElementById('Password').value;
-      obj.college = model.info.college;
-      obj.deparment = model.info.department;
+      obj.school = model.info.school;
+      obj.domain_name = model.info.domain_name;
+      obj.section = model.info.section;
       obj.current_classes = [];
       obj.profileSetUp = 0;
       console.log(obj);
@@ -228,6 +229,7 @@ var controller = {
     var file = document.getElementById('student_list').files[0];
     var batch = document.getElementById('year').value
     var cls = document.getElementById('class').value
+    var sc = document.getElementById('section').value
     console.log(batch);
     var newBatchData = new XMLHttpRequest();
 
@@ -235,19 +237,19 @@ var controller = {
       if(newBatchData.status === 200 && newBatchData.readyState === 4 ){
         view.closeAddBatchModal()
         view.notifyUser("Batch Added Succesfully",1);
-        controller.departmentData();
+        controller.sectionData();
       } else if(newBatchData.status === 500 && newBatchData.readyState === 4){
         view.closeAddBatchModal()
-        controller.departmentData();
+        controller.sectionData();
         view.notifyUser("Internal Server Error Occured while creating Batch",0);
       } else if(newBatchData.status != 200 && newBatchData.status !== 500 && newBatchData.readyState === 4){
         view.closeAddBatchModal()
         view.notifyUser("Faculty Added",5);
-        controller.departmentData();
+        controller.sectionData();
       }
     }
 
-    newBatchData.open('POST','http://localhost:3000/admin/addnewbatch/' + model.info.college + '/' + model.info.department + '/' + batch + '/' + cls,true);
+    newBatchData.open('POST','http://localhost:3000/admin/addnewbatch/' + model.info.domain_name + '/' + batch + '/' + sc + '/' + cls + '/' + model.info.school,true);
     newBatchData.setRequestHeader('Content-type','application/octet-stream');
     newBatchData.send(file);
   },
@@ -299,15 +301,15 @@ var controller = {
       if(deleteFacultyRequest.status === 200 && deleteFacultyRequest.readyState === 4 ){
         document.getElementById("facultySettingModal").style.display = "none" ;
         document.getElementById('report_section').innerHTML = "";
-        controller.departmentData();
+        controller.sectionData();
       } else if( deleteFacultyRequest.status === 500 && deleteFacultyRequest.readyState === 4 ){
         document.getElementById("facultySettingModal").style.display = "none" ;
         alert('Internal server Error. Please try again. If issue continues, try again after time later');
-        controller.departmentData();
+        controller.sectionData();
       } else if( deleteFacultyRequest.status != 500 && deleteFacultyRequest.status != 200 && deleteFacultyRequest.readyState === 4){
         document.getElementById("facultySettingModal").style.display = "none" ;
         alert('error. Check your Internet Connection');
-        controller.departmentData();
+        controller.sectionData();
       }
     }
     deleteFacultyRequest.open('DELETE','http://localhost:3000/admin/removefaculty/' + model.selectedFaculty._id,true);
@@ -320,7 +322,7 @@ var controller = {
       if(deleteBatchRequest.status === 200 && deleteBatchRequest.readyState === 4 ){
         model.selectedBatch = {};
         document.getElementById('report_section').innerHTML = "";
-        controller.departmentData();
+        controller.sectionData();
       } else if( deleteBatchRequest.status === 500 && deleteBatchRequest.readyState === 4 ){
         alert('Internal server Error. Please try again. If issue continues, try again after time later');
         view.updateView();
@@ -340,7 +342,7 @@ var controller = {
         model.selectedBatch = {};
         document.getElementById('report_section').innerHTML = "";
         document.getElementById('deassignbatchModal').style.display = "none";
-        controller.departmentData();
+        controller.sectionData();
       } else if( deassignbatchRequest.status === 500 && deassignbatchRequest.readyState === 4 ){
         alert('Internal server Error. Please try again. If issue continues, try again after time later');
         view.updateView();
@@ -357,11 +359,11 @@ var controller = {
     var logoutRequest = new XMLHttpRequest();
     logoutRequest.onreadystatechange = function(){
       if(logoutRequest.readyState === 4 && logoutRequest.status === 200){
-        alert('logged out');
+        window.location = "http://localhost:3000";
       }
     }
-    logoutRequest.open('GET','http://localhost:3000/login/logout',true);
-    logoutRequest.send(null);
+    logoutRequest.open('GET','http://localhost:3000/logout',true);
+    logoutRequest.send();
   },
 
   sendFacultySms: function(){
@@ -378,7 +380,7 @@ var controller = {
       }
     }
     xhr.open('POST',"http://localhost:3000/sendsms/smsfaculty",true);
-    xhr.setRequestHeader('Content-type','application/json')
+    xhr.setRequestHeader('Content-type','application/json');
     xhr.send(JSON.stringify(obj));
   },
 
@@ -464,4 +466,4 @@ function getFacultyData(n){
   }
 }
 
-window.onload = controller.departmentData;
+window.onload = controller.sectionData;

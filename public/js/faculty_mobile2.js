@@ -14,61 +14,35 @@ var view = {
 
         if(model.personalInfo.absent && model.personalInfo.absent.length != 0){
           if(model.personalInfo.absent.indexOf(d.valueOf())>-1){
-            absent = "<div class='col-xs-12'><div class='row' id='batch_list_header' style='margin-top:20px;margin-bottom:20px;border-radius:3px'><div class='col-xs-12'><span style='color:rgb(110,110,110);font-size:22px'>Todays status</span></div></div></div><div class='col-xs-12' style='border-radius:3px;font-size:18px;border:solid 1px rgb(239, 62, 62);box-shadow:0px 1px 10px rgba(160,160,160,.8);background-color:white;color:rgb(239, 62, 62);padding-top:10px;padding-bottom:10px;'><div class='row' style='margin-top:3px;margin-bottom:15px;'><div class='col-xs-12'>You marked yourself Absent/Busy for today</div></div></div><div class='col-xs-12' style='border-radius:3px;font-size:18px;border:solid 1px rgba(110,110,110,.45);box-shadow:0px 1px 10px #FFA000;background-color:#0D47A1;color:white;margin-top:3px;padding-top:10px;padding-bottom:10px'><div class='row'><div class='col-xs-12'>Mark Present</div></div></div>";
+            absent = "<div class='col-xs-12' style='border-radius:3px;font-size:18px;border:solid 1px rgba(110,110,110,.45);box-shadow:0px 1px 10px rgba(160,160,160,.8);background-color:white;color:rgb(239, 62, 62);border:solid 1px rgb(239, 62, 62);padding-top:10px;padding-bottom:10px;'><div class='row' style='margin-top:3px;margin-bottom:15px;'><div class='col-xs-12'>You marked yourself Absent/Busy for today</div></div></div><div class='col-xs-12' style='border-radius:3px;font-size:18px;border:solid 1px rgba(110,110,110,.45);box-shadow:0px 1px 5px #FFA000;background-color:#0D47A1;color:white;margin-top:3px;padding-top:10px;padding-bottom:10px'><div class='row'><div class='col-xs-12'>Mark Present</div></div></div>";
             status = "rgb(239, 62, 62)";
           } else {
-            absent = "<div class='col-xs-12' style='background-color:white;border-radius:3px;border:solid 1px rgba(110,110,110,.45);box-shadow:0px 1px 10px rgba(160,160,160,.8);padding-top:10px;padding-bottom:10px'><div class='row'><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-danger' onclick='view.showAbsentOption()'>Absent</div></div><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-primary' onclick=''>Present</div></div></div></div>";
+            absent = "<div class='col-xs-12' style='border-radius:3px;'><div class='row'><div class='col-xs-12'><h4 class='btn btn-danger' onclick='view.showAbsentOption()'>Will be Absent</h4></div></div><div class='row'><div class='col-xs-12' style='border-radius:3px;'><h4 class='btn btn-primary' onclick=''>Will be Present</h4></div></div></div>";
             status = "white";
           }
         } else {
-          absent = "<div class='col-xs-12' style='border-radius:3px;border:solid 1px rgba(110,110,110,.45);box-shadow:0px 1px 10px rgba(160,160,160,.8);padding-top:10px;padding-bottom:10px;background-color:white'><div class='row'><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-danger' onclick='view.showAbsentOption()'>Absent</div></div><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-primary' onclick=''>Present</div></div></div></div>";
+          absent = "<div class='col-xs-12'><div class='row'><div class='col-xs-12'><h4 class='btn btn-danger' onclick='view.showAbsentOption()'>Will be Absent</h4></div></div><div class='row'><div class='col-xs-12' style='border-radius:3px;'><h4 class='btn btn-primary' onclick=''>Will be Present</h4></div></div></div></div>";
         }
 
-        var content = "<div style='padding-left:10px;padding-right:10px;animation-name:homeSec;animation-duration:.25s;animation-timing-function:ease-out'><div class='col-xs-12' style='border-radius:3px;margin-bottom:5px;padding-top:5px;padding-bottom:5px;margin-top:5px;border:solid 1px rgba(160,160,160,.8);box-shadow:0px 1px 5px rgba(200,200,200,1);background-color:" + status + ";border: solid 1px rgba(160,160,160,.5);font-size:16px;text-transform:capitalize;color:black;font-size:18px'><span style='text-transform:lowercase'>" + model.personalInfo.school_id + "</span> / " + model.personalInfo.name + "</div><div class='col-xs-12'><div class='row' id='home_section'></div></div><div class='col-xs-12' id='mainX' style='margin-top:5px'><div></div></div>";
+        var content = "<div style='padding-left:10px;padding-right:10px;'><div class='col-xs-12' style='border-radius:3px;margin-bottom:5px;padding-top:5px;padding-bottom:5px;margin-top:5px;border:solid 1px rgba(110,110,110,.45);box-shadow:0px 1px 10px rgba(160,160,160,.8);background-color:" + status + ";border: solid 1px rgba(160,160,160,.5);font-size:16px;text-transform:capitalize;color:black;font-size:18px'>" + model.personalInfo.name + "</div><div class='col-xs-12'><div class='row' id='home_section'></div></div></div>";
 
       document.getElementById('main').innerHTML = content;
       var ctd = "";
       if(model.classes_today.length != 0 ){
-        ctd = "<div class='row'><div class='col-xs-12' style='background-color:rgb(66, 134, 244);color:white;padding-top:10px;border-radius:3px 3px 0 0;padding-bottom:10px;font-size:24px;border-bottom: 1px solid rgb(90,90,90,.6)'>Classes today - " + model.classes_today.length + "</div></div><div class='row' style='margin-top:10px;margin-bottom:5px'><div class='col-xs-12'><div class='row'><div class='col-xs-6'><h4 style='border-bottom:solid 1px rgb(160,160,160);padding-bottom:10px'>Period</h4></div><div class=col-xs-6><h4 style='border-bottom:solid 1px rgb(160,160,160);padding-bottom:10px'>Class</h4></div></div><div class='col-xs-12' style='max-height:80px;overflow-y:auto'>";
+        ctd = "<div class='row'><div class='col-xs-12' style='background-color:#0277BD;color:white;padding-top:10px;border-radius:3px 3px 0 0;padding-bottom:10px;font-size:24px;border-bottom: 1px solid rgb(90,90,90,.6)'>Classes today - " + model.classes_today.length + "</div></div><div class='row' style='margin-top:10px;margin-bottom:5px'>";
         model.classes_today.forEach(function(c,n){
-          var th;
-          if(c.class>3){
-            th = "<span style='font-size:16px;color:rgb(80,80,80)'>th</span>";
-          } else if(c.class == "KG-1" || c.class == "KG-2"){
-            th = "";
-          } else {
-            switch(c.class){
-              case "1": th = "<span style='font-size:16px;color:rgb(80,80,80)'>st</span>"; break;
-              case "2": th = "<span style='font-size:16px;color:rgb(80,80,80)'>nd</span>"; break;
-              case "3": th = "<span style='font-size:16px;color:rgb(80,80,80)'>rd</span>"; break;
-            }
-          }
-          var pr;
-          if(c.period>3){
-            pr = "<span style='font-size:16px;color:rgb(80,80,80)'>th</span>";
-          } else if(c.period == "KG-1" || c.period == "KG-2"){
-            pr = "";
-          } else {
-            switch(c.period){
-              case "1": pr = "<span style='font-size:16px;color:rgb(80,80,80)'>st</span>"; break;
-              case "2": pr = "<span style='font-size:16px;color:rgb(80,80,80)'>nd</span>"; break;
-              case "3": pr = "<span style='font-size:16px;color:rgb(80,80,80)'>rd</span>"; break;
-            }
-          }
-          ctd += "<div class='row' style='padding-top:5px;padding-bottom:5px;font-size:16px'><div class='col-xs-4 col-xs-offset-1' style='background-color:rgba(160,160,160,.6);border-radius:2px;padding-top:2px;padding-bottom:2px'>" + c.period + pr + "</div><div class='col-xs-4 col-xs-offset-2' style='background-color:rgba(160,160,160,.6);border-radius:2px;padding-top:2px;padding-bottom:2px'>" + c.class + th + "</div></div>";
+          ctd += "<div class='col-xs-3' style='border-radius:3px;color:rgba(0,0,0,.6);padding:5px;'><div class='row' style='padding:0px;margin:0px'><div class='col-xs-12' style='padding:0px;color:rgba(0,0,0,.7);font-size:16px'>" + c.class + "th<sub>class</sub></div><div class='col-xs-12' style='padding:0px;color:rgba(0,0,0,.5);font-size:12px'>" + c.period + "th<sub>period</sub></div></div></div>";
         })
-        ctd += "</div></div></div></div>";
+        ctd += "</div></div>";
       } else {
         ctd = "<div class='row'><div class='col-xs-8 col-xs-offset-2' style='font-size:24px;color:rgb(244, 83, 66)'>! Schedule Not Available</div><div class='col-xs-12' style='color:rgba(0,0,0,1)'>set up now</div></div></div>";
       }
       console.log(model);
 
-      var content2 = "<div class='col-xs-12' style='border-radius:2px;margin-bottom:5px;background-color:white;border:solid 1px rgba(160,160,160,.8);box-shadow:0px 1px 5px rgba(200,200,200,1)'>" + ctd + absent;
+      var content2 = "<div class='col-xs-12' style='border-radius:3px;margin-bottom:5px;background-color:white;border:solid 1px rgba(110,110,110,.45);box-shadow:0px 1px 10px rgba(160,160,160,.8)'>" + ctd + absent;
       document.getElementById('home_section').innerHTML = content2;
       content = "<div id='notifyUser' class='notif-modal'><div class='row text-center'><div class='col-xs-8 col-xs-offset-2' style='opacity:.95;border-radius:3px;padding-top:5px;padding-bottom:5px' id='notifText'></div></div></div><div id='notifyError' class='col-xs-12 modal'><div class='row text-center' style='padding-top:120px'><div class='col-xs-8 col-xs-offset-2' style='padding-top:10px;padding-bottom:10px;;border-radius:3px;background-color:white' id='notifText2'></div></div></div>";
       document.getElementsByTagName('body')[0].innerHTML += content;
-      document.getElementById('main').style.overflowY = "auto";
-      this.loadReportSection();
 
   },
 
@@ -90,6 +64,7 @@ var view = {
     abc2 += "</div></div>";
     document.getElementById('hola').innerHTML = abc2;
     document.getElementById('batchListModal').style.display = "block";
+    document.getElementById('take-attendance-button').style.display = "none";
   },
 
 
@@ -118,41 +93,25 @@ var view = {
 
   loadReportSection: function(){
    document.getElementById('main').style.backgroundImage = "none";
-   document.getElementById('mobile-home-section').style.color = "black";
+   document.getElementById('mobile-home-section').style.color = "grey";
    document.getElementById('mobile-personal-section').style.color = "grey";
-   document.getElementById('mobile-report-section').style.color = "grey";
-    var content = "<div class='row'><div class='col-xs-12 batches_box;' style='overflow-x:hidden;display:fixed;margin-top:5px;'><div class='row' id='batch_list_header' style='margin-top:20px;margin-bottom:20px;border-radius:3px'><div class='col-xs-12'><span style='color:rgb(110,110,110);font-size:22px;'>Batches You Teach</div></div><div id='batches_cards' style='margin-bottom:10px'></div></div></div>";
+   document.getElementById('mobile-report-section').style.color = "black";
+    document.getElementById('take-attendance-button').style.display = "none";
+    var content = "<div class='col-xs-12 batches_box;' style='overflow-x:hidden;height:94%;display:fixed;padding-left:25px;padding-right:25px;margin-top:5px;'><div class='row' id='batch_list_header' style='margin-bottom:5px;border-radius:3px'><h4 class='col-xs-12'>batches</h4></div><div id='batches_cards' style='margin-bottom:10px'></div></div>";
     document.getElementById('mainX').innerHTML = content;
     var contentX = "";
-    if(model.personalInfo.current_classes && model.personalInfo.current_classes.length>0){
-      model.personalInfo.current_classes.forEach(function(x,i){
-        var days = ["Mon","Tue","Wed","Thu","Fri","Sat"];
-        var classes_timing = "";
-        if(x.schedule && x.schedule.length !=0){
-          x.schedule.forEach(function(z,n){
-            classes_timing += "<div class='col-xs-2' style='color:rgba(0,0,0,.7);'><div class='row'><div class='col-xs-12' style='padding:0'>" + days[n] + "</div><div class='col-xs-12' style='font-size:10px;color:rgba(0,0,0,.6);padding:0'>" + z + "th</div></div></div>";
-          })
-        } else {
-          classes_timing += "<div class='col-xs-12' style='color:rgba(0,0,0,.6);font-size:18px'>No schedule found</div>";
-        }
-        var th;
-        if(x.class>3){
-          th = "<span style='font-size:24px;color:rgb(80,80,80)'>th</span>";
-        } else if(x.class == "KG-1" || x.class == "KG-2"){
-          th = "";
-        } else {
-          switch(x.class){
-            case "1": th = "<span style='font-size:24px;color:rgb(80,80,80)'>st</span>"; break;
-            case "2": th = "<span style='font-size:24px;color:rgb(80,80,80)'>nd</span>"; break;
-            case "3": th = "<span style='font-size:24px;color:rgb(80,80,80)'>rd</span>"; break;
-          }
-        }
-
-        contentX += "<div class='row text-center' style='border-radius:3px;margin-bottom:10px;border:solid 1px rgba(160,160,160,.8);box-shadow:0px 1px 5px rgba(200,200,200,1);background-color:white;'><div class='col-xs-12'><div class='row'><div class='col-xs-4' style='font-size:32px;padding-top:10px'><div class='row'><div class='col-xs-12;' style='color:rgba(0,0,0,.55);color:rgba(0,0,0,.6);'>" + x.class + th + "</div></div></div><div class='col-xs-7'><h1 style='margin-top:10px;color:rgba(0,0,0,.7);margin-bottom:0px;'>" + x.subject + "</h1><div class='row' style='margin-top:0px'></div></div></div><div class='row' style='margin-top:10px;border-bottom:solid 1px rgba(0,0,0,.1);padding-bottom:10px;padding-right:5px'>" + classes_timing + "</div><div class='row' style='padding-top:10px;padding-bottom:10px;font-size:18px;margin-top:0px'><div class='col-xs-4'><span class='glyphicon glyphicon-envelope' style='color:#4286f4'></span></div><div class='col-xs-4 lelo' id='report#"+x._id+"'><span id='report#"+x._id+"' class='glyphicon glyphicon-circle-arrow-right'></span></div><div class='col-xs-4' id='options#"+x._id+"' onclick='view.showBatchOptionModal(event)'><span id='options#"+x._id+"' class='glyphicon glyphicon glyphicon-option-horizontal'></span></div></div></div></div>";
-      })
-    } else {
-      contentX = "<div class='row'><div class='col-xs-10 col-xs-offset-1' style='border-radius:3px;margin-bottom:10px;border:solid 1px rgba(110,110,110,.45);box-shadow:1px 1px 5px rgba(160,160,160,.5);background-color:white;font-size:20px;color:rgb(70,70,70,.8)'>No Batch Alloted</div></div>";
-    }
+    model.personalInfo.current_classes.forEach(function(x,i){
+      var days = ["Mon","Tue","Wed","Thu","Fri","Sat"];
+      var classes_timing = "";
+      if(x.schedule && x.schedule.length !=0){
+        x.schedule.forEach(function(z,n){
+          classes_timing += "<div class='col-xs-2' style='color:rgba(0,0,0,.7);'><div class='row'><div class='col-xs-12' style='padding:0'>" + days[n] + "</div><div class='col-xs-12' style='font-size:10px;color:rgba(0,0,0,.6);padding:0'>" + z + "th</div></div></div>";
+        })
+      } else {
+        classes_timing += "<div class='col-xs-12' style='color:rgba(0,0,0,.6);font-size:18px'>No schedule found</div>";
+      }
+      contentX += "<div class='row text-center' style='margin-bottom:5px;border: solid 1px rgba(200,200,200,.2);border-radius:5px'><div class='col-xs-12' style='background-color:white;border:solid 1px rgba(110,110,110,.45);box-shadow:0px 1px 10px rgba(160,160,160,.8)'><div class='row'><div class='col-xs-4' style='font-size:44px;padding-top:10px'><div class='row'><div class='col-xs-12;' style='color:rgba(0,0,0,.55);color:rgba(0,0,0,.8);'>" + x.class + "<span style='font-size:24px'>th</span></div></div></div><div class='col-xs-7'><h2 style='margin-top:10px;color:rgba(0,0,0,.7);margin-bottom:0px;'>" + x.subject + "</h2><div class='row' style='margin-top:0px'><div class='col-xs-12' style='font-size:13px;color:rgba(0,0,0,.4)'>strength -</div></div></div></div><div class='row' style='margin-top:10px;border-bottom:solid 1px rgba(0,0,0,.1);padding-bottom:10px;padding-right:5px'>" + classes_timing + "</div><div class='row' style='padding-top:10px;padding-bottom:10px;font-size:18px;margin-top:0px'><div class='col-xs-4'><span class='glyphicon glyphicon-envelope' style='color:#4286f4'></span></div><div class='col-xs-4 lelo' id='report#"+x._id+"'><span id='report#"+x._id+"' class='glyphicon glyphicon-circle-arrow-right'></span></div><div class='col-xs-4' id='options#"+x._id+"' onclick='view.showBatchOptionModal(event)'><span id='options#"+x._id+"' class='glyphicon glyphicon glyphicon-option-horizontal'></span></div></div></div></div>";
+    })
     document.getElementById('batches_cards').innerHTML = contentX;
     model.personalInfo.current_classes.forEach(function(x,i){
       document.getElementsByClassName('lelo')[i].onclick = controller.routes;
@@ -169,7 +128,7 @@ var view = {
         for(var i=1;i<32;i++){
           document.getElementById('allDates').innerHTML += "<option>" + i + "</option>" ;
         }
-        for(var i=0; i<13; i++){
+        for(var i=0; i<12; i++){
           document.getElementById('allMonth').innerHTML += "<option>" + model.months[i] + "</option>" ;
         }
         var year = new Date().getFullYear();
@@ -178,7 +137,7 @@ var view = {
   },
 
   showScoreOptions: function(){
-    var content = "<div id='scoreOptionsModal' class='col-xs-12 modal text-center'><div class='row'><h3 class='col-xs-12' style='color:black'>Scores</h3></div><div class='row'><div class='col-xs-12 col-xs-offset-1' style='margin-top: 20px'><div class='row' style='margin-top: 10px'><div class='btn btn-danger disabled'>Edit Previous Scores</div></div><div class='row' style='margin-top: 10px'><div class='btn btn-danger' onclick='view.getTestSettings()'>Create New Test Score List</div></div></div>";
+    var content = "<div class='row modal' id='scoreOptionsModal'><div class='col-xs-12 text-center'><div class='row'><h3 class='col-xs-12' style='color:black'>Scores</h3></div><div class='row'><div class='col-xs-12 col-xs-offset-1' style='margin-top: 20px'><div class='row' style='margin-top: 10px'><div class='btn btn-danger disabled'>Edit Previous Scores</div></div><div class='row' style='margin-top: 10px'><div class='btn btn-danger' onclick='view.getTestSettings()'>Create New Test Score List</div></div></div></div>";
     document.getElementsByTagName('body')[0].innerHTML += content;
     document.getElementById('scoreOptionsModal').style.display = "block";
   },
@@ -190,7 +149,7 @@ var view = {
     model.scoreSettings = [];
     model.studentCount = 0;
     model.studentScoreArray = [];
-    var content = "<div class='col-xs-12' style='position:relative;top: 30%'><div class='row'><div class='col-xs-12 col-xs-offset-1' style='background-color:rgb(83, 239, 151);border-radius:3px'><div class='row' style='border-bottom: solid 1px white'><h4 class='col-xs-12' id='scoreSettings' style='color:black'>Settings</h4></div><div class='row' style='margin-top:10px'><div class='col-xs-12'><input type='text' id='scoreSettingInput' autofocus></div></div><div class='row' style='margin-top:10px;margin-bottom:10px'><div class='btn btn-warning' onclick='controller.addScoreSetting()'>Done</div></div></div></div></div>";
+    var content = "<div class='col-xs-12' style='position:relative;top: 30%'><div class='row'><div class='col-xs-12 col-xs-offset-1' style='background-color:white;border-radius:3px'><div class='row' style='border-bottom: solid 1px white'><h4 class='col-xs-12' id='scoreSettings' style='color:black'>Settings</h4></div><div class='row' style='margin-top:10px'><div class='col-xs-12'><input type='text' id='scoreSettingInput' autofocus></div></div><div class='row' style='margin-top:10px;margin-bottom:10px'><div class='btn btn-warning' onclick='controller.addScoreSetting()'>Done</div></div></div></div></div>";
     document.getElementById('main').innerHTML = content;
     document.getElementById('scoreSettingInput').focus();
     document.getElementById('scoreSettings').innerHTML = model.scoreSettinglist[model.scoreSettingCount];
@@ -272,6 +231,7 @@ var view = {
 
   closeBatchListModal: function(){
     document.getElementById('batchListModal').style.display = "none";
+    document.getElementById('take-attendance-button').style.display = "block";
     controller.showReport();
   },
 
@@ -292,6 +252,7 @@ var view = {
   },
 
   showPersonal: function(){
+    document.getElementById('take-attendance-button').style.display = "none";
     document.getElementById('mobile-home-section').style.color = "grey";
     document.getElementById('mobile-report-section').style.color = "grey";
     document.getElementById('mobile-personal-section').style.color = "black";
@@ -300,24 +261,17 @@ var view = {
       document.getElementById('main').innerHTML = "<div class='col-xs-12' style='height:100%;background-color:rgba(0,0,0,.8)'><div class='row'><div class='col-xs-12' style='margin-top:30%'><div class='row'><div class='col-xs-10 col-xs-offset-1' style='background-color:rgb(0, 150, 136);color:white;border-radius:3px;font-size:18px;padding:10px;margin-bottom:10px;'>We need to know little more about you. Please provide us some more information</div></div><div class='row'><div class='col-xs-8 col-xs-offset-2'><div class='btn btn-primary' onclick='view.setUpProfile()'>Set up Profile</div></div></div></div></div></div>"
     } else {
       console.log(model);
-      var firstName = "<div class='row' style='background-color:white;padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.3)'><div class='col-xs-12 text-left' style='color:rgb(77, 215, 249);font-size:16px'>First Name</div><div class='col-xs-12 text-left' style='color:rgba(60,60,60,.8);font-size:20px'>" + model.personalInfo.first + "</div></div>";
+      var firstName = "<div class='row' style='background-color:white;padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.3)'><div class='col-xs-12 text-left' style='color:rgb(77, 215, 249)'>First Name</div><div class='col-xs-12 text-left' style='color:rgba(60,60,60,.8)'>" + model.personalInfo.first + "</div></div>";
 
-      var secondName = "<div class='row' style='background-color:white;padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.3)'><div class='col-xs-12 text-left' style='color:rgb(77, 215, 249);font-size:16px'>Last Name</div><div class='col-xs-12 text-left' style='color:rgba(60,60,60,.8);font-size:20px'>" + model.personalInfo.last + "</div></div>";
+      var secondName = "<div class='row' style='background-color:white;padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.3)'><div class='col-xs-12 text-left' style='color:rgb(77, 215, 249)'>Last Name</div><div class='col-xs-12 text-left' style='color:rgba(60,60,60,.8)'>" + model.personalInfo.last + "</div></div>";
 
-      var school = "<div class='row' style='background-color:white;padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.3)'><div class='col-xs-12 text-left' style='color:rgb(77, 215, 249);font-size:16px'>School Name</div><div class='col-xs-12 text-left' style='color:rgba(60,60,60,.8);font-size:20px'>" + model.personalInfo.school + "</div></div>";
+      var password = "<div class='row' style='background-color:white;padding-top:10px;padding-bottom:10px;'><div class='col-xs-12 text-left' style='color:rgb(77, 215, 249)'>Password</div><a class='col-xs-12 text-left' style='color:rgba(60,60,60,.8);text-decoration:underline' href='#' target='_blank'>change</a></div>";
 
-      var d = new Date(model.personalInfo.dob);
-      var dob = "<div class='row' style='background-color:white;padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.3)'><div class='col-xs-12 text-left' style='color:rgb(77, 215, 249);font-size:16px'>Date of Birth</div><div class='col-xs-12 text-left' style='color:rgba(60,60,60,.8);font-size:20px'>" + d.getDate() + " " + model.months[d.getMonth()-1] + ", " + d.getFullYear() + "</div></div>";
+      var mobile = "<div class='row' style='background-color:white;;padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.3)'><div class='col-xs-12 text-left' style='color:rgb(77, 215, 249)'>Mobile</div><div class='col-xs-12 text-left' style='color:rgba(60,60,60,.8)'>" + model.personalInfo.mobile + "</div></div>";
 
-      var password = "<div class='row' style='background-color:white;padding-top:10px;padding-bottom:10px;'><div class='col-xs-12 text-left' style='color:rgb(77, 215, 249);font-size:16px'>Password</div><a class='col-xs-12 text-left' style='color:rgba(60,60,60,.8);font-size:20px;text-decoration:underline' href='#' target='_blank'>change</a></div>";
+      var email = "<div class='row' style='background-color:white;padding-top:10px;padding-bottom:10px;'><div class='col-xs-12 text-left' style='color:rgb(77, 215, 249)'>EMAIL</div><div class='col-xs-12 text-left' style='color:rgba(60,60,60,.8)'>" + model.personalInfo.email + "</div></div>";
 
-      var mobile = "<div class='row' style='background-color:white;;padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.3)'><div class='col-xs-12 text-left' style='color:rgb(77, 215, 249);font-size:16px'>Mobile</div><div class='col-xs-12 text-left' style='color:rgba(60,60,60,.8);font-size:20px'>" + model.personalInfo.mobile + "</div></div>";
-
-      var email = "<div class='row' style='background-color:white;padding-top:10px;padding-bottom:10px;'><div class='col-xs-12 text-left' style='color:rgb(77, 215, 249);font-size:16px'>EMAIL</div><div class='col-xs-12 text-left' style='color:rgba(60,60,60,.8);font-size:20px'>" + model.personalInfo.email + "</div></div>";
-
-      var logout = "<div class='row' style=''><button class='text-center col-xs-12 text-left' style='background-color:rgb(66, 134, 244);padding-top:20px;padding-bottom:20px;color:rgb(77, 215, 249);font-size:16px'onclick='controller.logout()' >Logout</button></div>";
-
-      document.getElementById('main').innerHTML = "<div class='col-xs-12' style='overflow-y:auto;overflow-y:auto;animation-name:personalSec;animation-duration:.25s'><div class='row'><div class='col-xs-12' style='padding-top:20px;padding-bottom:20px'><img src='img/flat-face-icon-23.png' style='max-width:100px;'></div></div><div class='row'><div class='col-xs-12 text-center' style='background-color:rgb(230,230,230)'>Personal Info</div></div>" + firstName + secondName + school + dob + password + "<div class='row'><div class='col-xs-12 text-center' style='background-color:rgb(230,230,230)'>Contact Info</div></div>" + mobile + email + logout + "</div>";
+      document.getElementById('main').innerHTML = "<div class='col-xs-12' style='overflow-y:auto;height:98%;overflow-y:auto;'><div class='row'><div class='col-xs-12' style='background-color:rgb(14, 22, 35);padding-top:20px;padding-bottom:20px'><img src='img/flat-face-icon-23.png' style='max-width:100px;'></div></div><div class='row'><div class='col-xs-12 text-center' style='background-color:rgb(230,230,230)'>Personal Info</div></div>" + firstName + secondName + password + "<div class='row'><div class='col-xs-12 text-center' style='background-color:rgb(230,230,230)'>Contact Info</div></div>" + mobile + email + "</div>";
     }
   },
 
@@ -339,7 +293,7 @@ var view = {
     y += "</select>";
     var firstName = "<div class='row text-center prf_stup_fields'><div class='col-xs-12'>First Name <span class='showRequiredError' id='showRequiredError#first'></span></div><div class='col-xs-12'><input id='first' size=15 class='required' type=text onblur='controller.check(event)'></div></div>";
 
-    var lastName = "<div class='row text-center prf_stup_fields'><div class='col-xs-12'>Last Name <span class='showRequiredError' id='showRequiredError#last'></span></div><div class='col-xs-12'><input id='last' size=15 class='required' type=text onblur='controller.check(event)'></div></div>";
+    var lastName = "<div class='row text-center prf_stup_fields'><div class='col-xs-12'>Last Name <span class='showRequiredError' id='showRequiredError#second'></span></div><div class='col-xs-12'><input id='last' size=15 class='required' type=text onblur='controller.check(event)'></div></div>";
 
     var dob = "<div class='row text-center prf_stup_fields'><div class='col-xs-12'>Date of Birth <span class='showRequiredError' id='showRequiredError#first'></span></div><div class='col-xs-12 text-center'>" + dt + mn + y + "</div></div>";
 
@@ -353,7 +307,7 @@ var view = {
 
     var reEnterPassword = "<div class='row text-center prf_stup_fields'><div class='col-xs-12'>Re-enter Password <span class='showRequiredError' id='showRequiredError#reEnterPassword'></span></div><div class='col-xs-12'><input class='required' id='reEnterPassword' size=15 type=password onblur='controller.check(event)'></div></div>";
 
-    document.getElementById('main').innerHTML = "<div class='col-xs-12' style='height:100%;overflow-y:auto;background-color:rgba(0,0,0,.5)'><div class='row' style=''><div class='col-xs-12'>" + firstName + lastName + dob + mobile + address + email + password + reEnterPassword + "</div></div><div class='row'><button class='col-xs-12'><div class='row text-center prf_stup_submit' style='background-color:#FF5722;color:white'><div class='col-xs-12' onclick='controller.checkAll()' style='border-radius:3px;'><h4>Submit</h4></div></div></button></div></div>"
+    document.getElementById('main').innerHTML = "<div class='col-xs-12' style='height:94%;overflow-y:auto;background-color:rgba(0,0,0,.5)'><div class='row' style='padding-left:10px;padding-right:10px'><div class='col-xs-12'>" + firstName + lastName + dob + mobile + address + email + password + reEnterPassword + "</div></div><div class='row' style='padding-left:10px;padding-right:10px'><div class='col-xs-12'><div class='row text-center prf_stup_fields' style='background-color:#FF5722;color:white'><div class='col-xs-12' onclick='controller.checkAll()' style='border-radius:3px;'><h4>Submit</h4></div></div></div></div></div>"
     var i = 0;
     document.getElementById('main').style.backgroundImage = "none";
 
@@ -362,7 +316,7 @@ var view = {
   showBatchOptionModal: function(e){
     var batch = e.target.id.split('#')[1];
     model.selectedBatch._id = batch;
-    document.getElementsByTagName('body')[0].innerHTML += "<div class='col-xs-12 modal' style='background-color:black' id='batchOptionModal'><div class='row text-center'><div class='col-xs-8 col-xs-offset-2' style='background-color:white;border-radius:7px;margin-top:20%;'><div class='row'><div class='col-xs-12' style='border-bottom:solid 1px rgba(20,20,20,.8)'><h3>Options</h3></div><div id='attendance#" + batch + "' class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)' onclick='controller.routes(event)'>Take Attendance</div><div id='score#" + batch + "' class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)' onclick='controller.routes(event)'>Add Score</div><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)' onclick='view.setScheduleModal()'>Set Schedule</div><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)' onclick='view.notifyClass()'>Notify class</div><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)'>Course Update</div></div></div></div><div class='row' style='margin-top:20px'><div class='col-xs-12 text-center' style='position:absolute;bottom:50px'><span class='glyphicon glyphicon-remove' style='font-size:24px;color:white' onclick='view.closeBatchOptionModal()'></span></div></div></div></div></div>";
+    document.getElementsByTagName('body')[0].innerHTML += "<div class='col-xs-12 modal' style='background-color:black' id='batchOptionModal'><div class='row text-center'><div class='col-xs-8 col-xs-offset-2' style='background-color:white;border-radius:7px;margin-top:20%;'><div class='row'><div class='col-xs-12' style='border-bottom:solid 1px rgba(20,20,20,.8)'><h3>Options</h3></div><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)' onclick='view.setScheduleModal()'>Analysis</div><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)' onclick='view.setScheduleModal()'>Set Schedule</div><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)' onclick='view.notifyClass()'>Notify class</div><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)'>Course Update</div></div></div></div><div class='row' style='margin-top:20px'><div class='col-xs-12 text-center' style='position:absolute;bottom:50px'><span class='glyphicon glyphicon-remove' style='font-size:24px;color:white' onclick='view.closeBatchOptionModal()'></span></div></div></div></div></div>";
     document.getElementById('batchOptionModal').style.display = "block";
   },
 

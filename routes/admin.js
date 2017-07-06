@@ -80,14 +80,14 @@ router.get('/getFacultyData/:id',function(req,res){
   })
 })
 
-router.get('/getBatchData/:college/:department/:batch',function(req,res){
+router.get('/getBatchData/:domain_name/:section/:batch',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
     if(!err){
       console.log("Class data requested.")
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(!err){
-          db.collection('classes').findOne({_id:req.params.college + '/' + req.params.department + '/' + req.params.batch},function(err,item){
+          db.collection('classes').findOne({_id:req.params.domain_name + '/' + req.params.section + '/' + req.params.batch},function(err,item){
             if(!err){
               res.json(item)
               db.close()
@@ -114,7 +114,7 @@ router.get('/getBatchData/:college/:department/:batch',function(req,res){
   })
 })
 
-router.post('/addnewbatch/:college/:department/:batch/:cls',function(req,res){
+router.post('/addnewbatch/:domain_name/:batch/:section/:cls/:school',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
     if(!err){
@@ -145,11 +145,12 @@ router.post('/addnewbatch/:college/:department/:batch/:cls',function(req,res){
           std.push(obj)
         }
         var class_data = {}
-        class_data._id = req.params.college + '/' + req.params.department + '/' + req.params.batch
+        class_data._id = req.params.domain_name + '/' + req.params.batch + '/' + req.params.section
         class_data.batch = req.params.batch
-        class_data.college = req.params.college
+        class_data.school = req.params.school
+        class_data.domain_name = req.params.domain_name
         class_data.class = req.params.cls
-        class_data.department = req.params.department
+        class_data.section = req.params.section
         class_data.students = std
         class_data.student_data = std
         class_data.prev_faculties = {}
@@ -163,7 +164,7 @@ router.post('/addnewbatch/:college/:department/:batch/:cls',function(req,res){
             res.end()
           } else {
             db.collection('classes').insert(class_data)
-            db.collection('admin').update({_id:decoded.name},{$addToSet:{"batches":{"batch":req.params.batch,"_id":class_data._id,"class":req.params.cls}}})
+            db.collection('admin').update({_id:decoded.name},{$addToSet:{"batches":{"batch":class_data.batch,"_id":class_data._id,"class":req.params.cls}}})
             db.close()
             res.status(200)
             res.end()
@@ -255,7 +256,7 @@ router.post('/assignFacultyNewBatch/:faculty_id',function(req,res){
   })
 })
 
-router.delete('/deassignbatch/:id/:college/:department/:batch',function(req,res){
+router.delete('/deassignbatch/:id/:domain_name/:section/:batch',function(req,res){
   console.log('De-Assign Faculty Batch request');
   var cookies = cookie.parse(req.headers.cookie || '')
   jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
@@ -269,7 +270,7 @@ router.delete('/deassignbatch/:id/:college/:department/:batch',function(req,res)
             if(!err){
               console.log(item)
               item.current_classes.forEach(function(x,i){
-                if(x._id ===  (req.params.college + '/' + req.params.department + '/' + req.params.batch) ){
+                if(x._id ===  (req.params.domain_name + '/' + req.params.section + '/' + req.params.batch) ){
                   classes_held = x["classes_held"]
                   subject = x["subject"]
                   console.log(classes_held)
@@ -279,8 +280,8 @@ router.delete('/deassignbatch/:id/:college/:department/:batch',function(req,res)
                     "subject": subject
                   }
                   obj["prev_faculties." + req.params.id] = y
-                  db.collection('faculty').update({_id:req.params.id},{$pull:{"current_classes":{"_id":req.params.college + '/' + req.params.department + '/' + req.params.batch }}})
-                  db.collection('classes').update({_id: req.params.college + '/' + req.params.department + '/' + req.params.batch},{$set:obj})
+                  db.collection('faculty').update({_id:req.params.id},{$pull:{"current_classes":{"_id":req.params.domain_name + '/' + req.params.section + '/' + req.params.batch }}})
+                  db.collection('classes').update({_id: req.params.domain_name + '/' + req.params.section + '/' + req.params.batch},{$set:obj})
                   console.log("added")
                   db.close()
                   res.status(200)
@@ -337,15 +338,15 @@ router.delete('/removefaculty/:id',function(req,res){
   })
 })
 
-router.delete('/removebatch/:college/:department/:batch',function(req,res){
+router.delete('/removebatch/:domain_name/:section/:batch',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
     if(!err){
       console.log("delete faculty requested.")
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(!err){
-          db.collection('classes').remove({_id:req.params.college + '/' + req.params.department + '/' + req.params.batch})
-          db.collection('admin').update({_id:decoded.name},{$pull:{"batches":{_id: req.params.college + '/' + req.params.department + '/' + req.params.batch}}})
+          db.collection('classes').remove({_id:req.params.domain_name + '/' + req.params.section + '/' + req.params.batch})
+          db.collection('admin').update({_id:decoded.name},{$pull:{"batches":{_id: req.params.domain_name + '/' + req.params.section + '/' + req.params.batch}}})
           console.log("removed")
           res.status(200)
           res.end()

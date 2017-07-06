@@ -23,7 +23,7 @@ var view = {
         absentFaculties += "</div></div></div></div></div></div>";
       }
 
-      var absents = "<div class='row'><div class='col-xs-9 col-xs-offset-2' style='background-color:white;margin-top:5px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='row'><div class='col-xs-12 text-danger' style='border-bottom:solid 1px rgba(160,160,160,.4)'><h3>Faculties with Number of Absents</h3></div></div><div class='row' style='padding-bottom:5px'><div class='col-xs-10 col-xs-offset-1' style='max-height:110px;padding-top:10px;padding-bottom:10px;overflow-y:auto'>";
+      var absents = "<div class='row'><div class='col-xs-9 col-xs-offset-2' style='background-color:white;margin-top:5px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='row'><div class='col-xs-12 text-danger' style='border-bottom:solid 1px rgba(160,160,160,.4)'><h3>Faculties with Number of Absents</h3></div></div><div class='row' style='padding-bottom:5px;padding-top:5px'><div class='col-xs-10 col-xs-offset-1' style='max-height:110px;overflow-y:auto'>";
       var t = model.info.faculties;
       t.sort(function(a,b){
         if(a.absent){
@@ -47,7 +47,7 @@ var view = {
           nm = x.name;
           abts = 0;
         }
-        absents += "<div class='row' style='padding-top:5px;padding-bottom:5px;overflow-y:auto;margin-top:5px;background-color:rgba(160,160,160,.6);border-radius:3px;text-transform:capitalize'><div class='col-xs-6' style='border-right:solid 1px white'>" + nm + "</div><div class='col-xs-6'>" + abts + "</div></div>";
+        absents += "<div class='row' style='padding-top:5px;padding-bottom:5px;overflow-y:auto;margin-top:5px;background-color:rgba(200,200,200,.5);border-radius:3px;text-transform:capitalize'><div class='col-xs-6' style='border-right:solid 1px white;font-weight:bold;color:rgb(70,70,70)'>" + nm + "</div><div class='col-xs-6'>" + abts + "</div></div>";
       })
       absents += "</div></div></div></div>";
       var msgs = [];
@@ -94,7 +94,7 @@ var view = {
 
       // Start of faculty Settings modal
 
-      document.getElementById("switch").innerHTML += "<div id='facultySettingModal' class='text-center modal col-sm-12'><div class='row' style='padding-top:100px;'><div class='col-sm-4 col-sm-offset-4 modalContent' style='padding:20px;font-size: 20px;'>Are you sure you want to remove this Faculty from department/college ?<br><div class='text-danger' style='font-size:16px;'>note- this removal will be permanent and you will loose all the faculty data</div></div></div><div class='row' style='padding-top:20px;'><div class='col-sm-4 col-sm-offset-4'><div class='row'><div class='col-sm-2 col-sm-offset-3 btn btn-danger' onclick='controller.deleteFaculty()'>Yes</div><div class='btn btn-success col-sm-2 col-sm-offset-2' onclick='view.closeFacultySettingModal()'>No</div></div></div></div></div>";
+      document.getElementById("switch").innerHTML += "<div id='facultySettingModal' class='text-center modal col-sm-12'><div class='row' style='padding-top:100px;'><div class='col-sm-4 col-sm-offset-4 modalContent' style='padding:20px;font-size: 20px;'>Are you sure you want to remove this Faculty from section/school ?<br><div class='text-danger' style='font-size:16px;'>note- this removal will be permanent and you will loose all the faculty data</div></div></div><div class='row' style='padding-top:20px;'><div class='col-sm-4 col-sm-offset-4'><div class='row'><div class='col-sm-2 col-sm-offset-3 btn btn-danger' onclick='controller.deleteFaculty()'>Yes</div><div class='btn btn-success col-sm-2 col-sm-offset-2' onclick='view.closeFacultySettingModal()'>No</div></div></div></div></div>";
 
       document.getElementById("switch").innerHTML += "<div id='deassignbatchModal' class='text-center modal col-sm-12'><div class='row' style='padding-top:100px;'><div class='col-sm-4 col-sm-offset-4 modalContent' style='padding:20px;font-size: 20px;'>Are you sure you want to De-assign Faculty this Batch?<br><div class='text-success' style='font-size:16px;'>note- You can however Re-assign Faculty this Batch and get the data back</div></div></div><div class='row' style='padding-top:20px;'><div class='col-sm-4 col-sm-offset-4'><div class='row'><div class='col-sm-2 col-sm-offset-3 btn btn-danger' onclick='controller.deassignbatch()'>Yes</div><div class='btn btn-success col-sm-2 col-sm-offset-2' onclick='view.closeDeassignBatchModal()'>No</div></div></div></div></div>";
 
@@ -133,7 +133,7 @@ var view = {
           names += "<div class='col-xs-3 faculty_name text-danger' id='" + x.id + "' onclick='controller.facultySelected(event)' style='margin-top:15px;margin-left:10px;border:solid 1px rgba(160,160,160,.8);box-shadow:2px 2px 5px rgba(160,160,160,.4);border-radius:3px'>" + x.name + "</div>";
       })
     }
-    var content = "<div class='col-sm-12 text-center'><div class='row' style='margin-top:15px'><div class='col-xs-4 col-xs-offset-4 faculty_name' style='font-weight:bold;border:solid 1px rgba(160,160,160,.8);box-shadow:2px 2px 5px rgba(160,160,160,.4);border-radius:3px;background-color:rgb(209, 35, 35);color:white' onclick='view.showAddFacultyModal()'> + Add New Faculty</div><div class='col-xs-1 col-xs-offset-1 glyphicon faculty_name glyphicon-arrow-left' style='font-weight:bold;border:solid 1px rgba(160,160,160,.8);box-shadow:2px 2px 5px rgba(160,160,160,.4);border-radius:3px;' onclick='controller.departmentData()'></div></div><div class='row' style='max-height:500px;overflow-y:auto;margin-top:15px;margin-left:50px'>" + names + "</div></div>";
+    var content = "<div class='col-sm-12 text-center'><div class='row' style='margin-top:15px'><div class='col-xs-4 col-xs-offset-4 faculty_name' style='font-weight:bold;border:solid 1px rgba(160,160,160,.8);box-shadow:2px 2px 5px rgba(160,160,160,.4);border-radius:3px;background-color:rgb(209, 35, 35);color:white' onclick='view.showAddFacultyModal()'> + Add New Faculty</div><div class='col-xs-1 col-xs-offset-1 glyphicon faculty_name glyphicon-arrow-left' style='font-weight:bold;border:solid 1px rgba(160,160,160,.8);box-shadow:2px 2px 5px rgba(160,160,160,.4);border-radius:3px;' onclick='controller.sectionData()'></div></div><div class='row' style='max-height:500px;overflow-y:auto;margin-top:15px;margin-left:50px'>" + names + "</div></div>";
     document.getElementById('report_section').innerHTML = content;
   },
 
@@ -150,7 +150,7 @@ var view = {
             names += "<div class='col-xs-2 faculty_name text-danger' id='" + x._id + "' onclick='controller.batchSelected(event)' style='margin-top:15px;border:solid 1px rgba(160,160,160,.8);box-shadow:2px 2px 5px rgba(160,160,160,.4);border-radius:3px;margin-left:10px'>" + x.class + "</div>";
         })
       }
-      var content = "<div class='col-sm-12 text-center'><div class='row' style='margin-top:15px'><div class='col-xs-4 col-xs-offset-4 faculty_name' style='font-weight:bold;background-color:rgb(209, 35, 35);border:solid 1px rgba(160,160,160,.8);box-shadow:2px 2px 5px rgba(160,160,160,.4);border-radius:3px;color:white' onclick='view.showAddBatchModal()'> + Add New Batch</div><div class='col-xs-1 col-xs-offset-1 glyphicon faculty_name glyphicon-arrow-left' style='font-weight:bold;border:solid 1px rgba(160,160,160,.8);box-shadow:2px 2px 5px rgba(160,160,160,.4);border-radius:3px;' onclick='controller.departmentData()'></div></div><div class='row' style='max-height:500px;overflow-y:auto;margin-top:15px'>" + names + "</div></div>";
+      var content = "<div class='col-sm-12 text-center'><div class='row' style='margin-top:15px'><div class='col-xs-4 col-xs-offset-4 faculty_name' style='font-weight:bold;background-color:rgb(209, 35, 35);border:solid 1px rgba(160,160,160,.8);box-shadow:2px 2px 5px rgba(160,160,160,.4);border-radius:3px;color:white' onclick='view.showAddBatchModal()'> + Add New Batch</div><div class='col-xs-1 col-xs-offset-1 glyphicon faculty_name glyphicon-arrow-left' style='font-weight:bold;border:solid 1px rgba(160,160,160,.8);box-shadow:2px 2px 5px rgba(160,160,160,.4);border-radius:3px;' onclick='controller.sectionData()'></div></div><div class='row' style='max-height:500px;overflow-y:auto;margin-top:15px'>" + names + "</div></div>";
       document.getElementById('report_section').innerHTML = content;
   },
 
@@ -374,7 +374,7 @@ var view = {
     }
     stri += "</select>";
     document.getElementById("switch").innerHTML += "<div id='addBatchModal' class='text-center modal col-sm-12'><div class='row'><div class='col-sm-8 col-sm-offset-2 modalContent'><div class='row modelHeader'><div class='col-sm-12'><h2>Create New Class</h2></div></div><hr><div class='row'><div class='col-xs-5 col-xs-offset-1'><img class='img-responsive' src='img/addBatchSample.JPG'></div><div class='col-xs-4 col-xs-offset-1'>upload .txt file containing data of each student of the Batch in the format given below <b>(Sample picture on the left)</b>,<br><br><code>Roll Number,Name,Mobile</code><br><br>where each student data should begin with new row.</div></div><br>" +
-    "<div class='row' style='margin-top:24px;'><div class='col-xs-12'><b>batch</b>: <input id='year' class='required' type='text' maxlength='4' size='4'> <span class='showRequiredError glyphicon glyphicon-asterisk' style='color:grey;font-size:12px'></span><br>(batch should be ending year for the batch. ex: if batch ending in year 2014, then '2014')</div><div class='col-xs-12' style='margin-top:10px;'><b>class</b>: " + stri + "</div><div class='col-xs-12' style='margin-top:10px;'><b>Section</b>: <input class='required' type='text' maxlength='4' size='4'> <span class='showRequiredError glyphicon glyphicon-asterisk' style='color:grey;font-size:12px'></span></div><div class='col-xs-4 col-xs-offset-5' style='margin-top:10px;'><input class='required' type='file' style='border-bottom:none;margin-top:10px;' accept='text/plain' name='student_list' id='student_list'></div><br></div></div><div class='col-xs-1 close' style='font-size:40px;font-weight:bold;cursor:pointer;padding:0px;' onclick='view.closeAddBatchModal()'>&times;</div></div><div class='row'><div type=button style='margin-top:25px;' class='col-xs-2 col-xs-offset-5'><button class=' btn btn-danger' onclick='controller.checkAll(1)'>Send</button></div></div></div>";
+    "<div class='row' style='margin-top:24px;'><div class='col-xs-12'><b>batch</b>: <input id='year' class='required' type='text' maxlength='4' size='4'> <span class='showRequiredError glyphicon glyphicon-asterisk' style='color:grey;font-size:12px'></span><br>(batch should be ending year for the batch. ex: if batch ending in year 2014, then '2014')</div><div class='col-xs-12' style='margin-top:10px;'><b>class</b>: " + stri + "</div><div class='col-xs-12' style='margin-top:10px;'><b>Section</b>: <input id='section' class='required' type='text' maxlength='4' size='4'> <span class='showRequiredError glyphicon glyphicon-asterisk' style='color:grey;font-size:12px'></span></div><div class='col-xs-4 col-xs-offset-5' style='margin-top:10px;'><input class='required' type='file' style='border-bottom:none;margin-top:10px;' accept='text/plain' name='student_list' id='student_list'></div><br></div></div><div class='col-xs-1 close' style='font-size:40px;font-weight:bold;cursor:pointer;padding:0px;' onclick='view.closeAddBatchModal()'>&times;</div></div><div class='row'><div type=button style='margin-top:25px;' class='col-xs-2 col-xs-offset-5'><button class=' btn btn-danger' onclick='controller.checkAll(1)'>Send</button></div></div></div>";
     document.getElementById("addBatchModal").style.display = "block" ;
   },
 
@@ -445,7 +445,7 @@ var view = {
   closeAddBatchModal: function(){
     document.getElementById("addBatchModal").style.display = "none" ;
     document.getElementById("addBatchModal").parentNode.removeChild(document.getElementById("addBatchModal"));
-    controller.departmentData();
+    controller.sectionData();
   },
 
   closeAssignNewBatchModal: function(n){
@@ -476,7 +476,7 @@ var view = {
     document.getElementById('addFacultyModal').style.display = "none";
     document.getElementById("addFacultyModal").parentNode.removeChild(document.getElementById("addFacultyModal"));
     if(n===1){
-      controller.departmentData();
+      controller.sectionData();
     }
   },
 
@@ -489,7 +489,7 @@ var view = {
   closeMessageFacultiesModal: function(){
     document.getElementById('messageFacultiesModal').style.display = "none";
     document.getElementById("messageFacultiesModal").parentNode.removeChild(document.getElementById("messageFacultiesModal"));
-    controller.departmentData();
+    controller.sectionData();
   },
 
   closeSendFacultySmsModal: function(){
