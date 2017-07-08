@@ -38,11 +38,12 @@ var controller = {
 
   facultySelected: function(e){
     e = e.target.id;
+    model.selectedFaculty = {};
     model.selectedFaculty._id = e;
-    controller.getFacultyData();
+    getFacultyData(0);
   },
 
-  getFacultyData: function(e){
+  getFacultyData: function(n){
     var d = new Date();
     d.setHours(0);
     d.setMinutes(0);
@@ -67,7 +68,7 @@ var controller = {
         } else {
           model.selectedFaculty.classes_today = "Not Set Yet";
         }
-        if(e === 2){
+        if(n === 1){
           controller.renderClassData2();
         } else {
           view.showSelectedFacultyData();
@@ -87,14 +88,15 @@ var controller = {
 
     var batchDataRequest = new XMLHttpRequest();
     batchDataRequest.onreadystatechange = function(){
-      var response = batchDataRequest.response;
       if(batchDataRequest.status === 200 && batchDataRequest.readyState === 4){
+        var response = batchDataRequest.response;
         response = JSON.parse(response);
-        if(i===1){
-          model.selectedBatch = response;
+        console.log(response);
+        model.selectedBatch = response;
+        if(i!=0){
           view.showClassData();
         } else {
-        view.renderBatchData(response,i);
+        view.renderBatchData();
         }
       } else if(batchDataRequest.status === 500 && batchDataRequest.readyState === 4){
         view.notifyUser("Internal Server Error",1);
@@ -384,9 +386,9 @@ var controller = {
     xhr.send(JSON.stringify(obj));
   },
 
-  batchSelected: function(e){
+  batchSelected: function(e,n){
     model.selectedBatch._id = e.target.id;
-    this.getBatchData(1);
+    this.getBatchData(n);
   },
 
   sendSMStoClass: function(){
@@ -462,7 +464,7 @@ function getFacultyData(n){
     controller.getFacultyData(n);
   } else {
     view.closeAssignNewBatchModal();
-    controller.getBatchData(2);
+    controller.getBatchData(1);
   }
 }
 

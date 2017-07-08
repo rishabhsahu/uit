@@ -1,7 +1,7 @@
 graph = {
-  batchPastWeekData: function(){
-    var classes_held = model.selectedBatch.classes_held;
-    classes_held.sort(function(a,b){
+  batchPastWeekData: function(e){
+    var classes_held = model.selectedFaculty.current_classes[e].classes_held;
+     classes_held = classes_held.sort(function(a,b){
       return a-b;
     })
 
@@ -12,13 +12,16 @@ graph = {
       var prsnt=0;
       var d = new Date(x);
       xd.push(d.getDate() + " " + model.months[d.getMonth()]);
-      model.studentAttendanceData.forEach(function(y,i){
-        if(y[model.selectedBatch.subject].attendance.indexOf(x)>-1){
-          prsnt++;
+      model.selectedBatch.student_data.forEach(function(y,i){
+        if(y[model.selectedSubject].absent){
+          if(y[model.selectedSubject].absent.indexOf(x)>-1){
+            prsnt++;
+          }
         }
       })
       yd.push(prsnt);
     })
+    console.log(yd);
     this.renderGraph(xd,yd);
   },
 
@@ -32,7 +35,7 @@ graph = {
     data: {
         labels: d1,
         datasets: [{
-            label: model.selectedBatch.class + "th / " + model.selectedFaculty.name + " / " + "Past Classes / Students Present",
+            label: model.selectedBatch.class + "th / " + model.selectedFaculty.name + " / " + "Past Classes / Students Absent",
             pointBackgroundColor:"rgb(63, 117, 132)",
             borderColor: 'rgb(53, 196, 191)',
             data: d2,
@@ -90,13 +93,19 @@ graph = {
           }
         })
       } else {
+        var abs;
+        if(model.selectedFaculty.absents){
+          abs = model.selectedFaculty.absents.length
+        } else {
+          abs = 0;
+        }
         var chart = new Chart(e,{
           type:"pie",
           data:{
             labels:["Taken","Not Taken"],
             datasets:[{
               label:"hello",
-              data: [x.classes_held.length,2],
+              data: [x.classes_held.length,abs],
               backgroundColor: ["rgb(91, 205, 247)","rgb(242, 60, 60)"]
             }]
           },
