@@ -13,7 +13,7 @@ router.get('/getDepartmentData',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   console.log(cookies)
   if(!cookie){
-    console.log(err)
+    errRequest("http://localhost:3000/error/nodejsErr/admin","cookies",err)
     res.status(500)
     res.end()
   } else {
@@ -24,22 +24,27 @@ router.get('/getDepartmentData',function(req,res){
           if(!err){
             db.collection('admin').update({_id:decoded.name},{$inc:{"access":1}})
             db.collection('admin').findOne({_id:decoded.name},function(err,item){
-              console.log(JSON.stringify(item))
-              res.setHeader('Content-type','application/json')
-              res.json(item)
-              db.close()
+              if(err){
+                errRequest("http://localhost:3000/error/mongoErr/admin","mongodb",err)
+                db.close()
+                res.status(404)
+                res.end()
+              } else {
+                console.log(JSON.stringify(item))
+                res.setHeader('Content-type','application/json')
+                res.json(item)
+                db.close()
+              }
             })
           } else {
-            console.log(err)
-            db.close()
-            res.status(500)
+            errRequest("http://localhost:3000/error/mongoErr/admin","mongodb",err)
+            res.status(404)
             res.end()
           }
         })
       } else {
-        console.log(err)
-        db.close()
-        res.status(500)
+        errRequest("http://localhost:3000/error/nodejsErr/admin","cookies",err)
+        res.status(401)
         res.end()
       }
     })
@@ -49,6 +54,11 @@ router.get('/getDepartmentData',function(req,res){
 router.get('/getFacultyData/:id',function(req,res){
   console.log('ajax request');
   var cookies = cookie.parse(req.headers.cookie || '')
+  if(!cookie){
+    errRequest("http://localhost:3000/error/nodejsErr/admin","cookies",err)
+    res.status(500)
+    res.end()
+  } else {
   jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
     if(!err){
       console.log("faculty data requested.")
@@ -58,14 +68,14 @@ router.get('/getFacultyData/:id',function(req,res){
             if(!err){
               res.json(item)
             } else {
-              console.log("document not found")
+              errRequest("http://localhost:3000/error/mongoErr/admin","mongodb",err)
               res.status(404)
               res.end()
             }
           })
           db.close()
         } else {
-          console.log("failed to connect to db")
+          errRequest("http://localhost:3000/error/mongoErr/admin","mongodb",err)
           db.close()
           db.close()
           res.status(500)
@@ -73,15 +83,21 @@ router.get('/getFacultyData/:id',function(req,res){
         }
       })
     } else {
-      console.log("failed to verify")
-      res.status(500)
+      errRequest("http://localhost:3000/error/nodejsErr/admin","jwt",err)
+      res.status(401)
       res.end()
     }
   })
+}
 })
 
 router.get('/getBatchData/:domain_name/:section/:batch',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
+  if(!cookie){
+    errRequest("http://localhost:3000/error/nodejsErr/admin","cookies",err)
+    res.status(500)
+    res.end()
+  } else {
   jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
     if(!err){
       console.log("Class data requested.")
@@ -92,7 +108,7 @@ router.get('/getBatchData/:domain_name/:section/:batch',function(req,res){
               res.json(item)
               db.close()
             } else {
-              console.log("document not found")
+              errRequest("http://localhost:3000/error/mongoErr/admin","mongodb",err)
               db.close()
               res.status(404)
               res.end()
@@ -107,15 +123,21 @@ router.get('/getBatchData/:domain_name/:section/:batch',function(req,res){
         }
       })
     } else {
-      console.log("failed to verify")
-      res.status(500)
+      errRequest("http://localhost:3000/error/nodejsErr/admin","jwt",err)
+      res.status(401)
       res.end()
     }
   })
+}
 })
 
 router.post('/addnewbatch/:domain_name/:batch/:section/:cls/:school',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
+  if(!cookie){
+    errRequest("http://localhost:3000/error/nodejsErr/admin","cookies",err)
+    res.status(500)
+    res.end()
+  } else {
   jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
     if(!err){
       var std = []
@@ -124,7 +146,7 @@ router.post('/addnewbatch/:domain_name/:batch/:section/:cls/:school',function(re
       form.uploadDir = root + "/data"
       form.parse(req,function(err,fields,files){
         if(err){
-          console.log(err)
+          errRequest("http://localhost:3000/error/nodejsErr/admin","formidable",err)
         } else {
           console.log(files)
         }
@@ -158,7 +180,7 @@ router.post('/addnewbatch/:domain_name/:batch/:section/:cls/:school',function(re
         console.log(class_data)
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
-            console.log(err)
+            errRequest("http://localhost:3000/error/mongoErr/admin","mongodb",err)
             db.close()
             res.status(500)
             res.end()
@@ -172,21 +194,27 @@ router.post('/addnewbatch/:domain_name/:batch/:section/:cls/:school',function(re
         })
       })
     } else {
-      console.log("failed to verify")
-      res.status(500)
+      errRequest("http://localhost:3000/error/nodejsErr/admin","jwt",err)
+      res.status(401)
       res.end()
     }
   })
+}
 })
 
 router.post('/addnewfaculty',function(req,res){
   console.log(req.body)
+  if(!cookie){
+    errRequest("http://localhost:3000/error/nodejsErr/admin","cookies",err)
+    res.status(500)
+    res.end()
+  } else {
   var cookies = cookie.parse(req.headers.cookie || '')
   jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
     if(!err){
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(err){
-          console.log(err)
+          errRequest("http://localhost:3000/error/mongoErr/admin","mongodb",err)
           db.close()
           res.status(500)
           res.end()
@@ -200,16 +228,22 @@ router.post('/addnewfaculty',function(req,res){
         }
       })
     } else {
-      console.log("failed to verify")
-      res.status(500)
+      errRequest("http://localhost:3000/error/nodejsErr/admin","jwt",err)
+      res.status(401)
       res.end()
     }
   })
+}
 })
 
 router.post('/assignFacultyNewBatch/:faculty_id',function(req,res){
   console.log('assignFacultyNewBatch request');
   var cookies = cookie.parse(req.headers.cookie || '')
+  if(!cookie){
+    errRequest("http://localhost:3000/error/nodejsErr/admin","cookies",err)
+    res.status(500)
+    res.end()
+  } else {
   jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
     if(!err){
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
@@ -235,30 +269,36 @@ router.post('/assignFacultyNewBatch/:faculty_id',function(req,res){
                 res.end()
               }
             } else {
-              console.log(err)
+              errRequest("http://localhost:3000/error/mongoErr/admin","mongodb",err)
               db.close()
-              res.status(500)
+              res.status(404)
               res.end()
             }
           })
         } else {
-          console.log("failed to connect to db")
+          errRequest("http://localhost:3000/error/mongoErr/admin","mongodb",err)
           db.close()
           res.status(500)
           res.end()
         }
       })
     } else {
-      console.log("failed to verify")
-      res.status(500)
+      errRequest("http://localhost:3000/error/nodejsErr/admin","jwt",err)
+      res.status(401)
       res.end()
     }
   })
+}
 })
 
 router.delete('/deassignbatch/:id/:domain_name/:section/:batch',function(req,res){
   console.log('De-Assign Faculty Batch request');
   var cookies = cookie.parse(req.headers.cookie || '')
+  if(!cookie){
+    errRequest("http://localhost:3000/error/nodejsErr/admin","cookies",err)
+    res.status(500)
+    res.end()
+  } else {
   jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
     if(!err){
       console.log("faculty data requested.")
@@ -289,29 +329,35 @@ router.delete('/deassignbatch/:id/:domain_name/:section/:batch',function(req,res
                 }
               })
             } else {
-              console.log(err)
+              errRequest("http://localhost:3000/error/mongoErr/admin","mongodb",err)
               db.close()
-              res.status(500)
+              res.status(404)
               res.end()
             }
           })
         } else {
-          console.log("failed to connect to db")
+          errRequest("http://localhost:3000/error/mongoErr/admin","mongodb",err)
           db.close()
           res.status(500)
           res.end()
         }
       })
     } else {
-      console.log("failed to verify")
-      res.status(500)
+      errRequest("http://localhost:3000/error/nodejsErr/admin","jwt",err)
+      res.status(401)
       res.end()
     }
   })
+}
 })
 
 router.delete('/removefaculty/:id',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
+  if(!cookie){
+    errRequest("http://localhost:3000/error/nodejsErr/admin","cookies",err)
+    res.status(500)
+    res.end()
+  } else {
   jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
     if(!err){
       console.log("delete faculty requested.")
@@ -324,22 +370,28 @@ router.delete('/removefaculty/:id',function(req,res){
           res.status(200)
           res.end()
         } else {
-          console.log("failed to connect to db")
+          errRequest("http://localhost:3000/error/mongoErr/admin","mongodb",err)
           db.close()
           res.status(500)
           res.end()
         }
       })
     } else {
-      console.log("failed to verify")
-      res.status(500)
+      errRequest("http://localhost:3000/error/nodejsErr/admin","jwt",err)
+      res.status(401)
       res.end()
     }
   })
+}
 })
 
 router.delete('/removebatch/:domain_name/:section/:batch',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
+  if(!cookie){
+    errRequest("http://localhost:3000/error/nodejsErr/admin","cookies",err)
+    res.status(500)
+    res.end()
+  } else {
   jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
     if(!err){
       console.log("delete faculty requested.")
@@ -352,18 +404,19 @@ router.delete('/removebatch/:domain_name/:section/:batch',function(req,res){
           res.end()
           db.close()
         } else {
-          console.log("failed to connect to db")
+          errRequest("http://localhost:3000/error/mongoErr/admin","mongodb",err)
           db.close()
           res.status(500)
           res.end()
         }
       })
     } else {
-      console.log("failed to verify")
-      res.status(500)
+      errRequest("http://localhost:3000/error/nodejsErr/admin","jwt",err)
+      res.status(401)
       res.end()
     }
   })
+}
 })
 
 module.exports = router

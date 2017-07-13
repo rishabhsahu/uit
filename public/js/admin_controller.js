@@ -163,20 +163,22 @@ var controller = {
     var stdnm = "";
     var cp,cl;
     model.selectedBatch.student_data.forEach(function(x,i){
-      if(x[sn]){
-        if(x[sn].absent){
-          cp = ch - x[sn].absent.length;
+      if(x.name && x.enroll_number){
+        if(x[sn]){
+          if(x[sn].absent){
+            cp = ch - x[sn].absent.length;
+          } else {
+            cp = ch;
+          }
         } else {
-          cp = ch;
+          cp = ch
         }
-      } else {
-        cp = ch
+        var t = cp/ch*100
+        if(isNaN(t)){
+          t=0;
+        }
+        stdnm += "<div class='row' style='padding-top:7px;padding-bottom:7px'><div class='col-xs-4'>" + x.name + "</div><div class='col-xs-4'>" + cp + "</div><div class='col-xs-4'>" + Math.ceil(t) + "</div></div>";
       }
-      var t = cp/ch*100
-      if(isNaN(t)){
-        t=0;
-      }
-      stdnm += "<div class='row' style='padding-top:7px;padding-bottom:7px'><div class='col-xs-4'>" + x.name + "</div><div class='col-xs-4'>" + cp + "</div><div class='col-xs-4'>" + Math.ceil(t) + "</div></div>";
     })
     if(ch === 0){
       cl = "rgb(160,160,160)"
@@ -455,6 +457,42 @@ var controller = {
         case 1:this.addNewBatch();
       }
     }
+  },
+
+  submitManualScore: function(){
+    var obj = {scores:{},mobiles:{}}
+    var els = document.getElementsByClassName('testscoreip');
+    Array.prototype.forEach.call(els,function(el){
+      if(el.value.length != 0){
+        obj.scores[el.id] = el.value;
+      } else {
+        obj.scores[el.id] = "A";
+      }
+      obj.mobiles[el.id] = el.getAttribute("mobile");
+      console.log(el.getAttribute("mobile"));
+    })
+    obj.testname = document.getElementById('testname').value;
+    obj.maxscore = document.getElementById('maxscore').value;
+    obj.subject = document.getElementById('subject').value;
+    obj.selectedBatch = model.selectedBatch._id;
+    obj.school = model.info.school;
+    obj.testdate = (new Date(Number(document.getElementById('testYear').value),Number(document.getElementById('testMonth').value - 1),Number(document.getElementById('testDate').value))).valueOf()
+    console.log(obj);
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function(){
+      if(xhr.readyState === 4){
+        if(xhr.status === 200){
+          view.closeAddTestScoreManually();
+          view.notifyUser("Test Score Saved on Database and Parents were Informed",1);
+        } else {
+            view.closeAddTestScoreManually();
+            view.notifyUser("Failed to Save Score on Database",0);
+        }
+      }
+    }
+    xhr.open("POST","http://localhost:3000/custom-testscore/add-test-score-manually",true);
+    xhr.setRequestHeader('Content-Type','application/json');
+    xhr.send(JSON.stringify(obj));
   }
 
 };

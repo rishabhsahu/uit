@@ -4,6 +4,7 @@ var jwt = require('jsonwebtoken')
 var mongo = require('mongodb').MongoClient
 var request = require('request')
 var authkey = "155975ATpoRPi5h593ea16c"
+var months = ["january","february","march","april","may","june","july","august","septermber","october","november","december"]
 
 router.post('/notifyclass',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
@@ -177,6 +178,40 @@ router.post('/sendsmstoclass',function(req,res){
           res.end()
         }
       })
+})
+
+router.post('/scorereport-admin',function(req,res){
+      var api_url = "http://api.msg91.com/api/sendhttp.php?"
+      var msg = "<?xml version='1.0' encoding='utf-8' standalone='yes'?><MESSAGE><AUTHKEY>" + authkey + "</AUTHKEY><ROUTE>4</ROUTE><COUNTRY>91</COUNTRY><SENDER>onivin</SENDER>"
+      var d = new Date(req.body.testdate)
+      for(var p in req.body.scores){
+        msg += "<SMS TEXT='"
+        if(req.body.scores[p] != "A"){
+          msg += "Dear Parent, in " + req.body.subject + "-Test that took place on " + d.toDateString() + ", Your child scored -  " + req.body.scores[p] + " , out of " + req.body.maxscore + " . From - " + req.body.school
+        } else {
+          msg += "Dear parent, your child was absent from " + req.body.subject + "-test, that took place on " + d.toDateString() + " . From - " + req.body.school
+        }
+        msg += "'><ADDRESS TO='" + req.body.mobiles[p] + "'></ADDRESS></SMS>"
+      }
+      msg += "</MESSAGE>"
+      console.log(msg);
+      request({
+        url: "https://control.msg91.com/api/v2/sendsms",
+        method:"POST",
+        body:msg,
+        headers: {
+    "Content-Type": "application/xml",
+    "authkey": authkey
+}
+      },function(err,resp,body){
+        if(!err){
+          console.log(body)
+            } else {
+              console.log(err)
+              res.status(504)
+              res.end()
+            }
+          })
 })
 
 router.post('/sendsmstofaculties',function(req,res){

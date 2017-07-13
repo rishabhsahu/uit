@@ -227,39 +227,41 @@ var view = {
     model.e = e;
     console.log(model.selectedBatch);
     model.selectedBatch.student_data.forEach(function(student,i){
-      var classesHeld = model.selectedFaculty.current_classes[e].classes_held.length;
-      if(classesHeld === 0){
-        d= "<span class='text-danger'>Yet to start</span>";
-      } else {
-        ch = classesHeld;
-        var fc = new Date(model.selectedFaculty.current_classes[e].classes_held[0]);
-        d = fc.getDate() + " " + model.months[fc.getMonth()] + ", " + fc.getFullYear();
+      if(student.name && student.enroll_number){
+        var classesHeld = model.selectedFaculty.current_classes[e].classes_held.length;
+        if(classesHeld === 0){
+          d= "<span class='text-danger'>Yet to start</span>";
+        } else {
+          ch = classesHeld;
+          var fc = new Date(model.selectedFaculty.current_classes[e].classes_held[0]);
+          d = fc.getDate() + " " + model.months[fc.getMonth()] + ", " + fc.getFullYear();
+        }
+        if(student[model.selectedFaculty.current_classes[e].subject] === undefined){
+           student[model.selectedFaculty.current_classes[e].subject] = {};
+         }
+
+         if(student[model.selectedFaculty.current_classes[e].subject].attendance === undefined){
+           student[model.selectedFaculty.current_classes[e].subject].attendance = [];
+         }
+
+         if(model.selectedFaculty.current_classes[e].classes_held.length > 1){
+           ch = model.selectedFaculty.current_classes[e].length;
+         }
+
+         if(student[model.selectedFaculty.current_classes[e].subject].absent){
+           var t = student[model.selectedFaculty.current_classes[e].subject].absent.length;
+         } else {
+           t=0;
+         }
+         count = ch - t;
+         if(ch===0){
+           pc=0;
+           count=0
+         } else {
+           var pc = Math.ceil(count/ch*100);
+         }
+         std += "<tr class='row text-center c'><td class='col-xs-4' style='font-size:12px;font-family:notosans'>" + student.name + "</td><td class='col-xs-4'>" + count + "</td><td>" + pc + "</td></tr>";
       }
-      if(student[model.selectedFaculty.current_classes[e].subject] === undefined){
-         student[model.selectedFaculty.current_classes[e].subject] = {};
-       }
-
-       if(student[model.selectedFaculty.current_classes[e].subject].attendance === undefined){
-         student[model.selectedFaculty.current_classes[e].subject].attendance = [];
-       }
-
-       if(model.selectedFaculty.current_classes[e].classes_held.length > 1){
-         ch = model.selectedFaculty.current_classes[e].length;
-       }
-
-       if(student[model.selectedFaculty.current_classes[e].subject].absent){
-         var t = student[model.selectedFaculty.current_classes[e].subject].absent.length;
-       } else {
-         t=0;
-       }
-       count = ch - t;
-       if(ch===0){
-         pc=0;
-         count=0
-       } else {
-         var pc = Math.ceil(count/ch*100);
-       }
-       std += "<tr class='row text-center c'><td class='col-xs-4' style='font-size:12px;font-family:notosans'>" + student.name + "</td><td class='col-xs-4'>" + count + "</td><td>" + pc + "</td></tr>";
     });
     var x = "<div class='row'><div class='col-xs-10 col-xs-offset-1' style='max-height:350px'><canvas id='7DayChart'></canvas></div></div><div class='row' style='margin-bottom:25px'><div class='col-sm-12' style='background-color:white;color:black;border-radius:5px;border:solid 1px rgba(160,160,160,.6)'>" + "<div class='row' style='padding-top:10px;padding-bottom:10px;background-color:white;color:rgb(70,70,70);border-radius:5px 5px 0px 0px;border-bottom:solid 1px rgba(160,160,160,.5)'>" +"<div class='col-xs-6 text-center' style='font-size:32px'>" + model.selectedFaculty.current_classes[e].subject + "</div><div class='col-xs-2 text-center' style='font-size:14px;font-size:18px;font-weight:bold;color:rgb(80,80,80)'>" + ch + " <span style='font-size:14px;color:rgb(120,120,120)'>class</span><br><span style='font-size:10px;color:rgba(40,40,40,.7);color:green'>taken</span></div><div class='col-xs-3 text-center' style='font-size:14px;font-size:16px;font-weight:bold;color:color:rgb(80,80,80)'>" + d + "<br><span style='font-size:10px;color:rgba(40,40,40,.7);color:green'>first class</span></div></div><div class='row text-center' style='padding-top:10px;padding-bottom:10px;background-color:white;color:rgb(70,70,70);border-bottom:solid 1px rgba(160,160,160,.5);font-weight:bold;'><div class='col-xs-4'>Name</div><div class='col-xs-4'>Classes Taken</div><div class='col-xs-4'>Percentage</div></div><div class='row' style='height:250px;overflow-y:auto;'><table class='col-xs-12 table-condensed table-striped'>" + std + "</table></div></div></div>";
     document.getElementById('central').innerHTML = x;
@@ -500,6 +502,18 @@ var view = {
     controller.getBatchData(1);
   },
 
+  closeCustomMessagesModal: function(){
+    document.getElementById('customMessagesModal').style.display = "none";
+    document.getElementById("customMessagesModal").parentNode.removeChild(document.getElementById("customMessagesModal"));
+    controller.getBatchData(1);
+  },
+
+  closeAddTestScoreManually: function(){
+    document.getElementById('addTestScoreManually').style.display = "none";
+    document.getElementById("addTestScoreManually").parentNode.removeChild(document.getElementById("addTestScoreManually"));
+    controller.getBatchData(1);
+  },
+
   closeMessageFacultiesModal: function(){
     document.getElementById('messageFacultiesModal').style.display = "none";
     document.getElementById("messageFacultiesModal").parentNode.removeChild(document.getElementById("messageFacultiesModal"));
@@ -573,7 +587,7 @@ var view = {
         subjects = ""
       }
 
-    var header_options = "<div class='col-xs-8 text-center' style='position:fixed;top:15px;right:120px;z-index:1;background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);cursor:pointer;font-weight:bold;color:rgb(110,110,110)'><div class='row'><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.assignNewSubject()'>New Subject</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.messageWholeClassModal()'>Message Whole Class</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)'>Message Selected</div><div class='col-xs-3'>Settings</div></div></div><div class='glyphicon glyphicon-arrow-left' style='position:fixed;right:20px;top:15px;padding:10px;background-color:white;border-radius:3px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);font-size:20px;color:rgb(70,70,70);cursor:pointer' onclick='view.showClasses()'></div>";
+    var header_options = "<div class='col-xs-8 text-center' style='position:fixed;top:15px;right:120px;z-index:1;background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);cursor:pointer;font-weight:bold;color:rgb(110,110,110)'><div class='row'><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.assignNewSubject()'>New Subject</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.messageWholeClassModal()'>Message Whole Class</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.customMessagesModal()'>Add Score</div><div class='col-xs-3'>Settings</div></div></div><div class='glyphicon glyphicon-arrow-left' style='position:fixed;right:20px;top:15px;padding:10px;background-color:white;border-radius:3px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);font-size:20px;color:rgb(70,70,70);cursor:pointer' onclick='view.showClasses()'></div>";
 
     var content = "<div class='col-xs-12 text-center' style='margin-bottom:15px'>" + "<div class='row' style='margin-bottom:15px'>" + header_options + "</div>" + "<div class='row'><div class='col-xs-12' style='margin-top:45px'>" + subjects + "</div></div><div class='row'><div style='overflow:none'>" + left + "</div>" + right + "</div></div>";
 
@@ -672,7 +686,9 @@ var view = {
     }
     var names = "";
     model.selectedBatch.students.forEach(function(x,i){
-      names += "<div class='col-xs-8 col-xs-offset-2 students' style='color:rgb(90,90,90);padding-top:10px;padding-bottom:10px;margin-top:3px;margin-bottom:3px;background-color:lightgrey;border-bottom:solid 1px rgba(160,160,160,.5);cursor:pointer;border-radius:5px' onclick='view.selectName(event,1)' id='" + x.enroll_number + "'>" + x.name + "</div>";
+      if(x.name && x.enroll_number){
+        names += "<div class='col-xs-8 col-xs-offset-2 students' style='color:rgb(90,90,90);padding-top:10px;padding-bottom:10px;margin-top:3px;margin-bottom:3px;background-color:lightgrey;border-bottom:solid 1px rgba(160,160,160,.5);cursor:pointer;border-radius:5px' onclick='view.selectName(event,1)' id='" + x.enroll_number + "'>" + x.name + "</div>";
+      }
     })
     document.getElementsByTagName('body')[0].innerHTML += "<div class='text-center col-xs-12 modal' id='messageClassModal' style='animation-name:modalDrop;animation-duration:.3s'><div class='row' style='margin-top:50px'><div class='col-xs-8 col-xs-offset-2' class='name_selection' style='background-color:white;border-radius:3px;padding-top:20px;padding-bottom:20px'><div class='row'><div class='col-xs-4' style='border-right: solid 1px rgba(200,200,200,1);'><div class='row' style='padding-top:10px;padding-bottom:10px;'><div class='col-xs-8 col-xs-offset-2' style='border-bottom:solid 1px rgba(200,200,200,.6);'><div class='row'><div class='col-xs-4 text-right'><input type='checkbox' name='selectAll' value='true' onclick='view.selectAll()'></div><div class='col-xs-8 text-left' style='color:rgb(110,110,110);font-size:18px;'>Select All</div></div></div></div><div id='names_list' class='row' style='height:250px;overflow-y:auto;padding-left:10px;padding-right:10px;margin-top:15px'>" + names + "</div></div><div class='col-xs-4' style='border-right: solid 1px rgba(200,200,200,1);'><div class='row' style='padding-top:10px;padding-bottom:10px;'><div class='col-xs-8 col-xs-offset-2' style='color:rgb(110,110,110);'><div class='row'><div class='col-xs-12' style='font-size:18px;border-bottom:solid 1px rgba(200,200,200,.6);'>Selected</div></div></div></div><div class='row' style='padding-top:15px'><div class='col-xs-8 col-xs-offset-2' id='selectedNames' style='height:250px;overflow-y:auto;'></div></div></div><div class='col-xs-4'><div class='row' style='padding-top:10px;padding-bottom:10px;'><div class='col-xs-8 col-xs-offset-2' style='color:rgb(110,110,110);'><div class='row'><div class='col-xs-12' style='font-size:18px;border-bottom:solid 1px rgba(200,200,200,.6);'>Text</div></div></div></div><div class='row' style='padding-top:15px'><div class='col-xs-8 col-xs-offset-2'><textarea id='SMSclasstext' placeholder='Enter Text Message' rows=10 cols=15 maxlength=160 style='border-radius:5px;'></textarea></div></div></div></div></div><div class='col-xs-1' style='font-size:28px;margin-left:20px;color:white;cursor:pointer' onclick='view.closeMessageClassModal()'><span class='glyphicon glyphicon-remove close'></span></div></div><div class='row' style='margin-top:50px'><button class='col-xs-2 col-xs-offset-5' style='background-color:rgb(30, 90, 188);padding-top:10px;padding-bottom:10px;border-radius:2px;font-size:18px;color:white;border:solid 1px rgba(90,90,90,.8);cursor:pointer;border:solid 1px rgb(239, 166, 33)' onclick='controller.sendSMStoClass()'>Send</button></div></div>";
     document.getElementById('messageClassModal').style.display = "block";
@@ -734,6 +750,57 @@ selectAll: function(){
     })
   }
   console.log(model.selectedMobiles);
+},
+
+customMessagesModal: function(){
+  document.getElementsByTagName('body')[0].innerHTML += "<div id='customMessagesModal' class='modal col-xs-12 text-center'><div class='row'><div class='col-xs-4 col-xs-offset-4' style='background-color:white;border-radius:2px;padding-top:20px;padding-bottom:5px;margin-top:20px'><div class='row'><div class='col-xs-12 text-danger' style='border-bottom: solid 1px rgb(160,160,160);padding-bottom:20px'><h1>How would you like to Create Score List ?</h1></div></div><div class='row' style='padding-top:10px;padding-bottom:10px;font-size:16px;border-bottom:Solid 1px rgb(200,200,200);cursor:pointer'><div class='col-xs-12' onclick='view.addTestScoreManually()' style='font-weight:bold'>Add Test Score Manually and Notify Parents</div></div><div class='row' style='padding-top:10px;font-size:16px;padding-bottom:10px;cursor:pointer'><div class='col-xs-12' style='font-weight:bold'>Upload Test Score Excel sheet and Notify Parents</div></div></div><div class='close' style='position:fixed;top:50px;right:100px;font-size:48px'><span class='glyphicon glyphicon-remove' onclick='view.closeCustomMessagesModal()'></span></div></div></div></div>";
+  document.getElementById('customMessagesModal').style.display = "block";
+},
+
+addTestScoreManually: function(){
+  document.getElementById('customMessagesModal').style.display = "none";
+  document.getElementById('customMessagesModal').parentNode.removeChild(document.getElementById('customMessagesModal'));
+  var dt = "<select id='testDate'>";
+  for(var i=1;i<32;i++){
+    dt += "<option value=" + i + ">" + i + "</option>";
+  }
+  dt += "</select>";
+  var mn = "<select id='testMonth'>";
+  for(var i=1;i<13;i++){
+    mn += "<option value=" + i + ">" + i + "</option>";
+  }
+  mn += "</select>";
+  var yn = Number((new Date()).getFullYear());
+  ynm = yn-1;
+  var y = "<select id='testYear'><option value=" + yn + ">" + yn + "</option><option value=" + ynm + ">" + ynm + "</option></select>";
+  var studentList = "<div class='row' style='margin-top:50px;margin-bottom:50px;'><div class='col-xs-10 col-xs-offset-1'><div class='row'><div class='col-xs-8 col-xs-offset-2 text-danger' style='padding-top:20px;padding-bottom:20px;border-radius:5px;border:solid 1px #d9534f;background-color:rgba(237, 239, 242,.5)'>*Note - If student was Absent from the test, then leave the input form-field empty</div></div>";
+  model.selectedBatch.students.forEach(function(x,i){
+    if(x.name && x.enroll_number){
+      studentList += "<div class='row' style='padding-top:10px;padding-bottom:10px;font-size:18px;margin-top:20px;'><div class='col-xs-6 text-right' style='padding-top:5px;color:rgb(70,70,70)'>" + x.name + "</div><div class='col-xs-6 text-left'><input mobile='" + x.mobile + "' type=text id='" + x.enroll_number + "' class='testscoreip' oninput='view.checkScore(event)'></div></div>";
+    }
+  })
+  studentList += "</div></div>";
+  subjectList = "";
+  model.selectedBatch.current_faculties.forEach(function(x,i){
+    for(var a in x){
+      subjectList += "<option value=" + a + ">" + a + "</option>";
+    }
+  })
+  document.getElementsByTagName('body')[0].innerHTML += "<div id='addTestScoreManually' class='modal col-xs-12 text-center'><div class='row'><div class='col-xs-8 col-xs-offset-2' style='max-height:80%;overflow-y:auto;background-color:white;border-radius:10px'><div class='row'><div class='col-xs-6 col-xs-offset-3 text-primary' style='padding-top:20px;padding-bottom:20px;font-size:32px;border-bottom:solid 1px rgb(160,160,160)'>Add Test score Manually</div></div><div class='row'><div class='col-xs-6 col-xs-offset-3'><div class='row' style='font-size:18px;margin-top:20px;'><div class='col-xs-6'>Test Name</div><div class='col-xs-6'><input type=text id='testname'></div></div><div class='row' style='font-size:18px;margin-top:20px;'><div class='col-xs-6'>Max-score</div><div class='col-xs-6'><input type=text id='maxscore' onblur='view.setSize()'></div></div><div class='row' style='font-size:18px;margin-top:20px;'><div class='col-xs-6'>Test Date</div><div class='col-xs-6'>" + dt + mn + y + "</div></div><div class='row' style='font-size:18px;margin-top:20px;'><div class='col-xs-6'>Subject</div><div class='col-xs-6'><select id='subject'>" + subjectList + "</select></div></div></div></div>" + studentList + "</div><div class='close' style='position:fixed;top:50px;right:50px;font-size:48px'><span class='glyphicon glyphicon-remove' onclick='view.closeAddTestScoreManually()'></span></div></div><div class='row' style='padding-top:50px;'><div class='col-xs-4 col-xs-offset-4'><button class='btn btn-danger' onclick='controller.submitManualScore()'>Save and Notify</button></div></div></div>";
+  document.getElementById('addTestScoreManually').style.display = "block";
+},
+
+setSize: function(){
+  Array.prototype.forEach.call(document.getElementsByClassName('testscoreip'),function(el){
+     el.setAttribute('maxlength',document.getElementById('maxscore').value.length);
+  })
+},
+
+checkScore: function(e){
+  var current_id = e.target.id;
+  if(document.getElementById(current_id).value != Number(document.getElementById(current_id).value)){
+    document.getElementById(current_id).value = document.getElementById(current_id).value.substr(0,document.getElementById(current_id).value.length-1);
+  }
 }
 
 };
