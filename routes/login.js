@@ -14,50 +14,69 @@ router.post('/',function(req,res){
       errRequest("http://localhost:4000/errors/mongoErr","mongodb",err)
     } else {
       console.log("connected to mongodb for authentication")
-      if(req.body.username.indexOf(".admin") === -1){
-        db.collection("faculty").findOne({_id:username},function(err,item){
-          if(err){
-            errRequest("http://localhost:4000/errors/mongoErr","mongodb",err)
-            db.close()
+      if(req.body.password.indexOf("T-") > -1){
+        db.collection('faculty').findOne({_id:username,otp:password},{username:1},function(err,item){
+          if(!err){
+            res.status(202)
+            res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
+            res.render('faculty_mobile')
           } else {
-            if(item == null || item == undefined){
-              res.send("invalid login")
-              db.close()
-            } else {
-              console.log(item)
-              if(item.password == req.body.password){
-                res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
-                res.render('faculty_mobile')
-                db.close()
-              } else {
-                res.send("invalid login")
-                db.close()
-              }
-            }
+            db.close()
+            res.status(401)
+            res.end()
           }
         })
       } else {
-        db.collection("admin").findOne({_id:username},function(err,item){
-          if(err){
-            errRequest("http://localhost:4000/errors/mongoErr","mongodb",err)
-            db.close()
-          } else {
-            if(item == null || item == undefined){
-              res.send("invalid login")
+        if(req.body.username.indexOf(".admin") === -1){
+          db.collection("faculty").findOne({_id:username},function(err,item){
+            if(err){
+              errRequest("http://localhost:4000/errors/mongoErr","mongodb",err)
               db.close()
             } else {
-              console.log(item)
-              if(item.password == req.body.password){
-                res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
-                res.render('admin_home',{title:"",user:username})
+              if(item == null || item == undefined){
                 db.close()
+                res.status(401)
+                res.end()
               } else {
-                res.send("invalid login")
-                db.close()
+                console.log(item)
+                if(item.password == req.body.password){
+                  res.status(202)
+                  res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
+                  res.render('faculty_mobile')
+                  db.close()
+                } else {
+                  db.close()
+                  res.status(401)
+                  res.end()
+                }
               }
             }
-          }
-        })
+          })
+        } else {
+          db.collection("admin").findOne({_id:username},function(err,item){
+            if(err){
+              errRequest("http://localhost:4000/errors/mongoErr","mongodb",err)
+              db.close()
+            } else {
+              if(item == null || item == undefined){
+                res.send("invalid login")
+                db.close()
+              } else {
+                console.log(item)
+                if(item.password == req.body.password){
+                  res.status(202)
+                  res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
+                  res.render('admin_home',{title:"",user:username})
+                  db.close()
+                } else {
+                  db.close()
+                  res.status(401)
+                  res.end()
+                }
+              }
+            }
+          })
+        }
       }
 
     }

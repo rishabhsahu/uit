@@ -103,6 +103,7 @@
 				document.getElementById('loginModal').style.display = "block";
 				document.getElementsByClassName('lm')[0].style.display = "none";
 			}
+
 			var count = 0;
 			var cl = ["rgb(244, 65, 65)","rgb(244, 98, 65)","rgb(82, 221, 183)","rgb(180, 92, 239)","rgb(234, 77, 207)"];
 			var H = ["Manage Faculties","Manage Classes","Take Attendance","Add Score","Notify Parents"];
@@ -153,6 +154,24 @@
 				document.getElementById('main').style.animationDuration = "";
 				setTimeout(changeText,3000);
 			}
+
+			function sendLogin(){
+				var obj = {};
+				obj.username = document.getElementById('username').value
+				obj.password = document.getElementById('password').value
+				var xhr = new XMLHttpRequest();
+				xhr.onreadystatechange = function(){
+					if(xhr.readyState === 4 && xhr.status === 401 ){
+						document.getElementById('messageFolder').innerHTML = "<span class='text-danger'>Invalid Username/Password</span>";
+					} else if(xhr.readyState === 4 && xhr.status === 202){
+						document.location = "http://localhost:3000";
+					}
+				}
+				xhr.open('POST','http://localhost:3000',true);
+				xhr.setRequestHeader('Content-Type','application/json');
+				xhr.send(JSON.stringify(obj));
+			}
+
 			window.onload = function(){
 				if(window.innerWidth<960){
 					document.getElementById('wl').style.paddingTop = "30px";
@@ -184,29 +203,25 @@
 		</div>
 		<button class="btn btn-danger" style="background-color:white;color:rgb(66, 134, 244);font-weight:bold;position:absolute;bottom:20px;right:40px;border-radius:2px" onclick="showLogin()">LOGIN BETA</button>
 		<div id="loginModal" class="col-xs-12 modal" style="animation-name:modalDrop;animation-duration:.3s;">
-				<div class='row'>
-					<div class='col-xs-12 col-md-12 text-center' style="color:red;margin-top:10px;margin-bottom:10px" id="messageFolder"></div>
-				</div>
 					<div class="row">
 						<div class="col-xs-8 col-xs-offset-2 col-sm-4 col-sm-offset-4" style="border-radius:5px;background-color:white;border: solid 1px rgb(160,160,160)">
-							<form action="http://localhost:3000" method="POST" class="form">
-								<div class='row'>
+							<div class='row'>
+									<div class='col-xs-8 col-xs-offset-2 col-sm-8 col-sm-offset-2  text-center' style="background-color:rgba(230,230,230,.6);border:solid 1px rgb(160,160,160);border-radius:5px;padding-top:10px;padding-bottom:10px;margin-top:20px;" id="messageFolder"><span class=' text-primary'>Login to Continue</span></div>
 									<div class='col-xs-12 col-sm-12' id='login'><br>
-										<div class='row text-center' style="text-transform:bold;color: rgb(10,10,10);text-transform:bold;font-size:20px;padding-top:10px;padding-bottom:10px">
-											<div class="colx-s-12">username</div>
-											<div class="col-xs-12 text-center"><input type='text' name='username' id='username' size=15></div>
+										<div class='row text-center' style="text-transform:bold;color: rgb(70,70,70);text-transform:bold;font-size:18px;padding-top:5px;padding-bottom:10px">
+											<div class="col-xs-6" style='padding-top:10px'>username</div>
+											<div class="col-xs-6 text-center"><input type='text' name='username' id='username' size=15></div>
 										</div>
-										<div class='row text-center' style="text-transform:bold;color: rgb(10,10,10);text-transform:bold;font-size:20px;padding-top:10px;padding-bottom:10px">
-											<div class="col-xs-12">password</div>
-											<div class="col-xs-12"><input type='password' name='password' id='password' size=15></div>
+										<div class='row text-center' style="text-transform:bold;color: rgb(70,70,70);text-transform:bold;font-size:18px;padding-top:10px;padding-bottom:10px">
+											<div class="col-xs-6" style='padding-top:10px'>password</div>
+											<div class="col-xs-6"><input type='password' name='password' id='password' size=15></div>
 										</div>
 
 										<div class="col-xs-12">
-											<p class='text-center'><button class="btn btn-primary">Submit</button></p>
+											<p class='text-center'><button class="btn btn-primary" onclick='sendLogin()'>Submit</button></p>
 										</div>
 									</div>
 								</div>
-							</form>
 						</div>
 					</div>
 		</div>
