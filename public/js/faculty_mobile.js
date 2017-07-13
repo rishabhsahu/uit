@@ -1,75 +1,78 @@
 var view = {
   loadHome: function(){
-
-      document.getElementById('mobile-home-section').style.color = "black";
-      document.getElementById('mobile-report-section').style.color = "grey";
-      document.getElementById('mobile-personal-section').style.color = "grey";
-      var d = new Date()
-      d.setHours(0)
-      d.setMinutes(0)
-      d.setSeconds(0)
-      d.setMilliseconds(0)
-      var status = "white";
-      var absent = "";
-
-        if(model.personalInfo.absent && model.personalInfo.absent.length != 0){
-          if(model.personalInfo.absent.indexOf(d.valueOf())>-1){
-            absent = "<div class='col-xs-12'><div class='row' id='batch_list_header' style='margin-top:20px;margin-bottom:20px;border-radius:3px'><div class='col-xs-12'><span style='color:rgb(110,110,110);font-size:22px'>Todays status</span></div></div></div><div class='col-xs-12' style='border-radius:3px;font-size:18px;border:solid 1px rgb(239, 62, 62);box-shadow:0px 1px 10px rgba(160,160,160,.8);background-color:white;color:rgb(239, 62, 62);padding-top:10px;padding-bottom:10px;'><div class='row' style='margin-top:3px;margin-bottom:15px;'><div class='col-xs-12'>You marked yourself Absent/Busy for today</div></div></div><div class='col-xs-12' style='border-radius:3px;font-size:18px;border:solid 1px rgba(110,110,110,.45);background-color:#0D47A1;color:white;margin-top:3px;padding-top:10px;padding-bottom:10px'><div class='row'><div class='col-xs-12'>Mark Present</div></div></div>";
-            status = "rgb(239, 62, 62);color:white";
-          } else {
-            absent = "<div class='col-xs-12' style='background-color:white;border-radius:3px;border:solid 1px rgba(160,160,160,.6);box-shadow:0px 1px 10px rgba(160,160,160,.8);padding-top:10px;padding-bottom:10px'><div class='row'><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-danger' onclick='view.showAbsentOption()'>Absent</div></div><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-primary' onclick=''>Present</div></div></div></div>";
-            status = "white;color:rgb(70,70,70)";
-          }
-        } else {
-          absent = "<div class='col-xs-12' style='border-radius:3px;border:solid 1px rgba(160,160,160,.6);box-shadow:0px 1px 10px rgba(160,160,160,.8);padding-top:10px;padding-bottom:10px;background-color:white'><div class='row'><div class='col-xs-12'><div class='row'><div class='col-xs-12' style='padding-top:5px;padding-bottom:5px;margin-bottom:10px;font-size:14px'>What is your status about Today</div></div><div class='row'><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-danger' onclick='view.showAbsentOption()'>Absent</div></div><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-primary' onclick=''>Present</div></div></div></div></div></div>";
-        }
-
-        var content = "<div style='padding-left:10px;padding-right:10px;animation-name:homeSec;animation-duration:.25s;animation-timing-function:ease-out'><div class='col-xs-12' style='border-radius:3px;margin-bottom:5px;padding-top:5px;padding-bottom:5px;margin-top:5px;border:solid 1px rgba(160,160,160,.6);box-shadow:0px 1px 5px rgba(200,200,200,1);background-color:" + status + ";border: solid 1px rgba(160,160,160,.5);font-size:16px;text-transform:capitalize;font-size:18px'><span style='text-transform:lowercase'>" + model.personalInfo.school_id + "</span> / " + model.personalInfo.name + "</div><div class='col-xs-12'><div class='row' id='home_section'></div></div><div class='col-xs-12' id='mainX' style='margin-top:5px'><div></div></div>";
-
-      document.getElementById('main').innerHTML = content;
-      var ctd = "";
-      if(model.classes_today.length != 0 ){
-        ctd = "<div class='row'><div class='col-xs-12' style='color:rgb(110,110,110);padding-top:10px;border-radius:2px 2px 0 0;padding-bottom:10px;font-size:24px;border-bottom: 1px solid rgba(200,200,200,.5)'>Classes Today - " + model.classes_today.length + "</div></div><div class='row' style='margin-top:5px;margin-bottom:5px'><div class='col-xs-12'><div class='row'><div class='col-xs-6'><h5 style='border-bottom:solid 1px rgba(160,160,160,.6);padding-bottom:10px'>period</h5></div><div class=col-xs-6><h5 style='border-bottom:solid 1px rgba(160,160,160,.6);padding-bottom:10px'>class</h5></div></div><div class='col-xs-12' style='max-height:80px;overflow-y:auto'>";
-        model.classes_today.forEach(function(c,n){
-          var th;
-          if(c.class>3){
-            th = "<span style='font-size:16px'>th</span>";
-          } else if(c.class == "KG-1" || c.class == "KG-2"){
-            th = "";
-          } else {
-            switch(c.class){
-              case "1": th = "<span style='font-size:16px'>st</span>"; break;
-              case "2": th = "<span style='font-size:16px'>nd</span>"; break;
-              case "3": th = "<span style='font-size:16px'>rd</span>"; break;
-            }
-          }
-          var pr;
-          if(c.period>3){
-            pr = "<span style='font-size:16px;color:rgb(80,80,80)'>th</span>";
-          } else if(c.period == "KG-1" || c.period == "KG-2"){
-            pr = "";
-          } else {
-            switch(c.period){
-              case "1": pr = "<span style='font-size:16px'>st</span>"; break;
-              case "2": pr = "<span style='font-size:16px'>nd</span>"; break;
-              case "3": pr = "<span style='font-size:16px'>rd</span>"; break;
-            }
-          }
-          ctd += "<div class='row' style='padding-top:5px;padding-bottom:5px;font-size:16px;color:white'><div class='col-xs-4 col-xs-offset-1' style='background-color:rgba(160,160,160,.6);border-radius:2px;padding-top:2px;padding-bottom:2px'>" + c.period + pr + "</div><div class='col-xs-4 col-xs-offset-2' style='background-color:rgba(160,160,160,.6);border-radius:2px;padding-top:2px;padding-bottom:2px'>" + c.class + th + "</div></div>";
-        })
-        ctd += "</div></div></div></div>";
+      if(model.personalInfo.profileSetUp === 0){
+          view.showPersonal();
       } else {
-        ctd = "<div class='row' style='padding-top:10px;padding-bottom:10px'><div class='col-xs-12' style='font-size:20px;margin-top:5px;margin-bottom:5px;color:rgb(70,70,70)'>! Schedule Not Yet Set</div><div class='col-xs-12'>set up now</div></div></div>";
+        document.getElementById('mobile-home-section').style.color = "black";
+        document.getElementById('mobile-report-section').style.color = "grey";
+        document.getElementById('mobile-personal-section').style.color = "grey";
+        var d = new Date()
+        d.setHours(0)
+        d.setMinutes(0)
+        d.setSeconds(0)
+        d.setMilliseconds(0)
+        var status = "white";
+        var absent = "";
+
+          if(model.personalInfo.absent && model.personalInfo.absent.length != 0){
+            if(model.personalInfo.absent.indexOf(d.valueOf())>-1){
+              absent = "<div class='col-xs-12'><div class='row' id='batch_list_header' style='margin-top:20px;margin-bottom:20px;border-radius:3px'><div class='col-xs-12'><span style='color:rgb(110,110,110);font-size:22px'>Todays status</span></div></div></div><div class='col-xs-12' style='border-radius:3px;font-size:18px;border:solid 1px rgb(239, 62, 62);box-shadow:0px 1px 10px rgba(160,160,160,.8);background-color:white;color:rgb(239, 62, 62);padding-top:10px;padding-bottom:10px;'><div class='row' style='margin-top:3px;margin-bottom:15px;'><div class='col-xs-12'>You marked yourself Absent/Busy for today</div></div></div><div class='col-xs-12' style='border-radius:3px;font-size:18px;border:solid 1px rgba(110,110,110,.45);background-color:#0D47A1;color:white;margin-top:3px;padding-top:10px;padding-bottom:10px'><div class='row'><div class='col-xs-12'>Mark Present</div></div></div>";
+              status = "rgb(239, 62, 62);color:white";
+            } else {
+              absent = "<div class='col-xs-12' style='background-color:white;border-radius:3px;border:solid 1px rgba(160,160,160,.6);box-shadow:0px 1px 10px rgba(160,160,160,.8);padding-top:10px;padding-bottom:10px'><div class='row'><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-danger' onclick='view.showAbsentOption()'>Absent</div></div><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-primary' onclick=''>Present</div></div></div></div>";
+              status = "white;color:rgb(70,70,70)";
+            }
+          } else {
+            absent = "<div class='col-xs-12' style='border-radius:3px;border:solid 1px rgba(160,160,160,.6);box-shadow:0px 1px 10px rgba(160,160,160,.8);padding-top:10px;padding-bottom:10px;background-color:white'><div class='row'><div class='col-xs-12'><div class='row'><div class='col-xs-12' style='padding-top:5px;padding-bottom:5px;margin-bottom:10px;font-size:14px'>What is your status about Today</div></div><div class='row'><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-danger' onclick='view.showAbsentOption()'>Absent</div></div><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-primary' onclick=''>Present</div></div></div></div></div></div>";
+          }
+
+          var content = "<div style='padding-left:10px;padding-right:10px;animation-name:homeSec;animation-duration:.25s;animation-timing-function:ease-out'><div class='col-xs-12' style='border-radius:3px;margin-bottom:5px;padding-top:5px;padding-bottom:5px;margin-top:5px;border:solid 1px rgba(160,160,160,.6);box-shadow:0px 1px 5px rgba(200,200,200,1);background-color:" + status + ";border: solid 1px rgba(160,160,160,.5);font-size:16px;text-transform:capitalize;font-size:18px'><span style='text-transform:lowercase'>" + model.personalInfo.school_id + "</span> / " + model.personalInfo.name + "</div><div class='col-xs-12'><div class='row' id='home_section'></div></div><div class='col-xs-12' id='mainX' style='margin-top:5px'><div></div></div>";
+
+        document.getElementById('main').innerHTML = content;
+        var ctd = "";
+        if(model.classes_today.length != 0 ){
+          ctd = "<div class='row'><div class='col-xs-12' style='color:rgb(110,110,110);padding-top:10px;border-radius:2px 2px 0 0;padding-bottom:10px;font-size:24px;border-bottom: 1px solid rgba(200,200,200,.5)'>Classes Today - " + model.classes_today.length + "</div></div><div class='row' style='margin-top:5px;margin-bottom:5px'><div class='col-xs-12'><div class='row'><div class='col-xs-6'><h5 style='border-bottom:solid 1px rgba(160,160,160,.6);padding-bottom:10px'>period</h5></div><div class=col-xs-6><h5 style='border-bottom:solid 1px rgba(160,160,160,.6);padding-bottom:10px'>class</h5></div></div><div class='col-xs-12' style='max-height:80px;overflow-y:auto'>";
+          model.classes_today.forEach(function(c,n){
+            var th;
+            if(c.class>3){
+              th = "<span style='font-size:16px'>th</span>";
+            } else if(c.class == "KG-1" || c.class == "KG-2"){
+              th = "";
+            } else {
+              switch(c.class){
+                case "1": th = "<span style='font-size:16px'>st</span>"; break;
+                case "2": th = "<span style='font-size:16px'>nd</span>"; break;
+                case "3": th = "<span style='font-size:16px'>rd</span>"; break;
+              }
+            }
+            var pr;
+            if(c.period>3){
+              pr = "<span style='font-size:16px;color:rgb(80,80,80)'>th</span>";
+            } else if(c.period == "KG-1" || c.period == "KG-2"){
+              pr = "";
+            } else {
+              switch(c.period){
+                case "1": pr = "<span style='font-size:16px'>st</span>"; break;
+                case "2": pr = "<span style='font-size:16px'>nd</span>"; break;
+                case "3": pr = "<span style='font-size:16px'>rd</span>"; break;
+              }
+            }
+            ctd += "<div class='row' style='padding-top:5px;padding-bottom:5px;font-size:16px;color:white'><div class='col-xs-4 col-xs-offset-1' style='background-color:rgba(160,160,160,.6);border-radius:2px;padding-top:2px;padding-bottom:2px'>" + c.period + pr + "</div><div class='col-xs-4 col-xs-offset-2' style='background-color:rgba(160,160,160,.6);border-radius:2px;padding-top:2px;padding-bottom:2px'>" + c.class + th + "</div></div>";
+          })
+          ctd += "</div></div></div></div>";
+        } else {
+          ctd = "<div class='row' style='padding-top:10px;padding-bottom:10px'><div class='col-xs-12' style='font-size:20px;margin-top:5px;margin-bottom:5px;color:rgb(70,70,70)'>! Schedule Not Yet Set</div><div class='col-xs-12'>set up now</div></div></div>";
+        }
+        console.log(model);
+
+        var content2 = "<div class='col-xs-12' style='border-radius:2px;margin-bottom:5px;background-color:white;border:solid 1px rgba(160,160,160,.6);box-shadow:0px 1px 5px rgba(200,200,200,1)'>" + ctd + absent;
+        document.getElementById('home_section').innerHTML = content2;
+        content = "<div id='notifyUser' class='notif-modal'><div class='row text-center'><div class='col-xs-8 col-xs-offset-2' style='opacity:.95;border-radius:3px;padding-top:5px;padding-bottom:5px' id='notifText'></div></div></div><div id='notifyError' class='col-xs-12 modal'><div class='row text-center' style='padding-top:120px'><div class='col-xs-8 col-xs-offset-2' style='padding-top:10px;padding-bottom:10px;;border-radius:3px;background-color:white' id='notifText2'></div></div></div>";
+        document.getElementsByTagName('body')[0].innerHTML += content;
+        document.getElementById('main').style.overflowY = "auto";
+        this.loadReportSection();
+
       }
-      console.log(model);
-
-      var content2 = "<div class='col-xs-12' style='border-radius:2px;margin-bottom:5px;background-color:white;border:solid 1px rgba(160,160,160,.6);box-shadow:0px 1px 5px rgba(200,200,200,1)'>" + ctd + absent;
-      document.getElementById('home_section').innerHTML = content2;
-      content = "<div id='notifyUser' class='notif-modal'><div class='row text-center'><div class='col-xs-8 col-xs-offset-2' style='opacity:.95;border-radius:3px;padding-top:5px;padding-bottom:5px' id='notifText'></div></div></div><div id='notifyError' class='col-xs-12 modal'><div class='row text-center' style='padding-top:120px'><div class='col-xs-8 col-xs-offset-2' style='padding-top:10px;padding-bottom:10px;;border-radius:3px;background-color:white' id='notifText2'></div></div></div>";
-      document.getElementsByTagName('body')[0].innerHTML += content;
-      document.getElementById('main').style.overflowY = "auto";
-      this.loadReportSection();
-
   },
 
   showDownloadOptions: function(){
