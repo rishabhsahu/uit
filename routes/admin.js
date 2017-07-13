@@ -7,6 +7,7 @@ var formidable = require('formidable')
 var fs = require('fs')
 var path = require('path')
 var root = __dirname
+var request = require('request')
 
 router.get('/getDepartmentData',function(req,res){
   console.log("admin connected")
@@ -219,8 +220,24 @@ router.post('/addnewfaculty',function(req,res){
           res.status(500)
           res.end()
         } else {
+          var d = (new Date()).valueOf().toString()
+          req.body.otp = "T-" + d.substr(0,d.length-6)
           db.collection('faculty').insert(req.body)
           db.collection('admin').update({_id:decoded.name},{$addToSet:{"faculties":{"id": req.body._id,"name": req.body.name,"recent_messages":{},"total_messages":{}}}})
+          request({
+            url:'http://localhost:3000/sendsms/facultyotp',
+            body: {name:req.body.name,username:req.body._id,mobile:req.body.mobile,otp:req.body.otp,school:req.body.school},
+            json:true,
+            method:'POST'
+          },function(err,resp,body){
+            if(!err && resp.status === 200){
+              res.status(201)
+              res.end()
+            } else {
+              res.status(500)
+              res.end()
+            }
+          })
           console.log('new faculty added')
           res.status(200)
           res.end()

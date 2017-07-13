@@ -62,10 +62,10 @@ router.post("/smsfaculty",function(req,res){
   jwt.verify(cookie.user,"uit attendace login",function(err,decoded){
     if(!err){
       var api_url = "http://api.msg91.com/api/sendhttp.php?"
-      api_url = "authkey=" + authkey + "&mobiles=" + req.body.mobile.toString() + "&message=" + encodeURIComponent(req.body.text + "\nsent by " + req.body._id.split('@')[1]) + "&sender=onivin&route=4"
+      api_url += "authkey=" + authkey + "&mobiles=" + req.body.mobile.toString() + "&message=" + encodeURIComponent(req.body.text + "\nsent by " + req.body._id.split('@')[1]) + "&sender=onivin&route=4"
       request({
         method:'get',
-        url: url
+        url: api_url
       },function(err,resp,body){
         if(!err){
           mongo.connect('mongodb://localhost:27018/data',function(err,db){
@@ -74,6 +74,7 @@ router.post("/smsfaculty",function(req,res){
               q.sms_sent_faculty[req.body.faculty][0] = 1
               db.collection('admin').update({'_id':req.body.user_id},{$inc:q})
               db.close()
+              console.log(body)
               res.status(200)
               res.end()
             } else {
@@ -90,6 +91,25 @@ router.post("/smsfaculty",function(req,res){
       })
     }
   })
+})
+
+router.post("/facultyotp",function(req,res){
+      var api_url = "http://api.msg91.com/api/sendhttp.php?"
+      api_url += "authkey=" + authkey + "&mobiles=" + req.body.mobile.toString() + "&message=" + encodeURIComponent("Mr./Mrs. " + req.body.name + ", you were registered on oniv.in by " + req.body.school + ". Your login credentials are as follows\n" + "Username - " + req.body.username + ",\nOTP - " + req.body.otp + "\nPlease visit oniv.in to complete the registration process") + "&sender=onivin&route=4"
+      request({
+        method:'get',
+        url: api_url
+      },function(err,resp,body){
+        if(!err){
+          console.log(body)
+          res.status(200)
+          res.end()
+        } else {
+          console.log(err)
+          res.status(500)
+          res.end()
+        }
+      })
 })
 
 router.post('/messageselected',function(req,res){

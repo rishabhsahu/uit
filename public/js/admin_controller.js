@@ -202,7 +202,7 @@ var controller = {
     var obj = {};
     obj.name = document.getElementById('Name').value;
       obj["_id"] = document.getElementById('Name').value.replace(" ","") + "@" + model.info.domain_name;
-      obj.password = document.getElementById('Password').value;
+      obj.mobile = document.getElementById('Mobile').value;
       obj.school = model.info.school;
       obj.domain_name = model.info.domain_name;
       obj.section = model.info.section;
@@ -212,13 +212,13 @@ var controller = {
       var newFacultyData = new XMLHttpRequest();
 
       newFacultyData.onreadystatechange = function(){
-        if(newFacultyData.status === 200 && newFacultyData.readyState === 4 ){
+        if(newFacultyData.status === 201 && newFacultyData.readyState === 4 ){
           view.closeAddFacultyModal(1)
-          view.notifyUser("Faculty Added",1);
+          view.notifyUser("Faculty Registered",1);
         } else if(newFacultyData.status === 500 && newFacultyData.readyState === 4){
           view.closeAddFacultyModal(1)
           view.notifyUser("Internal Server Error",0);
-        } else if(newFacultyData.status != 200 && newFacultyData.status !== 500 && newFacultyData.readyState === 4){
+        } else if(newFacultyData.status != 201 && newFacultyData.status !== 500 && newFacultyData.readyState === 4){
           view.closeAddFacultyModal(1)
           view.notifyUser("Enexpected error occured",1);
         }
@@ -248,7 +248,7 @@ var controller = {
         view.notifyUser("Internal Server Error Occured while creating Batch",0);
       } else if(newBatchData.status != 200 && newBatchData.status !== 500 && newBatchData.readyState === 4){
         view.closeAddBatchModal()
-        view.notifyUser("Faculty Added",5);
+        view.notifyUser("Faculty Registered",5);
         controller.sectionData();
       }
     }
