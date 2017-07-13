@@ -1,6 +1,7 @@
 
 var controller = {
   absent: {students:[]},
+  markpresent:0,
 
   facultyData: function(){
     document.getElementById("main").innerHTML = "";
@@ -92,17 +93,18 @@ var controller = {
 
 routes: function(e){
   model.route = e.target.id.split('#')[0];
-  var _id = e.target.id.split('#')[1];
-  model.selectedBatch._id = _id;
+  var id = e.target.id.split('#')[1];
+  model.selectedBatch = [];
+  model.selectedBatch._id = id;
   model.personalInfo.current_classes.forEach(function(x,i){
-    if( x._id === _id){
+    if( x._id === id){
       model.selectedBatch = model.personalInfo.current_classes[i];
     }
   })
   console.log(model.route);
   switch(model.route){
     case 'attendance':
-      document.getElementById('batchOptionModal').style.display = "none";
+      view.closeBatchOptionModal();
       controller.getStudentList();
       break;
     case 'report': controller.getReport();
@@ -117,20 +119,43 @@ takeAttendance: function(){
 
   var name = "";
   model.students.forEach(function(student,i){
-    if(controller.absent.students.indexOf(student.enroll_number)<0){
-      name += "<div onclick='controller.markAbsent(event)' class='col-xs-12 text-left' style='background-color:lightgreen;text-transform:capitalize;color:grey;border-bottom:solid 1px rgba(160,160,160,.4);padding-top:10px;padding-bottom:10px;cursor:pointer' " + "id=" + student.enroll_number + ">" + student.name + "<br>" + student.enroll_number +"</div>";
-    } else {
-      name += "<div onclick='controller.markAbsent(event)' class='col-xs-12 text-left' style='text-transform:capitalize;color:black;background-color:rgb(239, 108, 88);padding-top:10px;padding-bottom:10px;cursor:pointer' " + "id=" + student.enroll_number + ">" + student.name + "<br>" + student.enroll_number +"</div>";
+    if(student.name && student.enroll_number){
+      if(controller.absent.students.indexOf(student.enroll_number)<0){
+        name += "<div onclick='controller.markAbsent(event)' class='col-xs-12 text-left student' style='background-color:lightgreen;text-transform:capitalize;color:grey;border-bottom:solid 1px rgba(160,160,160,.4);padding-top:10px;padding-bottom:10px;cursor:pointer' " + "id=" + student.enroll_number + ">" + student.name + "<br>" + student.enroll_number +"</div>";
+      } else {
+        name += "<div onclick='controller.markAbsent(event)' class='col-xs-12 text-left student' style='text-transform:capitalize;color:black;background-color:rgb(239, 108, 88);padding-top:10px;padding-bottom:10px;cursor:pointer' " + "id=" + student.enroll_number + ">" + student.name + "<br>" + student.enroll_number +"</div>";
+      }
     }
   })
-  document.getElementById("main").innerHTML = "<div id='counter' onclick='controller.clearList()' style='cursor:pointer' onclick=''><div style='width:20px;height:20px;' id='count'>" + controller.absent.students.length + "</div></div><div id='attendance-options' style='cursor:pointer' onclick='view.showAttendanceOptions()'><div class='glyphicon glyphicon-calendar' style='width:20px;height:20px;color:black'></div></div><div class='col-xs-12 batches_box' id='attendance-box'><div class='row' id='student_list_box' style='background-color:white'>" + name +"</div></div></div><div id='send-button' onclick='controller.submitData()'><span style='padding:15px;background-color:rgba(56,103,211,1);border-radius:30px;border:solid 1px grey;cursor:pointer' class='glyphicon glyphicon-send'></span></div><div id='send-message-selected' onclick='controller.sendMessageSelectedModal()'><span style='padding:15px;background-color:white;border-radius:50%;border:solid 1px grey;cursor:pointer;box-shadow: 0px 8px 10px rgba(0,0,0,.4);' class='glyphicon glyphicon-envelope'></span></div>";
+  document.getElementById("main").innerHTML = "<div id='counter' onclick='controller.clearList()' style='cursor:pointer' onclick=''><div style='width:20px;height:20px;' id='count'>" + controller.absent.students.length + "</div></div><div id='attendance-options' style='cursor:pointer' onclick='view.showAttendanceOptions()'><div class='glyphicon glyphicon-calendar' style='width:20px;height:20px;color:black'></div></div><div id='inverse-button' style='cursor:pointer' onclick='controller.inverse()'><div class='glyphicon glyphicon-list-alt' style='width:20px;height:20px;color:black'></div></div><div class='col-xs-12 batches_box' id='attendance-box'><div class='row' id='student_list_box' style='background-color:white'>" + name +"</div></div></div><div id='send-button' onclick='controller.submitData()'><span style='padding:15px;background-color:rgba(56,103,211,1);border-radius:30px;border:solid 1px grey;cursor:pointer' class='glyphicon glyphicon-send'></span></div><div id='send-message-selected' onclick='controller.sendMessageSelectedModal()'><span style='padding:15px;background-color:white;border-radius:50%;border:solid 1px grey;cursor:pointer;box-shadow: 0px 8px 10px rgba(0,0,0,.4);' class='glyphicon glyphicon-envelope'></span></div>";
   document.getElementById('main').innerHTML += "<div class='modal col-xs-12' id='attendance-options-modal' style='background-color: rgba(0,0,0,.9)'><div style='margin-top: 100px' class='row'><hr class='col-xs-8 col-xs-offset-2'><br><br><h3 style='color:white'>Select a New Date</h3><br><div class='col-xs-12'><select id='allDates'></select></div><div class='col-xs-12'><select id='allMonth'></select></div><div class='col-xs-12'><select id='allYear'></select></div></div><div class='col-xs-12' style='font-size:20px;color:white;margin-top:20px'><div class='btn btn-danger' onclick='controller.dateSelected2()'>Select</div></div></div></div>";
 
 },
 
+inverse: function(){
+  this.absent.students = [];
+  var els = document.getElementsByClassName('student');
+  if(this.markpresent === 0){
+    this.markpresent = 1;
+    model.students.forEach(function(x,i){
+      if(x.name && x.enroll_number){
+        document.getElementById(x.enroll_number).style.backgroundColor = "rgb(239, 108, 88)";
+        controller.absent.students.push(x.enroll_number);
+        document.getElementById(x.enroll_number).style.color = "black";
+      }
+    })
+  } else {
+    this.markpresent = 0;
+    Array.prototype.forEach.call(els,function(el,i){
+        el.style.backgroundColor = "lightgreen";
+        el.style.color = "grey";
+    })
+  }
+},
+
 clearList: function(){
-  controller.absent.students = [];
-  controller.takeAttendance();
+  this.absent.students = [];
+  this.takeAttendance();
 },
 
 markAbsent: function(e){
@@ -220,7 +245,7 @@ getReport: function(){
       console.log(model.reportData);
       var content2 = "<div class='modal col-xs-12 text-center' id='downloadsOptionModal'><div class='row' style='animation-name: pushup;animation-duration:.25s;position:fixed;bottom:0;height:50%;width:100%;background-color:white;border-radius: 10px'><div class='col-xs-12'><div class='row' style='margin-bottom:15px;'><div class='col-xs-12' style='border-bottom: 1px solid grey'><h3>Select list<span style='position:absolute;right: 10%;font-size: 26px;color:rgb(239, 108, 88);cursor:pointer' onclick='view.closeDownloadListModal()'>&times;</span></h3></div><div class='col-xs-12' style='margin-top:10px'><div class='row' style='margin-top:10px'><div class='col-xs-12'><a href='http://localhost:3000/download/attendanceOverview/" + model.selectedBatch._id + "/" + model.personalInfo._id + "/" + model.selectedBatch.subject + "' target='_blank' class='btn btn-default'>Attendance Report ( Overview )</a></div></div></div></div></div></div></div>";
       document.getElementsByTagName('body')[0].innerHTML += content2;
-      var x = "<div id='downloads' onclick='view.showDownloadOptions()'><span class='glyphicon glyphicon-download' style='font-size:20px;padding:5px;'></span></div><div class='row' style='overflow-x: hidden'><div class='col-xs-12' id='student_list_box'>";
+      var x = "<div id='downloads' onclick='view.showDownloadOptions()'><span class='glyphicon glyphicon-download' style='font-size:20px;padding:5px;'></span></div><div class='row' style='overflow-x: hidden;margin-right:0px'><div class='col-xs-12' id='student_list_box'>";
       var dcs = 1;
 
       reportData.student_data.forEach(function(student){
@@ -240,14 +265,18 @@ getReport: function(){
 
         var tests = "";
         if(student[model.selectedBatch.subject].hasOwnProperty('scores')){
-          tests = "<div class='row'><div class='col-xs-3' style='margin-top:15px'>";
-          student[model.selectedBatch.subject]["scores"].forEach(function(m,n){
-            tests += "<label class='label label-warning' style='color:white;margin-right:5px;'>" + m.test_name + "-" + m.score + "</label>"
+          tests = "<div class='row text-left'><div class='col-xs-12' style='padding-left:0px;'>";
+          var ts = student[model.selectedBatch.subject]["scores"];
+          ts = student[model.selectedBatch.subject]["scores"].slice(-2);
+          ts.forEach(function(m,n){
+            tests += "<label class='col-xs-5 label label-warning' style='margin-top:10px;margin-left:5px;font-size:12px'>" + m.test_name + "-" + m.score + "</label>"
           })
           tests += "</div></div>";
         } else {
         }
-           x += "<div class='row'><div class='col-xs-10 col-xs-offset-1' style='border:solid 1px lightgrey;padding-top:5px;padding-bottom:5px;margin-top:10px;cursor:pointer;background-color:white;border:solid 1px rgba(160,160,160,.8);box-shadow:0px 2px 10px rgba(160,160,160,.8);border-radius:3px;font-family:Roboto'><div class='row text-left'><div class='col-xs-12'><span class='' style='font-size:16px;text-transform:capitalize;'><b>" + student.name + "</b></span></div></div><div class='row'><div class='col-xs-8'><div class='row text-left'><div class='col-xs-12' style='font-size:12px'>" + student.enroll_number + "</div><br><div class='col-xs-12'>" + count + "/" + dcs + " <div class='label label-success'>" + Math.ceil((count/dcs)*100) + "</div> " + tests + " </div></div></div><div class='col-xs-4 glyphicon glyphicon-envelope' style='font-size:18px;color:rgb(10,10,10)'></div></div></div></div>";
+           if(student.name && student.enroll_number){
+             x += "<div class='row'><div class='col-xs-10 col-xs-offset-1' style='border:solid 1px lightgrey;padding-top:5px;padding-bottom:10px;margin-top:10px;cursor:pointer;background-color:white;border:solid 1px rgba(160,160,160,.5);box-shadow:0px 1px 20px rgba(160,160,160,.5);border-radius:3px;font-family:Roboto'><div class='row text-left'><div class='col-xs-12'><span class='' style='font-size:16px;text-transform:capitalize;'><b>" + student.name + "</b></span></div></div><div class='row'><div class='col-xs-8'><div class='row text-left'><div class='col-xs-12' style='font-size:12px'>" + student.enroll_number + "</div><br><div class='col-xs-12'>" + count + "/" + dcs + " <div class='label label-success'>" + Math.ceil((count/dcs)*100) + "</div> " + tests + " </div></div></div><div class='col-xs-4 glyphicon glyphicon-envelope' style='margin-top:20px;font-size:18px;color:rgb(70,70,70)'></div></div></div></div>";
+           }
       })
       view.showReport(x);
     } else if(requestReport.status === 504 && requestReport.readyState === 4){
