@@ -221,7 +221,7 @@ router.post('/addnewfaculty',function(req,res){
           res.end()
         } else {
           var d = (new Date()).valueOf().toString()
-          req.body.otp = "T-" + d.substr(0,d.length-6)
+          req.body.otp = "T-" + d.substr(d.length,d.length-6)
           db.collection('faculty').insert(req.body)
           db.collection('admin').update({_id:decoded.name},{$addToSet:{"faculties":{"id": req.body._id,"name": req.body.name,"recent_messages":{},"total_messages":{}}}})
           request({
@@ -230,10 +230,11 @@ router.post('/addnewfaculty',function(req,res){
             json:true,
             method:'POST'
           },function(err,resp,body){
-            if(!err && resp.status === 200){
-              res.status(201)
+            if(!err){
+              res.status(200)
               res.end()
             } else {
+              console.log(body)
               res.status(500)
               res.end()
             }
