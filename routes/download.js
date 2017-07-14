@@ -226,4 +226,78 @@ router.get('/attendanceDetailed/:school/:batch/:section/:faculty_id/:subject',fu
 
 */
 
+router.get('/examscores/all/:school/:batch/:section',function(req,res){
+  var cookies = cookie.parse(req.headers.cookie || '')
+  jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+    if(!err){
+      mongo.connect('mongodb://localhost:27018/data',function(err,db){
+        if(!err){
+          db.collection('classes').findOne({_id:req.params.school + '/' + req.params.batch + '/' + req.params.section},{"student_data":1,"current_faculties":1},function(err,item){
+            if(!err){
+              var wb = new xl.Workbook()
+              var style1 = wb.createStyle({font: {color: '#4277f4',size: 12},numberFormat: '$#,##0.00; ($#,##0.00); -'})
+              var style2 = wb.createStyle({font: {color: '#e52424',size: 12},numberFormat: '$#,##0.00; ($#,##0.00); -'})
+              var style3 = wb.createStyle({font: {color: '#252526',size: 12},numberFormat: '$#,##0.00; ($#,##0.00); -'})
+              var ws = {}
+              if(item.current_faculties.length>0){
+                item.current_faculties.forEach(function(sub){
+                  ws[Object.keys(sub)[0]] = wb.addWorksheet(Object.keys(sub)[0])
+                  ws[Object.keys(sub)[0]].cell(1,1).string('Enrollment Number').style(style3)
+                  ws[Object.keys(sub)[0]].cell(1,2).string('Name').style(style3)
+                  ws[Object.keys(sub)[0]].cell(1,3).string(' ')
+                })
+              }
+              item.student_data.forEach(function(s,n){
+                if(s.name && s.enroll_number){
+                  Object.keys(ws).forEach(function(sb,i){
+                    ws[sb].cell(3+n,1).string(s.enroll_number).style(style1)
+                    ws[sb].column(1).setWidth(25)
+                    ws[sb].cell(3+n,2).string(s.name).style(style2)
+                    ws[sb].column(2).setWidth(25)
+                    ws[sb].cell(3+n,3).string("")
+                      if(s.hasOwnProperty(sb) && s[sb].hasOwnProperty('scores')){
+                        if(n===0){
+                          s[sb].scores.forEach(function(dl,dt){
+                            ws[sb].cell(1,4+dt).string("Test - " + dl.test_name)
+                            ws[sb].cell(2,4+dt).string((new Date(Number(dl.test_id.split('/')[3]))).toDateString())
+                            ws[sb].column(4+dt).setWidth(15)
+                          })
+                        }
+                        s[sb].scores.forEach(function(ts,tn){
+                          ws[sb].cell(3+n,4+tn).string(ts.score).style(style3)
+                        })
+                      }
+                  })
+                }
+              })
+
+              wb.write(__dirname + '/xlxs/examscores-all/' + req.params.school + '-' + req.params.batch + '-' + req.params.section + '[Exam-Scores].xlxs',function(err,stats){
+                if(!err){
+                  res.setHeader('Content-Type','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                  res.setHeader('Content-Disposition','attachment; filename=' + req.params.school + '-' + req.params.batch + '-' + req.params.section + '[Exam-Scores].xlxs')
+                  fs.createReadStream(__dirname + '/xlxs/examscores-all/' + req.params.school + '-' + req.params.batch + '-' + req.params.section + '[Exam-Scores].xlxs').pipe(res)
+                } else {
+                  console.log(err)
+                  db.close()
+                  res.status(500)
+                  res.end()
+                }
+              })
+
+            } else {
+              db.close()
+              console.log(err)
+              res.status(404)
+              res.end()
+            }
+          })
+        } else {
+          res.status(500)
+          res.end()
+        }
+      })
+    }
+  })
+})
+
 module.exports = router

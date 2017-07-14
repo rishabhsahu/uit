@@ -562,7 +562,7 @@ var view = {
         case "3": th = "<span style='font-size:24px;color:rgb(80,80,80)'>rd</span>"; break;
       }
     }
-    var right = "<div class='col-xs-2' style='position:fixed;right:45px;margin-top:50px;'><div class='row'><div class='col-xs-12'><div class='row' style='background-color:white;border-radius:3px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Class</h4></div><div class='col-xs-12 text-primary' style='font-size:300%;'>" + model.selectedBatch.class + th + "</div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Strength</h4></div><div class='col-xs-12' style='font-size:48px;color:rgb(66, 206, 244)'>" + model.selectedBatch.students.length + "</div></div></div></div></div>";
+    var right = "<div class='col-xs-2' style='position:fixed;right:45px;margin-top:50px;'><div class='row'><div class='col-xs-12'><div class='row' style='background-color:white;border-radius:3px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Class</h4></div><div class='col-xs-12 text-primary' style='font-size:300%;'>" + model.selectedBatch.class + th + "</div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Strength</h4></div><div class='col-xs-12' style='font-size:48px;color:rgb(66, 206, 244)'>" + model.selectedBatch.students.length + "</div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Data/Reports</h4></div><div class='col-xs-12' style='font-size:48px;color:rgb(66, 206, 244)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(190,190,190);font-size:12px;cursor:not-allowed;padding-top:5px;padding-bottom:5px;color:rgb(80,80,80)'><a href='http://localhost:3000/download/examscores/all/" + model.selectedBatch._id + "' target='_blank'>Download</a></div><div class='col-xs-12' style='font-size:12px;cursor:not-allowed;padding-top:5px;padding-bottom:5px;color:rgb(80,80,80)'>Save to Google Drive</div></div></div></div></div></div></div>";
     console.log(model);
       if(model.selectedBatch.current_faculties.length != 0){
         var subjects = "<div class='row' style='margin-top:25px'><div class='col-xs-11 col-xs-offset-1'><div class='row'>";
@@ -806,6 +806,17 @@ checkScore: function(e){
 notifyParents: function(){
   document.getElementsByTagName('body')[0].innerHTML += "<div class='modal col-xs-12 text-center' id='notifyParentsModal' style='padding-top:100px'><div class='row'><div class='col-xs-4 col-xs-offset-4' style='background-color:white;border-radius:2px'><div class='row' style='cursor:pointer'><div class='col-xs-12' style='font-size:20px;padding-top:10px;padding-bottom:10px;rgb(70,70,70);border-bottom:solid 1px rgb(200,200,200)'>Select Names</div><div class='col-xs-12' style='font-size:20px;padding-top:10px;padding-bottom:10px;rgb(70,70,70)'>Upload List of Numbers</div></div></div></div></div>";
   document.getElementById('notifyParentsModal').style.display = "block";
+},
+
+reportIssues: function(){
+  document.getElementsByTagName('body')[0].innerHTML += "<div class='col-xs-12 modal text-center' id='reportIssueModal' style='padding-top:120px;'><div class='row'><div class='col-xs-4 col-xs-offset-4' style='background-color:white;border-radius:3px'><div class='row' style='color:rgb(70,70,70);border-bottom:solid 1px rgb(200,200,200)'><div class='col-xs-12'><h2>Report Issue</h2></div></div><div class='row' style='padding-top:20px;padding-bottom:20px'><div class='col-xs-12'><textarea rows=5 cols=30 id='issue' placeholder='Write about the issue'></textarea></div></div></div></div><div class='row' style='padding-top:20px'><div class='col-xs-2 col-xs-offset-5'><button class='btn btn-danger' onclick='controller.submitIssue()'>submit</button></div></div></div>";
+  document.getElementById('reportIssueModal').style.display = "block";
+},
+
+closeReportIssueModal: function(){
+    document.getElementById('reportIssueModal').style.display = "none";
+    document.getElementById("reportIssueModal").parentNode.removeChild(document.getElementById("reportIssueModal"));
+    controller.sectionData();
 }
 
 };

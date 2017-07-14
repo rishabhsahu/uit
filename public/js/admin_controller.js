@@ -212,15 +212,15 @@ var controller = {
       var newFacultyData = new XMLHttpRequest();
 
       newFacultyData.onreadystatechange = function(){
-        if(newFacultyData.status === 201 && newFacultyData.readyState === 4 ){
+        if(newFacultyData.status === 200 && newFacultyData.readyState === 4 ){
           view.closeAddFacultyModal(1)
           view.notifyUser("Faculty Registered",1);
         } else if(newFacultyData.status === 500 && newFacultyData.readyState === 4){
           view.closeAddFacultyModal(1)
           view.notifyUser("Internal Server Error",0);
-        } else if(newFacultyData.status != 201 && newFacultyData.status !== 500 && newFacultyData.readyState === 4){
+        } else if(newFacultyData.status != 201 && newFacultyData.status != 500 && newFacultyData.readyState === 4){
           view.closeAddFacultyModal(1)
-          view.notifyUser("Enexpected error occured",1);
+          view.notifyUser("Enexpected error occured",0);
         }
       }
 
@@ -491,6 +491,27 @@ var controller = {
       }
     }
     xhr.open("POST","http://localhost:3000/custom-testscore/add-test-score-manually",true);
+    xhr.setRequestHeader('Content-Type','application/json');
+    xhr.send(JSON.stringify(obj));
+  },
+
+  submitIssue: function(){
+    let obj = {}
+    obj.issue = document.getElementById('issue').value;
+    obj._id = (new Date()).valueOf();
+    obj.user = model.info._id;
+    obj.domain_name = model.info.school;
+
+    let xhr = new XMLHttpRequest();
+
+    xhr.onreadystatechange = function(){
+      if(xhr.readyState === 4 && xhr.status === 200){
+        view.closeReportIssueModal();
+        view.notifyUser('Report Submitted',1);
+      }
+    }
+
+    xhr.open('POST','http://localhost:3000/error/reportissue',true);
     xhr.setRequestHeader('Content-Type','application/json');
     xhr.send(JSON.stringify(obj));
   }
