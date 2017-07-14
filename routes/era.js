@@ -18,4 +18,19 @@ router.post('/:domain/:subdomain',function(req,res){
   })
 })
 
+router.post('/reportissue',function(req,res){
+      mongo.connect('mongodb://localhost:27018/oniv',function(err,db){
+        if(!err){
+          db.collection('reported').insert(req.body)
+          db.close()
+          res.status(200)
+          res.end()
+        } else {
+        db.close()
+        res.status(500)
+        res.end()
+        }
+      })
+})
+
 module.exports = router
