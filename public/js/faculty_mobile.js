@@ -285,10 +285,12 @@ var view = {
     document.getElementById('absentModal').parentNode.removeChild(document.getElementById('absentModal'));
   },
 
-  closeBatchOptionModal: function(){
+  closeBatchOptionModal: function(n){
     document.getElementById('batchOptionModal').style.display = "none";
     document.getElementById('batchOptionModal').parentNode.removeChild(document.getElementById('batchOptionModal'));
-    controller.facultyData();
+    if(n===0){
+      controller.facultyData();
+    }
   },
 
   closeSetSchedule: function(){
@@ -339,38 +341,28 @@ var view = {
   },
 
   setUpProfile: function(){
-    var dt = "<Select id='birthDate'>";
-    for(var i=1;i<32;i++){
-      dt += "<option value=" + i + ">" + i + "</option>";
+    if(model.setupcounter === 5){
+      var dt = "<Select id='birthDate'>";
+      for(var i=1;i<32;i++){
+        dt += "<option value=" + i + ">" + i + "</option>";
+      }
+      dt += "</select>";
+      var mn = "<Select id='birthMonth'>";
+      for(var i=1;i<13;i++){
+        mn += "<option value=" + i + ">" + i + "</option>";
+      }
+      mn += "</select>";
+      var y = "<Select id='birthYear'>";
+      for(var i=(new Date()).getFullYear()-18;i>(new Date()).getFullYear()-80;i--){
+        y += "<option value=" + i + ">" + i + "</option>";
+      }
+      y += "</select>";
+      var firstName = "<div class='row text-center prf_stup_fields'><div class='col-xs-12 glyphicon glyphicon-user' style='font-size:32px'></div><div class='col-xs-12' id='field'><h3>" + model.fields[model.setupcounter].text + "</h3><span class='showRequiredError' id='showRequiredError#" + model.fields[model.setupcounter].id + "'></span></div><div class='col-xs-12'>" + dt + " " + mn + " " + y + "</div></div>";
+
+    } else {
+      var firstName = "<div class='row text-center prf_stup_fields'><div class='col-xs-12 glyphicon glyphicon-user' style='font-size:32px'></div><div class='col-xs-12' id='field'><h3>" + model.fields[model.setupcounter].text + "</h3><span class='showRequiredError' id='showRequiredError#" + model.fields[model.setupcounter].id + "'></span></div><div class='col-xs-12'><input id='" + model.fields[model.setupcounter].id + "' size=15 class='required' type=text onblur='controller.check(event)'></div></div>";
     }
-    dt += "</select>";
-    var mn = "<Select id='birthMonth'>";
-    for(var i=1;i<13;i++){
-      mn += "<option value=" + i + ">" + i + "</option>";
-    }
-    mn += "</select>";
-    var y = "<Select id='birthYear'>";
-    for(var i=(new Date()).getFullYear()-18;i>(new Date()).getFullYear()-80;i--){
-      y += "<option value=" + i + ">" + i + "</option>";
-    }
-    y += "</select>";
-    var firstName = "<div class='row text-center prf_stup_fields'><div class='col-xs-12'>First Name <span class='showRequiredError' id='showRequiredError#first'></span></div><div class='col-xs-12'><input id='first' size=15 class='required' type=text onblur='controller.check(event)'></div></div>";
-
-    var lastName = "<div class='row text-center prf_stup_fields'><div class='col-xs-12'>Last Name <span class='showRequiredError' id='showRequiredError#last'></span></div><div class='col-xs-12'><input id='last' size=15 class='required' type=text onblur='controller.check(event)'></div></div>";
-
-    var dob = "<div class='row text-center prf_stup_fields'><div class='col-xs-12'>Date of Birth <span class='showRequiredError' id='showRequiredError#first'></span></div><div class='col-xs-12 text-center'>" + dt + mn + y + "</div></div>";
-
-    var mobile = "<div class='row text-center prf_stup_fields'><div class='col-xs-12'>Mobile <span class='showRequiredError' id='showRequiredError#mobile'></span></div><div class='col-xs-12'><input id='mobile' size=15 class='required' maxlength=10 type=text onblur='controller.check(event)'></div></div>";
-
-    var address = "<div class='row text-center prf_stup_fields'><div class='col-xs-12'>Address</div><div class='col-xs-12'><input id='address' size=15 type=text></div></div>";
-
-    var email = "<div class='row text-center prf_stup_fields'><div class='col-xs-12'>E-Mail Id <span class='showRequiredError' id='showRequiredError#email'></span></div><div class='col-xs-12'><input id='email' size=15 class='required' type=text onblur='controller.check(event)'></div></div>";
-
-    var password = "<div class='row text-center prf_stup_fields'><div class='col-xs-12'>New Password <span class='showRequiredError' id='showRequiredError#password'></span></div><div class='col-xs-12'><input id='password' size=15 class='required' type=password onblur='controller.check(event)'></div></div>";
-
-    var reEnterPassword = "<div class='row text-center prf_stup_fields'><div class='col-xs-12'>Re-enter Password <span class='showRequiredError' id='showRequiredError#reEnterPassword'></span></div><div class='col-xs-12'><input class='required' id='reEnterPassword' size=15 type=password onblur='controller.check(event)'></div></div>";
-
-    document.getElementById('main').innerHTML = "<div class='col-xs-12' style='height:100%;overflow-y:auto;background-color:rgba(0,0,0,.5)'><div class='row' style=''><div class='col-xs-12'>" + firstName + lastName + dob + mobile + address + email + password + reEnterPassword + "</div></div><div class='row'><button class='col-xs-12'><div class='row text-center prf_stup_submit' style='background-color:#FF5722;color:white'><div class='col-xs-12' onclick='controller.checkAll()' style='border-radius:3px;'><h4>Submit</h4></div></div></button></div></div>"
+    document.getElementById('main').innerHTML = "<div class='col-xs-12' style='height:100%;overflow-y:auto;'><div class='row' style='padding-top:50px'><div class='col-xs-12'>" + firstName + "</div></div><div class='row'><button class='col-xs-6 col-xs-offset-3'><div class='row text-center prf_stup_submit' style='background-color:#FF5722;color:white'><div class='col-xs-12' onclick='controller.check()' style='border-radius:3px;'><h4>Next</h4></div></div></button></div></div>"
     var i = 0;
     document.getElementById('main').style.backgroundImage = "none";
 
@@ -380,24 +372,24 @@ var view = {
     var batch = e.target.id.split('#')[1];
     console.log(batch);
     model.selectedBatch._id = batch;
-    document.getElementsByTagName('body')[0].innerHTML += "<div class='col-xs-12 modal' style='background-color:black;text-transform:uppercase' id='batchOptionModal'><div class='row text-center'><div class='col-xs-8 col-xs-offset-2' style='background-color:white;border-radius:4px;margin-top:20%;font-size:14px'><div class='row'><div id='attendance#" + batch + "' class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)' onclick='controller.routes(event)'>Take Attendance</div><div id='score#" + batch + "' class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)' onclick='controller.routes(event)'>Add Score</div><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)' onclick='view.setScheduleModal()'>Set Schedule</div><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)' onclick='view.notifyClass()'>Notify class</div><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)'>Course Update</div></div></div></div><div class='row' style='margin-top:20px'><div class='col-xs-12 text-center' style='position:absolute;bottom:50px'><span class='glyphicon glyphicon-remove' style='font-size:24px;color:white' onclick='view.closeBatchOptionModal()'></span></div></div></div></div></div>";
+    document.getElementsByTagName('body')[0].innerHTML += "<div class='col-xs-12 modal' style='background-color:black;text-transform:uppercase' id='batchOptionModal'><div class='row text-center'><div class='col-xs-8 col-xs-offset-2' style='background-color:white;border-radius:4px;margin-top:20%;font-size:14px'><div class='row'><div id='attendance#" + batch + "' class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)' onclick='controller.routes(event)'>Take Attendance</div><div id='score#" + batch + "' class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)' onclick='controller.routes(event)'>Add Score</div><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)' onclick='view.setScheduleModal()'>Set Schedule</div><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)' onclick='view.notifyClass()'>Notify class</div><div class='col-xs-12' style='padding-top:10px;padding-bottom:10px;border-bottom:solid 1px rgba(160,160,160,.6)'>Course Update</div></div></div></div><div class='row' style='margin-top:20px'><div class='col-xs-12 text-center' style='position:absolute;bottom:50px'><span class='glyphicon glyphicon-remove' style='font-size:24px;color:white' onclick='view.closeBatchOptionModal(0)'></span></div></div></div></div></div>";
     document.getElementById('batchOptionModal').style.display = "block";
   },
 
   setScheduleModal: function(){
-    var day ="<div class='col-xs-12'><div class='row' style='margin-top:5px;margin-bottom:5px'><div class='col-xs-6'><h4>Days</h4></div><div class='row'><div class='col-xs-6'><h4>Period</h4></div></div><div style='height:130px;overflow-y:auto;overflow-x:hidden;border-top:solid 1px rgba(70,70,70,.6);border-bottom:solid 1px rgba(70,70,70,.6);'>";
+    this.closeBatchOptionModal(0);
+    var day ="<div class='col-xs-12'><div class='row' style='margin-top:5px;margin-bottom:5px;color:rgb(90,90,90)'><div class='col-xs-6'><h4>Days</h4></div><div class='row'><div class='col-xs-6'><h4>Period</h4></div></div><div style='height:170px;overflow-y:auto;overflow-x:hidden;border-top:solid 1px rgba(70,70,70,.6);border-bottom:solid 1px rgba(70,70,70,.6);padding-top:5px;padding-bottom:5px'>";
     var days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     days.forEach(function(x,i){
-      day += "<div class='row' style='margin-top:5px;margin-bottom:5px'><div class='col-xs-6' style='padding-top:5px;font-size:16px'>" + days[i] + "</div><div class='col-xs-3 col-xs-offset-1'><input type='text' size=2 maxlength=2 style='border-radius:3px;border: solid 1px rgba(0,0,0,.5)' id='day" + i + "'></div></div>";
+      day += "<div class='row' style='margin-top:5px;margin-bottom:5px;color:rgb(160,160,160)'><div class='col-xs-6' style='padding-top:5px;font-size:16px'>" + days[i] + "</div><div class='col-xs-3 col-xs-offset-1'><input type='text' size=2 maxlength=2 style='border-radius:3px;border: solid 1px rgba(0,0,0,.5)' class='pr' id='day" + i + "'></div></div>";
     })
     day += "</div>";
-    this.closeBatchOptionModal();
-    document.getElementsByTagName('body')[0].innerHTML += "<div class='col-xs-12 modal' style='color:rgb(70,70,70);background-color:black' id='setSchedule'><div class='row text-center'><div class='col-xs-8 col-xs-offset-2'><div class='row' style='background-color:white;border-radius:4px;margin-top:20%;'><div class='col-xs-12' style='border-bottom:solid 1px rgba(70,70,70,.6)'><h3>Set Schedule</h3></div>" + day + "<div class='col-xs-12' style='padding-top:5px;padding-bottom:5px;font-size:20px' onclick='controller.setSchedule()'>set</div></div></div></div></div></div><div class='row' style='margin-top:20px'><div class='col-xs-12 text-center' style='position:absolute;bottom:50px'><span class='glyphicon glyphicon-remove' style='font-size:24px;color:white' onclick='view.closeSetSchedule()'></span></div></div></div>";
+    document.getElementsByTagName('body')[0].innerHTML += "<div class='col-xs-12 modal' style='color:rgb(70,70,70);background-color:black' id='setSchedule'><div class='row text-center'><div class='col-xs-8 col-xs-offset-2'><div class='row' style='background-color:white;border-radius:4px;margin-top:20%;'>" + day + "<div class='col-xs-12' style='padding-top:5px;padding-bottom:5px;font-size:20px;color:rgb(90,90,90)' onclick='controller.setSchedule()'>SET</div></div></div></div></div></div><div class='row' style='margin-top:20px'><div class='col-xs-12 text-center' style='position:absolute;bottom:50px'><span class='glyphicon glyphicon-remove' style='font-size:24px;color:white' onclick='view.closeSetSchedule()'></span></div></div></div>";
     document.getElementById('setSchedule').style.display = "block";
   },
 
   notifyClass: function(){
-    this.closeBatchOptionModal();
+    this.closeBatchOptionModal(0);
     document.getElementsByTagName('body')[0].innerHTML += "<div class='col-xs-12 modal' style='background-color:black' id='notifyClass'><div class='row text-center'><div class='col-xs-8 col-xs-offset-2' style='background-color:white;border-radius:5px;margin-top:10%;'><div class='row'><div class='col-xs-12' style='border-bottom: solid 1px rgba(0,0,0,.8);margin-bottom:15px'><h3>Write Text</h3></div><div class='col-xs-12' style='padding-bottom:15px;'><textarea id='notify-text' type=text maxlength='160' rows=5 style='border: solid 1px rgba(60,60,60,.5)' style='height:100px' placeholder='Notify about Test, Books etc'></textarea></div><div class='col-xs-12' style='margin-top:10px;margin-bottom:10px' onclick='controller.notifyClass()'>Send</div></div></div></div><div class='row' style='margin-top:20px'><div class='col-xs-12 text-center' style='position:absolute;bottom:50px'><span class='glyphicon glyphicon-remove' style='font-size:24px;color:white' onclick='view.closeNotifyClass()'></span></div></div></div>";
     document.getElementById('notifyClass').style.display = "block";
   }
@@ -408,6 +400,9 @@ var model = {
   classes_today:[],
   selectedBatch:{},
   months: ["January","February","March","April","May","June","July","August","Septembet","October","November","December"],
+  fields : [{text:"Enter you First Name",id:"first"},{text:"Enter you Last Name",id:"last"},{text:"Mobile Number",id:"mobile"},{text:"You email",id:"email"},{text:"You are",id:"sex"},{text:"Your Date of Birth",id:"dob"},{text:"Enter Password",id:"password"},{text:"Re-Enter Password",id:"reenterpassword"}],
+  setupcounter : 0,
+  profile:{}
 };
 
 /*

@@ -104,7 +104,7 @@ routes: function(e){
   console.log(model.route);
   switch(model.route){
     case 'attendance':
-      view.closeBatchOptionModal();
+      view.closeBatchOptionModal(1);
       controller.getStudentList();
       break;
     case 'report': controller.getReport();
@@ -151,6 +151,7 @@ inverse: function(){
         el.style.color = "grey";
     })
   }
+  document.getElementById('count').innerHTML = this.absent.students.length;
 },
 
 clearList: function(){
@@ -354,61 +355,70 @@ willBeAbsent: function(n){
   xhr.send(JSON.stringify(obj))
 },
 
-check: function(e){
-  if(document.getElementById(e.target.id).value.length===0){
-    document.getElementById('showRequiredError#' + e.target.id).innerHTML = "<span class='glyphicon glyphicon-asterisk' style='color:red'></span>";
-    document.getElementById(e.target.id).style.borderColor = "red";
-  } else if(document.getElementById(e.target.id).value.length != 0 && document.getElementById('showRequiredError#' + e.target.id).innerHTML != "" ){
-    document.getElementById('showRequiredError#' + e.target.id).innerHTML = "";
-    document.getElementById(e.target.id).style.borderColor = "rgb(123, 244, 93)";
-  } else {
-    document.getElementById(e.target.id).style.borderColor = "rgb(123, 244, 93)";
-  }
-},
-
-checkAll: function(){
-  var el = document.getElementsByClassName('showRequiredError');
-  var tl = document.getElementsByClassName('required');
-  var er=0;
-  for(var i=0;i<tl.length;i++){
-    if(tl[i].value.length===0){
-      el[i].innerHTML = "<span class='glyphicon glyphicon-asterisk' style='color:red'></span>";
-      er++;
-    }
-  }
-  if(er===0){
-    if(document.getElementById('password').value === document.getElementById('reEnterPassword').value ){
+check: function(){
+  if(model.fields[model.setupcounter].id != "dob" && document.getElementById(model.fields[model.setupcounter].id).value.length===0){
+    document.getElementById('showRequiredError#' + model.fields[model.setupcounter].id).innerHTML = "<span class='glyphicon glyphicon-asterisk' style='color:red'></span>";
+    document.getElementById(model.fields[model.setupcounter].id).style.borderColor = "red";
+  } else if(model.fields[model.setupcounter].id != "dob" && document.getElementById(model.fields[model.setupcounter].id).value.length != 0){
+    switch(model.fields[model.setupcounter].id){
+      case "mobile":
       if(document.getElementById('mobile').value.toString().length === 10){
         var i = 0;
         while(i<10){
           if(Number(document.getElementById('mobile').value.toString().charAt(i)) == document.getElementById('mobile').value.toString().charAt(i)){
             i++;
             if(i===9){
-              this.setUpProfile();
+              model.profile[model.fields[model.setupcounter].id] = document.getElementById(model.fields[model.setupcounter].id).value;
+              model.setupcounter++ ;
+              view.setUpProfile();
             }
           } else {
             alert("Invalid Mobile Number");
+            view.setUpProfile();
           }
         }
       } else {
-        alert("Not a valid Mobile Number");
+        alert("Invalid Mobile Number");
+        view.setUpProfile();
       }
-    } else {
-      alert("password did not matched");
+      break;
+      case "email":
+        if(document.getElementById('email').value.indexOf('@')>0 && document.getElementById('email').value.indexOf('.com')>3 ){
+          model.profile[model.fields[model.setupcounter].id] = document.getElementById(model.fields[model.setupcounter].id).value;
+          model.setupcounter++ ;
+          view.setUpProfile();
+        } else {
+          alert("Invalid Email address");
+          view.setUpProfile();
+        }
+
+      case "password":
+          model.profile[model.fields[model.setupcounter].id] = document.getElementById(model.fields[model.setupcounter].id).value;
+          model.setupcounter++ ;
+          view.setUpProfile();
+          break;
+
+      case "reenterpassword":
+          if(model.profile.password === document.getElementById("reenterpassword").value){
+            this.setUpProfile();
+          } else {
+            alert("Password Did not matched");
+          }
+
+      default:
+        model.profile[model.fields[model.setupcounter].id] = document.getElementById(model.fields[model.setupcounter].id).value;
+        model.setupcounter++ ;
+        view.setUpProfile();
+        break;
     }
+  } else if( model.fields[model.setupcounter].id === "dob"){
+    model.profile[model.fields[model.setupcounter].id] = (new Date(document.getElementById('birthYear').value,document.getElementById('birthMonth').value,document.getElementById('birthDate').value)).valueOf();
+    model.setupcounter++ ;
+    view.setUpProfile();
   }
 },
 
 setUpProfile: function(){
-  var obj = {};
-  obj.first = document.getElementById('first').value;
-  obj.last = document.getElementById('last').value;
-  obj.mobile = document.getElementById('mobile').value;
-  obj.email = document.getElementById('email').value;
-  obj.address = document.getElementById('address').value;
-  obj.password = document.getElementById('password').value;
-  obj.dob = (new Date(document.getElementById('birthYear').value,document.getElementById('birthMonth').value,document.getElementById('birthDate').value)).valueOf();
-
   var xhr = new XMLHttpRequest();
 
   xhr.onreadystatechange = function(){
@@ -420,7 +430,7 @@ setUpProfile: function(){
 
   xhr.open('POST','http://localhost:3000/faculty/setupprofile',true);
   xhr.setRequestHeader('Content-Type','application/json');
-  xhr.send(JSON.stringify(obj));
+  xhr.send(JSON.stringify(model.profile));
 },
 
 setSchedule: function(){
