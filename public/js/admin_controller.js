@@ -32,7 +32,7 @@ var controller = {
         }
 
     }
-    getDepartmentData.open('GET','http://localhost:3000/admin/getDepartmentData',true);
+    getDepartmentData.open('GET','http://localhost:80/admin/getDepartmentData',true);
     getDepartmentData.send(null);
   },
 
@@ -80,7 +80,7 @@ var controller = {
       }
     }
     console.log(model.selectedFaculty);
-    facultyDataRequest.open('GET','http://localhost:3000/admin/getFacultyData/' + model.selectedFaculty._id ,true);
+    facultyDataRequest.open('GET','http://localhost:80/admin/getFacultyData/' + model.selectedFaculty._id ,true);
     facultyDataRequest.send(null);
   },
 
@@ -103,7 +103,7 @@ var controller = {
       }
     }
 
-    batchDataRequest.open("GET","http://localhost:3000/admin/getBatchData/" + model.selectedBatch._id,true);
+    batchDataRequest.open("GET","http://localhost:80/admin/getBatchData/" + model.selectedBatch._id,true);
     batchDataRequest.send(null);
   },
 
@@ -143,7 +143,7 @@ var controller = {
         controller.renderClassData2();
       }
     }
-    facultyDataRequest.open('GET','http://localhost:3000/admin/getFacultyData/' + model.SF._id ,true);
+    facultyDataRequest.open('GET','http://localhost:80/admin/getFacultyData/' + model.SF._id ,true);
     facultyDataRequest.send(null);
 
   },
@@ -224,7 +224,7 @@ var controller = {
         }
       }
 
-      newFacultyData.open('POST','http://localhost:3000/admin/addnewfaculty',true);
+      newFacultyData.open('POST','http://localhost:80/admin/addnewfaculty',true);
       newFacultyData.setRequestHeader('Content-type','application/json');
       newFacultyData.send(JSON.stringify(obj));
   },
@@ -253,7 +253,7 @@ var controller = {
       }
     }
 
-    newBatchData.open('POST','http://localhost:3000/admin/addnewbatch/' + model.info.domain_name + '/' + batch + '/' + sc + '/' + cls + '/' + model.info.school,true);
+    newBatchData.open('POST','http://localhost:80/admin/addnewbatch/' + model.info.domain_name + '/' + batch + '/' + sc + '/' + cls + '/' + model.info.school,true);
     newBatchData.setRequestHeader('Content-type','application/octet-stream');
     newBatchData.send(file);
   },
@@ -290,10 +290,10 @@ var controller = {
     }
 
     if(n === 0){
-      newBatchData.open('POST','http://localhost:3000/admin/assignFacultyNewBatch/' + model.selectedFaculty._id,true);
+      newBatchData.open('POST','http://localhost:80/admin/assignFacultyNewBatch/' + model.selectedFaculty._id,true);
     } else {
       var nmt = document.getElementById('selectFaculty').value;
-      newBatchData.open('POST','http://localhost:3000/admin/assignFacultyNewBatch/' + nmt ,true);
+      newBatchData.open('POST','http://localhost:80/admin/assignFacultyNewBatch/' + nmt ,true);
     }
     newBatchData.setRequestHeader('Content-type','application/json');
     newBatchData.send(JSON.stringify(obj));
@@ -316,7 +316,7 @@ var controller = {
         controller.sectionData();
       }
     }
-    deleteFacultyRequest.open('DELETE','http://localhost:3000/admin/removefaculty/' + model.selectedFaculty._id,true);
+    deleteFacultyRequest.open('DELETE','http://localhost:80/admin/removefaculty/' + model.selectedFaculty._id,true);
     deleteFacultyRequest.send(null);
   },
 
@@ -335,7 +335,7 @@ var controller = {
         view.updateView();
       }
     }
-    deleteBatchRequest.open('DELETE','http://localhost:3000/admin/removebatch/' + model.selectedBatch._id,true);
+    deleteBatchRequest.open('DELETE','http://localhost:80/admin/removebatch/' + model.selectedBatch._id,true);
     deleteBatchRequest.send(null);
   },
 
@@ -355,7 +355,7 @@ var controller = {
         view.updateView();
       }
     }
-    deassignbatchRequest.open('DELETE','http://localhost:3000/admin/deassignbatch/' + model.selectedFaculty._id + '/' + model.selectedBatch._id,true);
+    deassignbatchRequest.open('DELETE','http://localhost:80/admin/deassignbatch/' + model.selectedFaculty._id + '/' + model.selectedBatch._id,true);
     deassignbatchRequest.send(null);
   },
 
@@ -363,10 +363,10 @@ var controller = {
     var logoutRequest = new XMLHttpRequest();
     logoutRequest.onreadystatechange = function(){
       if(logoutRequest.readyState === 4 && logoutRequest.status === 200){
-        window.location = "http://localhost:3000";
+        window.location = "http://localhost:80";
       }
     }
-    logoutRequest.open('GET','http://localhost:3000/logout',true);
+    logoutRequest.open('GET','http://localhost:80/logout',true);
     logoutRequest.send();
   },
 
@@ -383,7 +383,7 @@ var controller = {
         controller.getFacultyData();
       }
     }
-    xhr.open('POST',"http://localhost:3000/sendsms/smsfaculty",true);
+    xhr.open('POST',"http://localhost:80/sendsms/smsfaculty",true);
     xhr.setRequestHeader('Content-type','application/json');
     xhr.send(JSON.stringify(obj));
   },
@@ -411,7 +411,7 @@ var controller = {
 
       }
     }
-    xhr.open('POST',"http://localhost:3000/sendsms/sendsmstoclass",true);
+    xhr.open('POST',"http://localhost:80/sendsms/sendsmstoclass",true);
     xhr.setRequestHeader('Content-type','application/json');
     xhr.send(JSON.stringify(ob));
   },
@@ -434,7 +434,7 @@ var controller = {
 
       }
     }
-    xhr.open('POST',"http://localhost:3000/sendsms/sendsmstofaculties",true);
+    xhr.open('POST',"http://localhost:80/sendsms/sendsmstofaculties",true);
     xhr.setRequestHeader('Content-type','application/json');
     xhr.send(JSON.stringify(ob));
   },
@@ -490,7 +490,7 @@ var controller = {
         }
       }
     }
-    xhr.open("POST","http://localhost:3000/custom-testscore/add-test-score-manually",true);
+    xhr.open("POST","http://localhost:80/custom-testscore/add-test-score-manually",true);
     xhr.setRequestHeader('Content-Type','application/json');
     xhr.send(JSON.stringify(obj));
   },
@@ -511,7 +511,7 @@ var controller = {
       }
     }
 
-    xhr.open('POST','http://localhost:3000/error/reportissue',true);
+    xhr.open('POST','http://localhost:80/error/reportissue',true);
     xhr.setRequestHeader('Content-Type','application/json');
     xhr.send(JSON.stringify(obj));
   },
@@ -542,7 +542,7 @@ var controller = {
         }
       }
     }
-    xhr.open('GET','http://localhost:3000/student/' + model.selectedStudent._id);
+    xhr.open('GET','http://localhost:80/student/' + model.selectedStudent._id);
     xhr.send(null);
   }
 

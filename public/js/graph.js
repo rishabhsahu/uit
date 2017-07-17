@@ -149,7 +149,7 @@ graph = {
     const e = document.getElementById('student_attendance');
 
     const xhr = new XMLHttpRequest();
-    xhr.open("GET","http://localhost:3000/admin/classesheld/" + model.selectedStudent.current_faculties[model.selectedStudent.selectedSubject] + "/" + model.selectedBatch._id,true);
+    xhr.open("GET","http://localhost:80/admin/classesheld/" + model.selectedStudent.current_faculties[model.selectedStudent.selectedSubject] + "/" + model.selectedBatch._id,true);
     xhr.onreadystatechange = function(){
       if(xhr.readyState === 4){
         if(xhr.status === 200){

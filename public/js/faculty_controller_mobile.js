@@ -15,7 +15,7 @@ var controller = {
       alert('error')
     }
 
-    requestFacultyData.open('GET','http://localhost:3000/faculty/requestFacultyData',true);
+    requestFacultyData.open('GET','http://localhost:80/faculty/requestFacultyData',true);
     requestFacultyData.send(null)
 
     requestFacultyData.onreadystatechange = function(){
@@ -86,7 +86,7 @@ var controller = {
       }
     }
 
-      attendance.open('GET','http://localhost:3000/faculty/getStudentList/' + _id,true);
+      attendance.open('GET','http://localhost:80/faculty/getStudentList/' + _id,true);
       attendance.send(null);
     })
 },
@@ -215,7 +215,7 @@ submitData: function(){
   }
 
 
-    SAD.open("POST","http://localhost:3000/faculty/submitData/" + model.selectedBatch._id,true)
+    SAD.open("POST","http://localhost:80/faculty/submitData/" + model.selectedBatch._id,true)
     SAD.setRequestHeader('Content-Type','application/json');
     SAD.send(JSON.stringify(this.absent));
 
@@ -244,7 +244,7 @@ getReport: function(){
       model.reportData = JSON.parse(requestReport.response);
       var reportData = model.reportData;
       console.log(model.reportData);
-      var content2 = "<div class='modal col-xs-12 text-center' id='downloadsOptionModal'><div class='row' style='animation-name: pushup;animation-duration:.25s;position:fixed;bottom:0;height:50%;width:100%;background-color:white;border-radius: 10px'><div class='col-xs-12'><div class='row' style='margin-bottom:15px;'><div class='col-xs-12' style='border-bottom: 1px solid grey'><h3>Select list<span style='position:absolute;right: 10%;font-size: 26px;color:rgb(239, 108, 88);cursor:pointer' onclick='view.closeDownloadListModal()'>&times;</span></h3></div><div class='col-xs-12' style='margin-top:10px'><div class='row' style='margin-top:10px'><div class='col-xs-12'><a href='http://localhost:3000/download/attendanceOverview/" + model.selectedBatch._id + "/" + model.personalInfo._id + "/" + model.selectedBatch.subject + "' target='_blank' class='btn btn-default'>Attendance Report ( Overview )</a></div></div></div></div></div></div></div>";
+      var content2 = "<div class='modal col-xs-12 text-center' id='downloadsOptionModal'><div class='row' style='animation-name: pushup;animation-duration:.25s;position:fixed;bottom:0;height:50%;width:100%;background-color:white;border-radius: 10px'><div class='col-xs-12'><div class='row' style='margin-bottom:15px;'><div class='col-xs-12' style='border-bottom: 1px solid grey'><h3>Select list<span style='position:absolute;right: 10%;font-size: 26px;color:rgb(239, 108, 88);cursor:pointer' onclick='view.closeDownloadListModal()'>&times;</span></h3></div><div class='col-xs-12' style='margin-top:10px'><div class='row' style='margin-top:10px'><div class='col-xs-12'><a href='http://localhost:80/download/attendanceOverview/" + model.selectedBatch._id + "/" + model.personalInfo._id + "/" + model.selectedBatch.subject + "' target='_blank' class='btn btn-default'>Attendance Report ( Overview )</a></div></div></div></div></div></div></div>";
       document.getElementsByTagName('body')[0].innerHTML += content2;
       var x = "<div id='downloads' onclick='view.showDownloadOptions()'><span class='glyphicon glyphicon-download' style='font-size:20px;padding:5px;'></span></div><div class='row' style='overflow-x: hidden;margin-right:0px'><div class='col-xs-12' id='student_list_box'>";
       var dcs = 1;
@@ -285,7 +285,7 @@ getReport: function(){
     }
   }
 
-  requestReport.open("GET","http://localhost:3000/faculty/report/" + model.selectedBatch._id + '/' + model.selectedBatch.subject ,true);
+  requestReport.open("GET","http://localhost:80/faculty/report/" + model.selectedBatch._id + '/' + model.selectedBatch.subject ,true);
   requestReport.send(null);
 },
 
@@ -310,7 +310,7 @@ submitScores: function(){
     }
   }
   console.log(obj);
-  SSR.open('POST','http://localhost:3000/faculty/submitscores/' + model.selectedBatch._id + '/' + model.selectedBatch.subject, true);
+  SSR.open('POST','http://localhost:80/faculty/submitscores/' + model.selectedBatch._id + '/' + model.selectedBatch.subject, true);
   SSR.setRequestHeader('Content-Type','application/json');
   SSR.send(JSON.stringify(obj));
 },
@@ -350,7 +350,7 @@ willBeAbsent: function(n){
     }
   }
 
-  xhr.open('POST','http://localhost:3000/faculty/markabsent',true);
+  xhr.open('POST','http://localhost:80/faculty/markabsent',true);
   xhr.setRequestHeader('Content-Type','application/json');
   xhr.send(JSON.stringify(obj))
 },
@@ -428,7 +428,7 @@ setUpProfile: function(){
     }
   }
 
-  xhr.open('POST','http://localhost:3000/faculty/setupprofile',true);
+  xhr.open('POST','http://localhost:80/faculty/setupprofile',true);
   xhr.setRequestHeader('Content-Type','application/json');
   xhr.send(JSON.stringify(model.profile));
 },
@@ -455,7 +455,7 @@ setSchedule: function(){
     }
   }
   console.log(obj);
-  xhr.open('POST','http://localhost:3000/faculty/setschedule',true);
+  xhr.open('POST','http://localhost:80/faculty/setschedule',true);
   xhr.setRequestHeader('Content-Type','application/json');
   xhr.send(JSON.stringify(obj));
 },
@@ -474,7 +474,7 @@ notifyClass: function(){
       controller.notifyUser("Internal Server Error. Try again",5);
     }
   }
-  xhr.open('post','http://localhost:3000/sendsms/notifyclass',true);
+  xhr.open('post','http://localhost:80/sendsms/notifyclass',true);
   xhr.setRequestHeader('Content-Type','application/json');
   xhr.send(JSON.stringify(obj));
 },
@@ -508,7 +508,7 @@ sendMessageSelected: function(){
       controller.notifyUser("Internal Server Error. Try again",5);
     }
   }
-  xhr.open('post','http://localhost:3000/sendsms/messageselected',true);
+  xhr.open('post','http://localhost:80/sendsms/messageselected',true);
   xhr.setRequestHeader('Content-Type','application/json');
   xhr.send(JSON.stringify(obj));
 },
@@ -520,7 +520,7 @@ notifyUser: function(str,a){
     document.getElementById('notifyUser').style.display = "block";
     setTimeout(function(){
       document.getElementById('notifyUser').style.display = "none";
-    },3000);
+    },80);
 
   } else if(a===1){
     document.getElementById('notifText').style.backgroundColor = "lightgreen";
@@ -528,14 +528,14 @@ notifyUser: function(str,a){
     document.getElementById('notifyUser').style.display = "block";
     setTimeout(function(){
       document.getElementById('notifyUser').style.display = "none";
-    },3000);
+    },80);
 
   } else if(a===5){
     document.getElementById('notifText2').innerHTML = str;
     document.getElementById('notifyError').style.display = "block";
     setTimeout(function(){
       document.getElementById('notifyError').style.display = "none";
-    },3000);
+    },80);
   }
 },
 
@@ -543,10 +543,10 @@ logout: function(){
   var logoutRequest = new XMLHttpRequest();
   logoutRequest.onreadystatechange = function(){
     if(logoutRequest.readyState === 4 && logoutRequest.status === 200){
-      window.location = "http://localhost:3000";
+      window.location = "http://localhost:80";
     }
   }
-  logoutRequest.open('GET','http://localhost:3000/logout',true);
+  logoutRequest.open('GET','http://localhost:80/logout',true);
   logoutRequest.send();
 }
 

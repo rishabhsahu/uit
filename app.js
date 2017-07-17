@@ -40,6 +40,6 @@ app.use('/login',express.static('public'))
 app.use('/login/faculty',express.static('public'))
 app.use('/login/admin',express.static('public'))
 
-app.listen(process.env.PORT || 3000,function(){
-  console.log("listening on port 3000")
+app.listen(process.env.PORT || 80,function(){
+  console.log("listening on port 80")
 })

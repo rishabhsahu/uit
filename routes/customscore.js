@@ -8,7 +8,7 @@ var request = require('request')
 router.post('/add-test-score-manually/',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || "")
   if(!cookies){
-    errRequest("http://localhost:3000/error/nodejsErr/admin","cookies",err)
+    errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
     res.status(401)
     res.end()
   } else {
@@ -31,7 +31,7 @@ router.post('/add-test-score-manually/',function(req,res){
             res.status(200)
             res.end()
             request({
-              url:"http://localhost:3000/sendsms/scorereport-admin",
+              url:"http://localhost:80/sendsms/scorereport-admin",
               method:'POST',
               body:req.body,
               json: true
@@ -43,13 +43,13 @@ router.post('/add-test-score-manually/',function(req,res){
             })
           } else {
             db.close()
-            errRequest("http://localhost:3000/error/mongoErr/admin","mongodb",err)
+            errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
             res.status(500)
             res.end()
           }
         })
       } else {
-        errRequest("http://localhost:3000/error/nodejsErr/admin","jwt",err)
+        errRequest("http://localhost:80/error/nodejsErr/admin","jwt",err)
         res.status(401)
         res.end()
       }
