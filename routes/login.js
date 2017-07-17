@@ -17,7 +17,7 @@ router.post('/',function(req,res){
       if(req.body.password.indexOf("T-") > -1){
         db.collection('faculty').findOne({_id:username,otp:password},{username:1},function(err,item){
           if(!err){
-            res.status(202)
+            res.status(201)
             res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
             res.render('faculty_mobile')
           } else {
