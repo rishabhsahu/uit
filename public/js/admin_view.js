@@ -244,12 +244,8 @@ var view = {
            student[model.selectedFaculty.current_classes[e].subject].attendance = [];
          }
 
-         if(model.selectedFaculty.current_classes[e].classes_held.length > 1){
-           ch = model.selectedFaculty.current_classes[e].length;
-         }
-
          if(student[model.selectedFaculty.current_classes[e].subject].absent){
-           var t = student[model.selectedFaculty.current_classes[e].subject].absent.length;
+          t = student[model.selectedFaculty.current_classes[e].subject].absent.length;
          } else {
            t=0;
          }
@@ -263,7 +259,7 @@ var view = {
          std += "<tr class='row text-center c'><td class='col-xs-4' style='font-size:12px;font-family:notosans'>" + student.name + "</td><td class='col-xs-4'>" + count + "</td><td>" + pc + "</td></tr>";
       }
     });
-    var x = "<div class='row'><div class='col-xs-10 col-xs-offset-1' style='max-height:350px'><canvas id='7DayChart'></canvas></div></div><div class='row' style='margin-bottom:25px'><div class='col-sm-12' style='background-color:white;color:black;border-radius:5px;border:solid 1px rgba(160,160,160,.6)'>" + "<div class='row' style='padding-top:10px;padding-bottom:10px;background-color:white;color:rgb(70,70,70);border-radius:5px 5px 0px 0px;border-bottom:solid 1px rgba(160,160,160,.5)'>" +"<div class='col-xs-6 text-center' style='font-size:32px'>" + model.selectedFaculty.current_classes[e].subject + "</div><div class='col-xs-2 text-center' style='font-size:14px;font-size:18px;font-weight:bold;color:rgb(80,80,80)'>" + ch + " <span style='font-size:14px;color:rgb(120,120,120)'>class</span><br><span style='font-size:10px;color:rgba(40,40,40,.7);color:green'>taken</span></div><div class='col-xs-3 text-center' style='font-size:14px;font-size:16px;font-weight:bold;color:color:rgb(80,80,80)'>" + d + "<br><span style='font-size:10px;color:rgba(40,40,40,.7);color:green'>first class</span></div></div><div class='row text-center' style='padding-top:10px;padding-bottom:10px;background-color:white;color:rgb(70,70,70);border-bottom:solid 1px rgba(160,160,160,.5);font-weight:bold;'><div class='col-xs-4'>Name</div><div class='col-xs-4'>Classes Taken</div><div class='col-xs-4'>Percentage</div></div><div class='row' style='height:250px;overflow-y:auto;'><table class='col-xs-12 table-condensed table-striped'>" + std + "</table></div></div></div>";
+    var x = "<div class='row'><div class='col-xs-10 col-xs-offset-1' style='max-height:350px'><canvas id='7DayChart'></canvas></div></div><div class='row' style='margin-bottom:25px'><div class='col-sm-12' style='background-color:white;color:black;border-radius:5px;border:solid 1px rgba(160,160,160,.6)'>" + "<div class='row' style='padding-top:10px;padding-bottom:10px;background-color:white;color:rgb(70,70,70);border-radius:5px 5px 0px 0px;border-bottom:solid 1px rgba(160,160,160,.5)'>" +"<div class='col-xs-6 text-center' style='font-size:32px'>" + model.selectedFaculty.current_classes[e].subject + "</div><div class='col-xs-2 text-center' style='font-size:14px;font-size:18px;font-weight:bold;color:rgb(80,80,80)'>" + ch + " <br><span style='font-size:10px;color:rgba(40,40,40,.7);color:green'>classes held</span></div><div class='col-xs-3 text-center' style='font-size:14px;font-size:16px;font-weight:bold;color:color:rgb(80,80,80)'>" + d + "<br><span style='font-size:10px;color:rgba(40,40,40,.7);color:green'>first class</span></div></div><div class='row text-center' style='padding-top:10px;padding-bottom:10px;background-color:white;color:rgb(70,70,70);border-bottom:solid 1px rgba(160,160,160,.5);font-weight:bold;'><div class='col-xs-4'>Name</div><div class='col-xs-4'>Classes Taken</div><div class='col-xs-4'>Percentage</div></div><div class='row' style='height:250px;overflow-y:auto;'><table class='col-xs-12 table-condensed table-striped'>" + std + "</table></div></div></div>";
     document.getElementById('central').innerHTML = x;
 
     /*
@@ -448,82 +444,6 @@ var view = {
 
           document.getElementsByTagName("body")[0].innerHTML += "<div id='assignFacultyNewBatchModal' class='text-center modal col-sm-12' style='padding-top:100px'><div class='row'><div class='col-sm-4 col-sm-offset-4 modalContent'><div class='row modelHeader' style='border-bottom: solid 1px rgba(160,160,160,.6)'><div class='col-sm-12'><h2>assign new batch</h2></div></div><div class='row'><div class='col-xs-12' style='margin-top:30px;'><b>Class</b> " + content + "</div><div class='col-xs-12' style='margin-top:30px;'><b>Subject </b> <input id='assignedSubject' id='class' type='text'></div><br></div></div><div class='col-xs-1 close' style='font-size:40px;font-weight:bold;cursor:pointer;padding:0px;' onclick='view.closeAssignNewBatchModal(0)'>&times;</div></div><div class='row'><div style='margin-top:15px;' class='col-xs-2 col-xs-offset-5'><button class='btn btn-danger' onclick='controller.assignFacultyNewBatch(0)'>ADD</button></div></div></div>";
     document.getElementById("assignFacultyNewBatchModal").style.display = "block" ;
-  },
-
-  closeFacultyList: function(){
-    document.getElementById("faculty_list").style.display = "none" ;
-  },
-
-  closeBatchList: function(){
-    document.getElementById("batch_list").style.display = "none" ;
-  },
-
-  closeAddBatchModal: function(){
-    document.getElementById("addBatchModal").style.display = "none" ;
-    document.getElementById("addBatchModal").parentNode.removeChild(document.getElementById("addBatchModal"));
-    controller.sectionData();
-  },
-
-  closeAssignNewBatchModal: function(n){
-    if(n===0){
-      document.getElementById("assignFacultyNewBatchModal").style.display = "none" ;
-      document.getElementById("assignFacultyNewBatchModal").parentNode.removeChild(document.getElementById("assignFacultyNewBatchModal"));
-      view.showSelectedFacultyData();
-    } else {
-      document.getElementById("assignClassNewSubjectModal").style.display = "none" ;
-      document.getElementById("assignClassNewSubjectModal").parentNode.removeChild(document.getElementById("assignClassNewSubjectModal"));
-      controller.getBatchData(1);
-    }
-  },
-
-  closeFacultySettingModal: function(){
-    document.getElementById('facultySettingModal').style.display = "none";
-  },
-
-  closeDeassignBatchModal: function(){
-    document.getElementById('deassignbatchModal').style.display = "none";
-  },
-
-  closeBatchData: function(){
-    document.getElementById('batchData').style.display = "none";
-  },
-
-  closeAddFacultyModal: function(n){
-    document.getElementById('addFacultyModal').style.display = "none";
-    document.getElementById("addFacultyModal").parentNode.removeChild(document.getElementById("addFacultyModal"));
-    if(n===1){
-      controller.sectionData();
-    }
-  },
-
-  closeMessageClassModal: function(){
-    document.getElementById('messageClassModal').style.display = "none";
-    document.getElementById("messageClassModal").parentNode.removeChild(document.getElementById("messageClassModal"));
-    controller.getBatchData(1);
-  },
-
-  closeCustomMessagesModal: function(){
-    document.getElementById('customMessagesModal').style.display = "none";
-    document.getElementById("customMessagesModal").parentNode.removeChild(document.getElementById("customMessagesModal"));
-    controller.getBatchData(1);
-  },
-
-  closeAddTestScoreManually: function(){
-    document.getElementById('addTestScoreManually').style.display = "none";
-    document.getElementById("addTestScoreManually").parentNode.removeChild(document.getElementById("addTestScoreManually"));
-    controller.getBatchData(1);
-  },
-
-  closeMessageFacultiesModal: function(){
-    document.getElementById('messageFacultiesModal').style.display = "none";
-    document.getElementById("messageFacultiesModal").parentNode.removeChild(document.getElementById("messageFacultiesModal"));
-    controller.sectionData();
-  },
-
-  closeSendFacultySmsModal: function(){
-    document.getElementById('smsFacultyModal').style.display = "none";
-    document.getElementById("smsFacultyModal").parentNode.removeChild(document.getElementById("smsFacultyModal"));
-    view.showSelectedFacultyData();
   },
 
   showSmsModal: function(){
@@ -813,10 +733,136 @@ reportIssues: function(){
   document.getElementById('reportIssueModal').style.display = "block";
 },
 
+showStudent: function(){
+  document.getElementsByTagName('body')[0].innerHTML += "<div class='col-xs-12 modal text-center' id='student_profile'><div class='row'><div class='col-xs-10 col-xs-offset-1' style='background-color:white;border-radius:3px;height:85%;'><div class='row'><div id='student_personal_info' class='col-xs-2' style='background-color:rgb(230,230,230);height:100%;'><div class='row' style='background-color:rgb(55, 110, 198);'><div class='col-xs-12' style='padding-top:25px;padding-bottom:25px'><img id='student_image' class='img-responsive' width='100%'></div></div></div><div id='student_detail_section' class='col-xs-8' style='height:100%;border-left: solid 1px rgb(200,200,200)'></div><div class='col-xs-2' style='height:100%;border-left: solid 1px rgb(200,200,200)'><div class='row' style='padding-top:25px'><div class='col-xs-10 col-xs-offset-1' id='student_subjects'></div></div></div></div></div><div class='col-xs-1' style='font-size:28px;color:white;cursor:pointer' onclick='view.closeShowStudentModal()'><span class='glyphicon glyphicon-remove close'></span></div></div></div>";
+  document.getElementById('student_image').src = "img/flat-face-icon-23.png";
+
+  document.getElementById('student_personal_info').innerHTML += "<div class='row' style='padding:5px;'><div class='col-xs-12 admin-navigation-options' style='padding-top:0px;background-color:white'><div class='row'><div class='col-xs-12' style='color:rgb(67, 185, 232)'><h5>Name</h5></div><div class='col-xs-12' style='font-size:16px;text-transform:lowercase'>" + model.selectedStudent.name + "</div></div></div></div><div class='row' style='padding:5px'><div class='col-xs-12 admin-navigation-options' style='padding-top:0px;background-color:white'><div class='row'><div class='col-xs-12' style='color:rgb(67, 185, 232)'><h5>Enroll Number</h5></div><div class='col-xs-12' style='font-size:16px;text-transform:lowercase'>" + model.selectedStudent.enroll_number + "</div></div></div></div><div class='row' style='padding:5px'><div class='col-xs-12 admin-navigation-options' style='padding-top:0px;background-color:white'><div class='row'><div class='col-xs-12' style='color:rgb(67, 185, 232)'><h5>Mobile</h5></div><div class='col-xs-12' style='font-size:16px;text-transform:lowercase'>" + model.selectedStudent.mobile + "</div></div></div></div>";
+
+  Object.keys(model.selectedStudent).forEach(function(sub){
+    document.getElementById('student_subjects').innerHTML += "<div class='row'>";
+    if(sub != 'mobile' && sub!='name' && sub!='enroll_number' && sub!="current_faculties"){
+      document.getElementById('student_subjects').innerHTML += "<div id='" + sub + "' class='col-xs-12 admin-navigation-options' onclick='view.showSelectedSubjectData(event)'>" + sub + "</div>";
+    }
+    document.getElementById('student_subjects').innerHTML += "</div>";
+  })
+  document.getElementById('student_profile').style.display = "block";
+  document.getElementById('student_detail_section').innerHTML = "<div class='row' style='margin-bottom:25px'><div class='col-xs-12'><div class='row'><div class='col-xs-10 col-xs-offset-1' style='border-bottom: solid 1px rgb(200,200,200);color:rgb(70,70,70)'><h3>Subject wise Attendance</h3></div></div><div class='row'><div class='col-xs-8 col-xs-offset-2' style='padding-top:25px;padding-bottom:25px'><canvas id='subjectWiseAttendance'></canvas></div></div></div></div>";
+  document.getElementById('student_detail_section').innerHTML += "<div class='row'><div class='col-xs-12'><div class='row'><div class='col-xs-8 col-xs-offset-2' style='border-bottom: solid 1px rgb(200,200,200);color:rgb(70,70,70)'><h3>Last Exam Score</h3></div></div><div class='row'><div class='col-xs-8 col-xs-offset-2' style='padding-top:15px'><canvas id='lastExamScores'></canvas></div></div></div></div>";
+  graph.subjectWiseAttendance();
+  graph.lastExam();
+},
+
+showSelectedSubjectData: function(e){
+  model.selectedStudent.selectedSubject = e.target.id;
+  document.getElementById('student_detail_section').innerHTML = "<div class='row' style='padding-bottom:20px;'><div class='col-xs-10 col-xs-offset-1'><div class='row'><div class='col-xs-12' style='border-bottom: solid 1px rgb(200,200,200);color:rgb(110,110,110)'><h3>" + model.selectedStudent.selectedSubject + " - Attendance</h3></div></div></div>";
+
+  document.getElementById('student_detail_section').innerHTML += "<div class='row' style='padding-top:20px;padding-bottom:20px;margin-top:20px'><div class='col-xs-4 col-xs-offset-4'><canvas id='student_attendance'></canvas></div></div>";
+
+  document.getElementById('student_detail_section').innerHTML += "<div class='row' style='padding-top:20px;padding-bottom:20px;margin-top:20px'><div class='col-xs-10 col-xs-offset-1'><div class='row'><div class='col-xs-12' style='border-bottom: solid 1px rgb(200,200,200);color:rgb(110,110,110)'><h3>Past 10 Exams</h3></div></div></div>";
+
+  document.getElementById('student_detail_section').innerHTML += "<div class='row' style='padding-top:20px;padding-bottom:20px;margin-top:20px'><div class='col-xs-10 col-xs-offset-1'  style='background-color:rgba(220,220,220,.6)'><canvas id='pastTenExams'></canvas></div></div>";
+
+  document.getElementById('student_detail_section').innerHTML += "<div class='row' style='margin-top:20px'><div class='col-xs-10 col-xs-offset-1'><div class='row'><div class='col-xs-12' style='border-bottom: solid 1px rgb(200,200,200);color:rgb(110,110,110)'><h3>Exams Scores</h3></div></div></div>";
+
+  document.getElementById('student_detail_section').innerHTML += "<div class='row' style='padding-top:20px;padding-bottom:20px;margin-top:20px'><div class='col-xs-10 col-xs-offset-1' id='examScores'></div></div>";
+  let y = "<div class='row'><div class='col-xs-12' style='border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);padding-bottom:10px;border-radius:3px'><div class='row' style='padding-top:10px;padding-bottom:10px;font-size:20px;border-bottom: solid 1px rgb(190,190,190);color:rgb(40,40,40)'><div class='col-xs-4'>Test Name</div><div class='col-xs-4'>Test Date</div><div class='col-xs-4'>Score</div></div><div class='row'><div class='col-xs-12' style='max-height:200px;overflow-y:auto'>"
+  model.selectedStudent[model.selectedStudent.selectedSubject].scores.forEach(function(x,i){
+    console.log(x)
+    y += "<div class='row' style='color:rgb(70,70,70);padding-top:5px;padding-bottom:5px;'><div class='col-xs-4'>" + x.test_name + "</div><div class='col-xs-4'>" + x.date + "</div><div class='col-xs-4'>" + x.score + "</div></div></div></div>";
+  })
+  y+= "</div></div>";
+  document.getElementById('examScores').innerHTML = y;
+  graph.studentAbsents();
+  graph.pastTenExams();
+},
+
+closeFacultyList: function(){
+  document.getElementById("faculty_list").style.display = "none" ;
+},
+
+closeBatchList: function(){
+  document.getElementById("batch_list").style.display = "none" ;
+},
+
+closeAddBatchModal: function(){
+  document.getElementById("addBatchModal").style.display = "none" ;
+  document.getElementById("addBatchModal").parentNode.removeChild(document.getElementById("addBatchModal"));
+  controller.sectionData();
+},
+
+closeAssignNewBatchModal: function(n){
+  if(n===0){
+    document.getElementById("assignFacultyNewBatchModal").style.display = "none" ;
+    document.getElementById("assignFacultyNewBatchModal").parentNode.removeChild(document.getElementById("assignFacultyNewBatchModal"));
+    view.showSelectedFacultyData();
+  } else {
+    document.getElementById("assignClassNewSubjectModal").style.display = "none" ;
+    document.getElementById("assignClassNewSubjectModal").parentNode.removeChild(document.getElementById("assignClassNewSubjectModal"));
+    controller.getBatchData(1);
+  }
+},
+
+closeFacultySettingModal: function(){
+  document.getElementById('facultySettingModal').style.display = "none";
+},
+
+closeDeassignBatchModal: function(){
+  document.getElementById('deassignbatchModal').style.display = "none";
+},
+
+closeBatchData: function(){
+  document.getElementById('batchData').style.display = "none";
+},
+
+closeAddFacultyModal: function(n){
+  document.getElementById('addFacultyModal').style.display = "none";
+  document.getElementById("addFacultyModal").parentNode.removeChild(document.getElementById("addFacultyModal"));
+  if(n===1){
+    controller.sectionData();
+  }
+},
+
+closeMessageClassModal: function(){
+  document.getElementById('messageClassModal').style.display = "none";
+  document.getElementById("messageClassModal").parentNode.removeChild(document.getElementById("messageClassModal"));
+  controller.getBatchData(1);
+},
+
+closeCustomMessagesModal: function(){
+  document.getElementById('customMessagesModal').style.display = "none";
+  document.getElementById("customMessagesModal").parentNode.removeChild(document.getElementById("customMessagesModal"));
+  controller.getBatchData(1);
+},
+
+closeAddTestScoreManually: function(){
+  document.getElementById('addTestScoreManually').style.display = "none";
+  document.getElementById("addTestScoreManually").parentNode.removeChild(document.getElementById("addTestScoreManually"));
+  controller.getBatchData(1);
+},
+
+closeMessageFacultiesModal: function(){
+  document.getElementById('messageFacultiesModal').style.display = "none";
+  document.getElementById("messageFacultiesModal").parentNode.removeChild(document.getElementById("messageFacultiesModal"));
+  controller.sectionData();
+},
+
+closeSendFacultySmsModal: function(){
+  document.getElementById('smsFacultyModal').style.display = "none";
+  document.getElementById("smsFacultyModal").parentNode.removeChild(document.getElementById("smsFacultyModal"));
+  view.showSelectedFacultyData();
+},
+
 closeReportIssueModal: function(){
     document.getElementById('reportIssueModal').style.display = "none";
     document.getElementById("reportIssueModal").parentNode.removeChild(document.getElementById("reportIssueModal"));
     controller.sectionData();
+},
+
+closeShowStudentModal: function(){
+  document.getElementById('student_profile').style.display = "none";
+  document.getElementById("student_profile").parentNode.removeChild(document.getElementById("student_profile"));
+  controller.getBatchData(1);
 }
 
 };

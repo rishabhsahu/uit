@@ -249,3 +249,8 @@
 						background-color: white;
 						margin-right: 5px;
 					}
+
+					#student_detail_section {
+						height: 100%;
+						overflow-y: auto;
+					}

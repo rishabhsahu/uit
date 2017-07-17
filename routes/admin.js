@@ -92,6 +92,45 @@ router.get('/getFacultyData/:id',function(req,res){
 }
 })
 
+router.get('/classesheld/:faculty_id/:school/:batch/:section',function(req,res){
+  console.log(req.device)
+  var cookies = cookie.parse(req.headers.cookie || '')
+  if(!cookies){
+    errRequest("http://localhost:3000/error/nodejsErr/faculty","cookies",err)
+    res.status(401)
+    res.end()
+  } else {
+    jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+      if(err){
+        errRequest("http://localhost:3000/error/nodejsErr/faculty","jwt",err)
+        res.status(401)
+        res.end()
+      } else {
+        console.log(decoded.name)
+        mongo.connect('mongodb://localhost:27018/data',function(err,db){
+          if(err){
+            errRequest("http://localhost:3000/error/mongoErr/faculty","mongodb",err)
+            db.close()
+            res.status(500)
+            res.end()
+          } else {
+            db.collection("faculty").findOne({_id:req.params.faculty_id,"current_classes._id": req.params.school + '/' + req.params.batch + '/' + req.params.section},{"current_classes.$.classes_held":1},function(err,item){
+              if(!err){
+                res.json(item)
+              } else {
+                console.log(err)
+                db.close()
+                res.status(500)
+                res.end()
+              }
+            })
+          }
+        })
+      }
+    })
+  }
+})
+
 router.get('/getBatchData/:domain_name/:section/:batch',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
@@ -158,7 +197,7 @@ router.post('/addnewbatch/:domain_name/:batch/:section/:cls/:school',function(re
         var data = fs.readFileSync(root + "/data/" + name)
         data = data.toString()
         var list = data.split("\n")
-        for(var i=0;i<list.length;i++){
+        for(var i=0;i<list.length-1;i++){
           var obj = {}
           entry = list[i].replace("\r","")
           var ent = entry.split(',')
@@ -221,7 +260,7 @@ router.post('/addnewfaculty',function(req,res){
           res.end()
         } else {
           var d = (new Date()).valueOf().toString()
-          req.body.otp = "T-" + d.substr(d.length,d.length-6)
+          req.body.otp = "T-" + d.substr(d.length-5,d.length)
           db.collection('faculty').insert(req.body)
           db.collection('admin').update({_id:decoded.name},{$addToSet:{"faculties":{"id": req.body._id,"name": req.body.name,"recent_messages":{},"total_messages":{}}}})
           request({
