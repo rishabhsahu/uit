@@ -154,7 +154,7 @@ var view = {
         contentX += "<div class='row text-center' style='border-radius:3px;margin-bottom:10px;border:solid 1px rgba(160,160,160,.6);box-shadow:0px 1px 5px rgba(200,200,200,1);background-color:white;'><div class='col-xs-12'><div class='row'><div class='col-xs-4' style='font-size:32px;padding-top:10px'><div class='row'><div class='col-xs-12;' style='color:rgba(0,0,0,.55);color:rgba(0,0,0,.6);'>" + x.class + th + "</div></div></div><div class='col-xs-7'><h1 style='margin-top:10px;color:rgba(0,0,0,.7);margin-bottom:0px;'>" + x.subject + "</h1><div class='row' style='margin-top:0px'></div></div></div><div class='row' style='margin-top:10px;border-bottom:solid 1px rgba(0,0,0,.1);padding-bottom:10px;padding-right:5px'>" + classes_timing + "</div><div class='row' style='padding-top:10px;padding-bottom:10px;font-size:18px;margin-top:0px'><div class='col-xs-6 col-xs-offset-2 lelo' style='font-family:Roboto;font-size:13px' id='report#"+x._id+"'><span id='report#"+x._id+"' style='font-size:16px;color:rgb(70,70,70);cursor:pointer;'>See Report</span></div><div class='col-xs-4' id='options#" + x._id + "' onclick='view.showBatchOptionModal(event)'><span id='options#"+x._id+"' class='glyphicon glyphicon glyphicon-option-horizontal'></span></div></div></div></div>";
       })
     } else {
-      contentX = "<div class='row'><div class='col-xs-10 col-xs-offset-1' style='border-radius:3px;margin-bottom:10px;border:solid 1px rgba(110,110,110,.45);box-shadow:1px 1px 5px rgba(160,160,160,.5);background-color:white;font-size:20px;color:rgb(70,70,70,.8)'>No Batch Alloted</div></div>";
+      contentX = "<div class='row'><div class='col-xs-12' style='border-radius:3px;margin-bottom:10px;border:solid 1px rgba(110,110,110,.45);box-shadow:1px 1px 5px rgba(160,160,160,.5);background-color:white;font-size:20px;color:rgb(70,70,70,.8);padding-top:10;padding-bottom:10px'>No Batch Alloted</div></div>";
     }
     document.getElementById('batches_cards').innerHTML = contentX;
     model.personalInfo.current_classes.forEach(function(x,i){
@@ -229,7 +229,8 @@ var view = {
           console.log(model);
           document.getElementById('student_name').innerHTML = model.students[model.studentCount].name;
           model.studentCount++;
-          if(model.studentCount ==5){
+          console.log(model.studentCount , model.students.length)
+          if(model.studentCount === model.students.length){
             controller.submitScores();
           } else {
             view.showNamesForScores();
@@ -271,13 +272,13 @@ var view = {
   closeDownloadListModal: function(){
     document.getElementById('downloadsOptionModal').style.display = "none";
     document.getElementById('downloadsOptionModal').parentNode.removeChild(document.getElementById('downloadsOptionModal'));
-    controller.showReport();
+    controller.getReport();
   },
 
   closeBatchListModal: function(){
     document.getElementById('batchListModal').style.display = "none";
     document.getElementById('batchListModal').parentNode.removeChild(document.getElementById('batchListModal'));
-    controller.showReport();
+    controller.getReport();
   },
 
   closeAbsentModal: function(){
