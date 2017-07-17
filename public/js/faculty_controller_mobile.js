@@ -270,13 +270,13 @@ getReport: function(){
           var ts = student[model.selectedBatch.subject]["scores"];
           ts = student[model.selectedBatch.subject]["scores"].slice(-2);
           ts.forEach(function(m,n){
-            tests += "<label class='col-xs-5 label label-warning' style='margin-top:10px;margin-left:5px;font-size:12px'>" + m.test_name + "-" + m.score + "</label>"
+            tests += "<label class='col-xs-5 label label-warning' style='margin-top:10px;margin-left:5px;font-size:12px'><span style='color:rgb(90,90,90)'>" + m.test_name + "</span> - " + m.score + "</label>"
           })
           tests += "</div></div>";
         } else {
         }
            if(student.name && student.enroll_number){
-             x += "<div class='row'><div class='col-xs-10 col-xs-offset-1' style='border:solid 1px lightgrey;padding-top:5px;padding-bottom:10px;margin-top:10px;cursor:pointer;background-color:white;border:solid 1px rgba(160,160,160,.5);box-shadow:0px 1px 20px rgba(160,160,160,.5);border-radius:3px;font-family:Roboto'><div class='row text-left'><div class='col-xs-12'><span class='' style='font-size:16px;text-transform:capitalize;'><b>" + student.name + "</b></span></div></div><div class='row'><div class='col-xs-8'><div class='row text-left'><div class='col-xs-12' style='font-size:12px'>" + student.enroll_number + "</div><br><div class='col-xs-12'>" + count + "/" + dcs + " <div class='label label-success'>" + Math.ceil((count/dcs)*100) + "</div> " + tests + " </div></div></div><div class='col-xs-4 glyphicon glyphicon-envelope' style='margin-top:20px;font-size:18px;color:rgb(70,70,70)'></div></div></div></div>";
+             x += "<div class='row'><div class='col-xs-10 col-xs-offset-1' style='padding-top:5px;padding-bottom:10px;margin-top:10px;cursor:pointer;background-color:white;border:solid 1px rgba(160,160,160,.7);box-shadow:0px 1px 20px rgba(200,200,200,1);border-radius:3px;font-family:Roboto'><div class='row text-left'><div class='col-xs-12'><span class='' style='font-size:16px;text-transform:capitalize;'><b>" + student.name + "</b></span></div></div><div class='row'><div class='col-xs-8'><div class='row text-left'><div class='col-xs-12' style='font-size:12px'>" + student.enroll_number + "</div><br><div class='col-xs-12'>" + count + "/" + dcs + " <div class='label label-success'>" + Math.ceil((count/dcs)*100) + "</div> " + tests + " </div></div></div><div class='col-xs-4 glyphicon glyphicon-envelope' style='margin-top:20px;font-size:18px;color:rgb(70,70,70)'></div></div></div></div>";
            }
       })
       view.showReport(x);
