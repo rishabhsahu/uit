@@ -8,7 +8,7 @@ graph = {
     var lastSevenDays = classes_held.slice(-7);
     var xd = [];
     var yd = [];
-    classes_held.forEach(function(x,i){
+    lastSevenDays.forEach(function(x,i){
       var prsnt=0;
       var d = new Date(x);
       xd.push(d.getDate() + " " + model.months[d.getMonth()]);
@@ -160,7 +160,7 @@ graph = {
               ch = x.classes_held.length;
             }
           })
-          if(model.selectedStudent[model.selectedStudent.selectedSubject].absent && (ch - model.selectedStudent[model.selectedStudent.selectedSubject].absent.length)>0){
+          if(model.selectedStudent[model.selectedStudent.selectedSubject] && model.selectedStudent[model.selectedStudent.selectedSubject].absent && ch>0){
             const chart = new Chart(e,{
              type:'doughnut',
              data: {
@@ -182,26 +182,11 @@ graph = {
              }
            })
          } else {
-           const chart = new Chart(e,{
-            type:'doughnut',
-            data: {
-              labels: ["No Classes Yet"],
-              datasets: [{
-                label: "No Classes Yet",
-                backgroundColor: "black",
-                pointBackgroundColor: "rgb(63, 117, 132)",
-                pointBorderWidth:"4",
-                pointHoverBorderColor:"rgb(237, 101, 185)",
-                pointHoverBorderWidth:"6",
-                data:[1],
-              }]
-            },
-            options: {
-              cutoutPercentage: 85,
-              rotation: (Math.PI)*.8,
-              circumference: (Math.PI)*1.75
-            }
-          })
+           const k = e.parentNode
+           k.parentNode.setAttribute('class','row');
+           k.parentNode.style.marginTop = "0px";
+           k.parentNode.innerHTML = "<div class='col-xs-10 col-xs-offset-1' style='background-color:rgba(230,230,230,.8);font-size:24px;color:rgb(110,110,110);padding-top:20px;padding-bottom:20px'>Attendance Data not Available</div>";
+           k.parentNode.removeChild(k);
          }
         }
       }
@@ -234,49 +219,60 @@ graph = {
   subjectWiseAttendance: function(){
     let d1 = [];
     let d2 = [];
-    let e = document.getElementById('subjectWiseAttendance');
-    for(let x in model.selectedStudent.current_faculties){
-      d1.push(x);
-        if(model.selectedStudent[x].absent && model.selectedStudent[x].absent){
-          d2.push(model.selectedStudent[x].absent.length);
-        } else {
-          d2.push(0);
-        }
-    }
+    let c = 0;
+    const subs = Object.keys(model.selectedStudent.current_faculties);
+    subs.forEach(function(sub,i){
 
-    let chart = new Chart(e,{
-      type:'bar',
-      data: {
-        labels: d1,
-        datasets: [{
-          label: "Attendance in course",
-          data: d2,
-          backgroundColor: "rgba(66, 152, 244,.6)",
-          borderWidth: 1
-        }]
-      },
-      options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero:true
-                }
-            }]
+      let xhr = new XMLHttpRequest();
+      xhr.open("GET","http://localhost:80/admin/classesheld/" + model.selectedStudent.current_faculties[sub] + "/" + model.selectedBatch._id,true);
+      xhr.onreadystatechange = function(){
+        if(xhr.readyState === 4){
+          if(xhr.status === 200){
+            const classes_held = JSON.parse(xhr.response);
+            classes_held.current_classes.forEach(function(x,i){
+              if(x._id === model.selectedBatch._id){
+                d1.push(sub);
+                    if(model.selectedStudent[sub] && model.selectedStudent[sub].absent){
+                    d2.push(Math.ceil(100*(1 - model.selectedStudent[sub].absent.length/x.classes_held.length)));
+                  } else {
+                    d2.push(0);
+                  }
+              }
+              console.log(d1,d2);
+              c++;
+              if(c === subs.length){
+                displaySubjectWiseAttendance(d1,d2);
+              }
+            })
+          }
         }
     }
+    xhr.send(null);
     })
   },
 
   lastExam: function(){
-
+    let d1 = [];
+    let d2 = [];
+    Object.keys(model.selectedStudent.current_faculties).forEach(function(x,i){
+      if(model.selectedStudent[x] && model.selectedStudent[x].scores){
+        d1.push(x);
+        const y = model.selectedStudent[x].scores[model.selectedStudent[x].scores.length - 1];
+        if(y.score != "A"){
+          d2.push(Math.round(y.score/y.max_score*10000)/100);
+        } else {
+          d2.push(0);
+        }
+      }
+    })
     let e = document.getElementById('lastExamScores');
     let chart = new Chart(e,{
       type: 'radar',
       data: {
-        labels: ["Maths","Bio","History","Hindi","English","History","Hindi","English"],
+        labels: d1,
         datasets: [{
-          label: "Last Exam Scores",
-          data: [50,22,91,34,67,22,91,34],
+          label: "Last Exam Scores (in Percentage)",
+          data: d2,
           borderColor: "rgba(66, 152, 244,9)",
           borderWidth: 4,
           pointBackgroundColor: "rgba(255, 73, 164,.9)",
@@ -295,18 +291,24 @@ graph = {
       let d1 = [];
       let d2 = [];
       scoresArr.forEach(function(x,i){
-        d1.push(x.test_name);
-        d2.push(Number(x.score));
+        if(x.score!="A"){
+          d1.push(x.test_name);
+          d2.push(Math.round(Number(x.score)/Number(x.max_score)*10000)/100);
+        } else {
+          d1.push(x.test_name);
+          d2.push(Number(0));
+        }
       })
       let chart = new Chart(e,{
         type: 'line',
         data: {
           labels: d1,
           datasets: [{
-            label: "Last 5 Exams",
+            label: "Last 5 Exams (in Percentage)",
             data: d2,
             lineTension: 0,
             fill: true,
+            backgroundColor: "rgba(66, 152, 244,.3)",
             borderColor: "rgba(66, 152, 244,9)",
             borderWidth: 3,
             borderWidthHover: 3,
@@ -327,4 +329,29 @@ graph = {
       })
     }
   }
+}
+
+function displaySubjectWiseAttendance(d1,d2){
+  const e = document.getElementById('subjectWiseAttendance');
+  let chart = new Chart(e,{
+    type:'bar',
+    data: {
+      labels: d1,
+      datasets: [{
+        label: "Absents",
+        data: d2,
+        backgroundColor: "rgba(66, 152, 244,.6)",
+        maxBarThickness: "10px"
+      }]
+    },
+    options: {
+      scales: {
+          yAxes: [{
+              ticks: {
+                  beginAtZero:true
+              }
+          }]
+      }
+  }
+  })
 }
