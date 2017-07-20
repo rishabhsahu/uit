@@ -62,7 +62,7 @@ var controller = {
             if(cl.schedule){
               model.selectedFaculty.classes_today[cl.class] = cl.schedule[d.getDay()-1];
             } else {
-              model.selectedFaculty.classes_today[cl.class] = "unknown";
+              model.selectedFaculty.classes_today[cl.class] = "not set";
             }
           })
         } else {
@@ -177,7 +177,7 @@ var controller = {
         if(isNaN(t)){
           t=0;
         }
-        stdnm += "<div class='row' style='padding-top:7px;padding-bottom:7px'><div class='col-xs-4' id='" + model.selectedBatch._id + "/" + i + "' onclick='controller.getStudentData(event)'>" + x.name + "</div><div class='col-xs-4'>" + cp + "</div><div class='col-xs-4'>" + Math.ceil(t) + "</div></div>";
+        stdnm += "<tr class='row' style='font-size:12px'><td class='col-xs-4' id='" + model.selectedBatch._id + "/" + i + "' onclick='controller.getStudentData(event)' style='cursor:pointer'>" + x.name + "</td><td class='col-xs-4'>" + cp + "</td><td class='col-xs-4'>" + Math.ceil(t) + "</td></tr>";
       }
     })
     if(ch === 0){
@@ -194,7 +194,7 @@ var controller = {
     } else {
       schdg = "<div class='row' style='margin-top:3px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);'><div class='col-xs-12 text-danger'><h2 style='margin-top:10px;margin-bottom:10px'>Schedule not Set</h2></div></div></div>";
     }
-    document.getElementById('classStudentData').innerHTML = "<div class='col-xs-10 col-xs-offset-2'><div class='row'><div class='col-xs-12'><div class='row' style='font-size:16px'><div class='col-xs-4' style='color:white;padding-top:5px;padding-bottom:5px;background-color:rgb(55, 110, 198);border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160)'><span>Classes Held</span> - <span style='font-size:16px'>" + ch + "</span></div><div class='col-xs-8' style='color:white;padding-top:5px;padding-bottom:5px;background-color:rgb(55, 110, 198);border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);'><span>Faculty</span> - <span style='font-size:16px'>" + model.SF.name + "</span></div></div></div></div><div class='row' style='margin-top:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);color:" + cl + "'><div class='col-xs-12'><div class='row' style='color:rgba(0,0,0,.7);font-weight:bold;border-bottom:solid 1px rgba(160,160,160,.5)'><div class='col-xs-4'><h4>Name</h4></div><div class='col-xs-4'><h4>Present</h4></div><div class='col-xs-4'><h4>Attendance</h4></div></div><div class='row' style='height:200px;overflow-y:auto'><div class='col-xs-12'>" + stdnm + "</div></div></div></div>" + schdg + "</div>";
+    document.getElementById('classStudentData').innerHTML = "<div class='col-xs-10 col-xs-offset-2'><div class='row'><div class='col-xs-12'><div class='row' style='font-size:16px'><div class='col-xs-4' style='color:white;padding-top:5px;padding-bottom:5px;background-color:rgb(55, 110, 198);border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160)'><span>Classes Held</span> - <span style='font-size:16px'>" + ch + "</span></div><div class='col-xs-8' style='color:white;padding-top:5px;padding-bottom:5px;background-color:rgb(55, 110, 198);border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);'><span>Faculty - </span><span style='font-size:16px'>" + model.SF.name + "</span></div></div></div></div><div class='row' style='margin-top:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);color:" + cl + "'><div class='col-xs-12'><div class='row' style='color:rgba(0,0,0,.7);font-weight:bold;border-bottom:solid 1px rgba(160,160,160,.5)'><div class='col-xs-4'><h4>Name</h4></div><div class='col-xs-4'><h4>Present</h4></div><div class='col-xs-4'><h4>Attendance</h4></div></div><div class='row' style='max-height:200px;overflow-y:auto'><table class='col-xs-12 table table-striped text-center'>" + stdnm + "</table></div></div></div>" + schdg + "</div>";
     graph.pastSevenDays();
   },
 
