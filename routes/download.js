@@ -235,36 +235,50 @@ router.get('/examscores/all/:school/:batch/:section',function(req,res){
           db.collection('classes').findOne({_id:req.params.school + '/' + req.params.batch + '/' + req.params.section},{"student_data":1,"current_faculties":1},function(err,item){
             if(!err){
               var wb = new xl.Workbook()
-              var style1 = wb.createStyle({font: {color: '#4277f4',size: 12},numberFormat: '$#,##0.00; ($#,##0.00); -'})
-              var style2 = wb.createStyle({font: {color: '#e52424',size: 12},numberFormat: '$#,##0.00; ($#,##0.00); -'})
-              var style3 = wb.createStyle({font: {color: '#252526',size: 12},numberFormat: '$#,##0.00; ($#,##0.00); -'})
+              const style1 = wb.createStyle({alignment:{horizontal:['right'],vertical:['center']},font: {color: '#4277f4',size: 12},numberFormat: '$#,##0.00; ($#,##0.00); -'})
+              const style2 = wb.createStyle({alignment:{horizontal:['right'],vertical:['center']},font: {color: '#e52424',size: 12},numberFormat: '$#,##0.00; ($#,##0.00); -'})
+              const style3 = wb.createStyle({alignment:{horizontal:['right'],vertical:['center']},font: {color: '#252526',size: 12},numberFormat: '$#,##0.00; ($#,##0.00); -'})
+
+              const stylep = wb.createStyle({alignment:{horizontal:['right'],vertical:['center']},font: {color: '#24ad6f',size: 12},numberFormat: '$#,##0.00; ($#,##0.00); -'})
+
+              const styleh = wb.createStyle({alignment:{horizontal:['right'],vertical:['center']},font: {color: '#181918',size: 14},numberFormat: '$#,##0.00; ($#,##0.00); -'})
+
+              const styled = wb.createStyle({alignment:{horizontal:['right'],vertical:['center']},font: {color: '#ea7910',size: 10},numberFormat: '$#,##0.00; ($#,##0.00); -'})
               var ws = {}
               if(item.current_faculties.length>0){
                 item.current_faculties.forEach(function(sub){
                   ws[Object.keys(sub)[0]] = wb.addWorksheet(Object.keys(sub)[0])
                   ws[Object.keys(sub)[0]].cell(1,1).string('Enrollment Number').style(style3)
                   ws[Object.keys(sub)[0]].cell(1,2).string('Name').style(style3)
-                  ws[Object.keys(sub)[0]].cell(1,3).string(' ')
+                  ws[Object.keys(sub)[0]].cell(1,3).string('Test Name').style(styleh)
+                  ws[Object.keys(sub)[0]].cell(2,3).string('Test Date').style(styleh)
+                  ws[Object.keys(sub)[0]].cell(3,3).string('Max Score').style(styleh)
                 })
               }
+              var tnames = []
               item.student_data.forEach(function(s,n){
                 if(s.name && s.enroll_number){
                   Object.keys(ws).forEach(function(sb,i){
-                    ws[sb].cell(3+n,1).string(s.enroll_number).style(style1)
-                    ws[sb].column(1).setWidth(25)
-                    ws[sb].cell(3+n,2).string(s.name).style(style2)
-                    ws[sb].column(2).setWidth(25)
-                    ws[sb].cell(3+n,3).string("")
+                    ws[sb].cell(5+n,1).string(s.enroll_number).style(style1)
+                    ws[sb].column(1).setWidth(20)
+                    ws[sb].cell(5+n,2).string(s.name).style(style2)
+                    ws[sb].column(2).setWidth(20)
+                    ws[sb].column(3).setWidth(15)
+                    ws[sb].cell(5+n,3).string("")
                       if(s.hasOwnProperty(sb) && s[sb].hasOwnProperty('scores')){
                         if(n===0){
                           s[sb].scores.forEach(function(dl,dt){
-                            ws[sb].cell(1,4+dt).string("Test - " + dl.test_name)
-                            ws[sb].cell(2,4+dt).string((new Date(Number(dl.test_id.split('/')[3]))).toDateString())
+                            ws[sb].cell(1,4+dt).string("Test - " + dl.test_name).style(styleh)
+                            tnames.push(dl.test_name)
+                            ws[sb].cell(2,4+dt).string((new Date(Number(dl.test_id.split('/')[3]))).toDateString()).style(styled)
+                            ws[sb].cell(3,4+dt).string(dl.max_score).style(style2)
                             ws[sb].column(4+dt).setWidth(15)
                           })
                         }
                         s[sb].scores.forEach(function(ts,tn){
-                          ws[sb].cell(3+n,4+tn).string(ts.score).style(style3)
+                          if(tnames.indexOf(ts.test_name)>-1){
+                            ws[sb].cell(5+n,4+tnames.indexOf(ts.test_name)).string(ts.score + " ( " + Math.ceil((ts.score*100)/ts.max_score) + "% )").style(stylep)
+                          }
                         })
                       }
                   })
