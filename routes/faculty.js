@@ -232,7 +232,7 @@ router.get('/report/:college/:department/:batch/:subject',function(req,res){
   }
 })
 
-router.post('/submitscores/:college/:branch/:batch/:subject',function(req,res){
+router.post('/submitscores/:school/:batch/:section/:subject',function(req,res){
   console.log(req.body)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
@@ -253,28 +253,28 @@ router.post('/submitscores/:college/:branch/:batch/:subject',function(req,res){
             res.status(500)
             res.end()
           } else {
-            req.body.scores.forEach(function(student,i){
-              var obj = {}
-              var score
-              var enroll_number
-              for(var props in student){
-                score = student[props]
-                enroll_number = props
-              }
-              console.log(score)
-              var xyz = {
-                test_id: req.body.test_id,
-                test_name: req.body.test_name,
-                score: score,
-                max_score : req.body.max_score
-              }
+            var xyz = {
+              test_id: req.body.test_id,
+              test_name: req.body.test_name,
+              max_score : req.body.max_score
+            }
+            delete req.body.test_id
+            delete req.body.test_name
+            delete req.body.score
+            delete req.body.max_score
+            var o = {}
+            for(var s in req.body.scores){
+              var enroll_number = s
+              xyz.score = req.body.scores[s]
+              o["student_data.$." + req.params.subject + '.scores'] = xyz
               var str = "student_data.$." + req.params.subject + '.scores'
-              obj[str] = xyz
-              console.log(obj)
-              db.collection("classes").update({_id:req.params.college + '/' + req.params.branch + '/' + req.params.batch,"student_data.enroll_number":enroll_number},{$addToSet:obj})
-              res.status(200)
-              res.end()
-            })
+              o[str] = xyz
+              console.log(o)
+              db.collection("classes").update({_id:req.params.school + '/' + req.params.batch + '/' + req.params.section,"student_data.enroll_number":enroll_number},{$addToSet:o})
+            }
+            db.close()
+            res.status(200)
+            res.end()
           }
           })
         }
