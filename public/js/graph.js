@@ -182,11 +182,26 @@ graph = {
              }
            })
          } else {
-           const k = e.parentNode
-           k.parentNode.setAttribute('class','row');
-           k.parentNode.style.marginTop = "0px";
-           k.parentNode.innerHTML = "<div class='col-xs-10 col-xs-offset-1' style='background-color:rgba(230,230,230,.8);font-size:24px;color:rgb(110,110,110);padding-top:20px;padding-bottom:20px'>Attendance Data not Available</div>";
-           k.parentNode.removeChild(k);
+           const chart = new Chart(e,{
+            type:'doughnut',
+            data: {
+              labels: ["","No Classes Taken"],
+              datasets: [{
+                label: "Attendance in " + model.selectedStudent.selectedSubject + " course",
+                backgroundColor: ["","black"],
+                pointBackgroundColor: "rgb(63, 117, 132)",
+                pointBorderWidth:"4",
+                pointHoverBorderColor:"rgb(237, 101, 185)",
+                pointHoverBorderWidth:"6",
+                data:[0,1],
+              }]
+            },
+            options: {
+              cutoutPercentage: 85,
+              rotation: (Math.PI)*.8,
+              circumference: (Math.PI)*1.75
+            }
+          })
          }
         }
       }
