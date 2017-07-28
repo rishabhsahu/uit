@@ -17,7 +17,7 @@ router.post('/',function(req,res){
       if(req.body.password.indexOf("T-") > -1){
         db.collection('faculty').findOne({_id:username,otp:password},{username:1},function(err,item){
           if(!err){
-            res.status(201)
+            res.status(200)
             res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
             res.render('faculty_mobile')
           } else {
@@ -40,7 +40,7 @@ router.post('/',function(req,res){
               } else {
                 console.log(item)
                 if(item.password == req.body.password){
-                  res.status(202)
+                  res.status(200)
                   res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
                   res.render('faculty_mobile')
                   db.close()
@@ -64,7 +64,7 @@ router.post('/',function(req,res){
               } else {
                 console.log(item)
                 if(item.password == req.body.password){
-                  res.status(202)
+                  res.status(200)
                   res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
                   res.render('admin_home',{title:"",user:username})
                   db.close()
@@ -82,6 +82,8 @@ router.post('/',function(req,res){
     }
   })
 })
+
+function errRequest(){}
 
 
 module.exports = router
