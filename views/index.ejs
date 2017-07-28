@@ -22,15 +22,19 @@
 			}
 
 			input {
+				background-color: inherit;
+				font-family: Roboto;
 				padding: 5px;
 				font-size: 16px;
 				margin-top: 10px;
-				border: solid 1px rgb(160,160,160);
-				border-radius: 5px;
+				border: none;
+				border-bottom: solid 2px rgb(160,160,160);
+				color: white;
 			}
 
-			input:hover {
-				border-color: rgb(40,204,130);
+			input:focus {
+				outline: 0 none;
+				border-bottom-color: rgb(40,204,130);
 			}
 
 			#submit {
@@ -142,7 +146,7 @@
 				if(count>4){
 					count=0;
 				}
-				setTimeout(removeAn,1000)
+				setTimeout(removeAn,4000)
 			}
 
 			function removeAn(){
@@ -152,7 +156,7 @@
 				document.getElementById('ie').style.animationDuration = "";
 				document.getElementById('main').style.animationName = "";
 				document.getElementById('main').style.animationDuration = "";
-				setTimeout(changeText,80);
+				setTimeout(changeText,3000);
 			}
 
 			function sendLogin(){
@@ -178,7 +182,7 @@
 				} else {
 					document.getElementById('wl').style.paddingTop = "180px";
 				}
-				setTimeout(changeText,80);
+				setTimeout(changeText,4000);
 			}
 		</script>
 	</head>
@@ -202,26 +206,25 @@
 	</div>
 		</div>
 		<button class="btn btn-danger" style="background-color:white;color:rgb(66, 134, 244);font-weight:bold;position:absolute;bottom:20px;right:40px;border-radius:2px" onclick="showLogin()">LOGIN BETA</button>
-		<div id="loginModal" class="col-xs-12 modal" style="animation-name:modalDrop;animation-duration:.3s;">
+		<div id="loginModal" class="col-xs-12 modal" style="background-color:rgb(244, 65, 65);animation-name:modalDrop;animation-duration:.3s;">
 					<div class="row">
-						<div class="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-4" style="border-radius:5px;background-color:white;border: solid 1px rgb(160,160,160)">
+						<div class="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-4" style="background-color:white;border-radius:5px;padding-top:20px;padding-bottom:50px">
 							<div class='row'>
 									<div class='col-xs-8 col-xs-offset-2 col-sm-8 col-sm-offset-2  text-center' style="background-color:rgba(230,230,230,.6);border:solid 1px rgb(160,160,160);border-radius:5px;padding-top:10px;padding-bottom:10px;margin-top:20px;" id="messageFolder"><span class=' text-primary'>Login to Continue</span></div>
 									<div class='col-xs-12 col-sm-12' id='login'><br>
-										<div class='row text-center' style="text-transform:bold;color: rgb(70,70,70);text-transform:bold;font-size:18px;padding-top:5px;padding-bottom:5px">
-											<div class="col-xs-12 col-sm-6" style='padding-top:10px'>username</div>
-											<div class="col-xs-12  col-sm-6 text-center"><input type='text' name='username' id='username' size=15></div>
+										<div class='row text-center' style="text-transform:bold;text-transform:bold;font-size:18px;padding-top:5px;padding-bottom:5px">
+											<div class="col-xs-12  col-sm-6 col-sm-offset-3 text-center"><input placeholder="username" type='text' name='username' id='username' size=15 autofocus></div>
 										</div>
 										<div class='row text-center' style="text-transform:bold;color: rgb(70,70,70);text-transform:bold;font-size:18px;padding-top:5px;padding-bottom:5px">
-											<div class="col-xs-12 col-sm-6" style='padding-top:10px'>password</div>
-											<div class="col-xs-12 col-sm-6"><input type='password' name='password' id='password' size=15></div>
-										</div>
-
-										<div class="col-xs-12">
-											<p class='text-center'><button class="btn btn-primary" onclick='sendLogin()'>Submit</button></p>
+											<div class="col-xs-12 col-sm-6 col-sm-offset-3"><input placeholder="password" type='password' name='password' id='password' size=15></div>
 										</div>
 									</div>
 								</div>
+						</div>
+					</div>
+					<div class="row" style='padding-top:10px'>
+						<div class="col-xs-12">
+							<p class='text-center'><button class="btn btn-primary" onclick='sendLogin()'>Submit</button></p>
 						</div>
 					</div>
 		</div>
