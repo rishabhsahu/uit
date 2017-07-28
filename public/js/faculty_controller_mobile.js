@@ -77,7 +77,6 @@ var controller = {
               case 'attendance': controller.takeAttendance();
                 break;
               case 'score':
-                document.getElementById('batchOptionModal').style.display = "none";
                 view.showScoreOptions();
                 break;
             }
@@ -105,13 +104,25 @@ routes: function(e){
   switch(model.route){
     case 'attendance':
       view.closeBatchOptionModal(1);
-      controller.getStudentList();
+      this.getStudentList();
       break;
-    case 'report': controller.getReport();
+    case 'report':
+      controller.getReport();
       break;
     case 'score':
-      controller.getStudentList();
+      view.closeBatchOptionModal();
+      this.getStudentList();
       break;
+
+    case "schedule":
+      view.setScheduleModal();
+      view.closeBatchOptionModal();
+      break;
+
+      case "notifyClass":
+        view.notifyClass();
+        view.closeBatchOptionModal();
+        break;
   }
 },
 
@@ -270,13 +281,13 @@ getReport: function(){
           var ts = student[model.selectedBatch.subject]["scores"];
           ts = student[model.selectedBatch.subject]["scores"].slice(-2);
           ts.forEach(function(m,n){
-            tests += "<label class='col-xs-5 label label-warning' style='margin-top:10px;margin-left:5px;font-size:12px'><span style='color:rgb(90,90,90)'>" + m.test_name + "</span> - " + m.score + "</label>"
+            tests += "<div class='col-xs-5 text-primary' style='padding-right:0px;font-size:12px;color:green;font-weight:bold'><span style='color:rgb(70,70,70)'>" + m.test_name + "</span> - " + m.score + "/" + m.max_score + "</div>"
           })
           tests += "</div></div>";
         } else {
         }
            if(student.name && student.enroll_number){
-             x += "<div class='row'><div class='col-xs-10 col-xs-offset-1' style='padding-top:5px;padding-bottom:10px;margin-top:10px;cursor:pointer;background-color:white;border:solid 1px rgba(160,160,160,.7);box-shadow:0px 1px 20px rgba(200,200,200,1);border-radius:3px;font-family:Roboto'><div class='row text-left'><div class='col-xs-12'><span class='' style='font-size:16px;text-transform:capitalize;'><b>" + student.name + "</b></span></div></div><div class='row'><div class='col-xs-8'><div class='row text-left'><div class='col-xs-12' style='font-size:12px'>" + student.enroll_number + "</div><br><div class='col-xs-12'>" + count + "/" + dcs + " <div class='label label-success'>" + Math.ceil((count/dcs)*100) + "</div> " + tests + " </div></div></div><div class='col-xs-4 glyphicon glyphicon-envelope' style='margin-top:20px;font-size:18px;color:rgb(70,70,70)'></div></div></div></div>";
+             x += "<div class='row'><div class='col-xs-10 col-xs-offset-1' style='padding-top:10px;padding-bottom:10px;margin-top:5px;cursor:pointer;background-color:white;border:solid 1px rgba(180,180,180,.8);box-shadow:0px 1px 5px rgba(200,200,200,.8);border-radius:3px;font-family:Roboto'><div class='row text-left'><div class='col-xs-12'><span class='' style='font-size:14px;text-transform:capitalize;'><b>" + student.name + "</b></span></div></div><div class='row'><div class='col-xs-9'><div class='row text-left'><div class='col-xs-12' style='font-size:12px'>" + student.enroll_number + "</div><div class='col-xs-12' style='color:rgb(70,70,70);font-size:14px;font-weight:bold'>Attendance ( <span style='color:rgb(17, 45, 89)'>" + count + "/" + dcs + "</span> ) <span style='color:green'>" + Math.ceil((count/dcs)*100) + "%</span></div><div class='col-xs-12'>" + tests + " </div></div></div><div class='col-xs-3 glyphicon glyphicon-option-vertical' style='margin-top:-5px;font-size:16px;color:rgb(70,70,70)'></div></div></div></div>";
            }
       })
       view.showReport(x);
@@ -290,8 +301,9 @@ getReport: function(){
 },
 
 submitScores: function(){
-  var obj = {scores:model.studentScoreArray,test_name:model.scoreSettings[0]["Test Name"],max_score:model.scoreSettings[1]["Maximum Score"]};
-  obj.test_id = model.selectedBatch._id + "/" + model.selectedBatch.class + "/" + model.selectedBatch.subject + "/" + obj.test_name
+  model.studentScores.test_name = model.scoreSettings[0]["Test Name"]
+  model.studentScores.max_score = model.scoreSettings[1]["Maximum Score"]
+  model.studentScores.test_id = model.selectedBatch._id + "/" + model.selectedBatch.class + "/" + model.selectedBatch.subject + "/" + model.scoreSettings[0]["Test Name"]
   var SSR = new XMLHttpRequest();
 
   SSR.onreadystatechange =  function(){
@@ -309,16 +321,16 @@ submitScores: function(){
       controller.notifyUser("Internal Server Error. Try again",5);
     }
   }
-  console.log(obj);
   SSR.open('POST','http://localhost:80/faculty/submitscores/' + model.selectedBatch._id + '/' + model.selectedBatch.subject, true);
   SSR.setRequestHeader('Content-Type','application/json');
-  SSR.send(JSON.stringify(obj));
+  SSR.send(JSON.stringify(model.studentScores));
 },
 
 addScoreSetting: function(){
   var obj = {};
   obj[model.scoreSettinglist[model.scoreSettingCount]] = document.getElementById('scoreSettingInput').value;
   document.getElementById('scoreSettingInput').value = "";
+  document.getElementById('scoreSettingInput').focus();
   model.scoreSettings.push(obj);
   model.scoreSettingCount++ ;
   if(model.scoreSettingCount === model.scoreSettinglist.length){
@@ -520,7 +532,7 @@ notifyUser: function(str,a){
     document.getElementById('notifyUser').style.display = "block";
     setTimeout(function(){
       document.getElementById('notifyUser').style.display = "none";
-    },80);
+    },4000);
 
   } else if(a===1){
     document.getElementById('notifText').style.backgroundColor = "lightgreen";
@@ -528,14 +540,14 @@ notifyUser: function(str,a){
     document.getElementById('notifyUser').style.display = "block";
     setTimeout(function(){
       document.getElementById('notifyUser').style.display = "none";
-    },80);
+    },4000);
 
   } else if(a===5){
     document.getElementById('notifText2').innerHTML = str;
     document.getElementById('notifyError').style.display = "block";
     setTimeout(function(){
       document.getElementById('notifyError').style.display = "none";
-    },80);
+    },4000);
   }
 },
 
