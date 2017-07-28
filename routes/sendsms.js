@@ -1,10 +1,10 @@
-var router = require('express').Router()
-var cookie = require('cookie')
-var jwt = require('jsonwebtoken')
-var mongo = require('mongodb').MongoClient
-var request = require('request')
-var authkey = "155975ATpoRPi5h593ea16c"
-var months = ["january","february","march","april","may","june","july","august","septermber","october","november","december"]
+let router = require('express').Router()
+let cookie = require('cookie')
+let jwt = require('jsonwebtoken')
+let mongo = require('mongodb').MongoClient
+let request = require('request')
+let authkey = "155975ATpoRPi5h593ea16c"
+let months = ["january","february","march","april","may","june","july","august","septermber","october","november","december"]
 
 router.post('/notifyclass',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
@@ -275,6 +275,54 @@ router.post('/sendsmstofaculties',function(req,res){
           res.end()
         }
       })
+})
+
+router.post('/allsubjectsscores',function(req,res){
+  mongo.connect('mongodb://localhost:27018/data',function(err,db){
+    db.collection('classes').findOne({_id:req.body.batch},{"current_faculties":1,"student_data":1},function(err,item){
+      const api_url = "http://api.msg91.com/api/sendhttp.php?"
+      let msg = "<?xml version='1.0' encoding='utf-8' standalone='yes'?><MESSAGE><AUTHKEY>" + authkey + "</AUTHKEY><ROUTE>4</ROUTE><COUNTRY>91</COUNTRY><SENDER>onivin</SENDER>"
+      let d = new Date(req.body.testdate)
+      let fc = []
+      item.current_faculties.forEach((fnm,i)=>{
+        fc.push(Object.keys(fnm)[0])
+      })
+      item.student_data.forEach((s,sn)=>{
+        msg += "<SMS TEXT='"
+        msg += "Score Card of your Child in Class Test-" + req.body.test_name + "\n"
+          fc.forEach((x,i)=>{
+            console.log(s[x]);
+            s[x].scores.forEach((c,n)=>{
+              if(c.test_name === req.body.test_name){
+                msg += x + " - " + c.score + "/" + c.max_score + "\n"
+              }
+            })
+          })
+          msg += "'><ADDRESS TO='" + s.mobile + "'></ADDRESS></SMS>"
+      })
+      msg += "</MESSAGE>"
+      console.log(msg)
+      request({
+        url: "https://control.msg91.com/api/v2/sendsms",
+        method:"POST",
+        body:msg,
+        headers: {
+    "Content-Type": "application/xml",
+    "authkey": authkey
+}
+      },function(err,resp,body){
+        console.log(resp.statusCode)
+        if(!err && resp.statusCode === 200){
+          res.status(200)
+          res.end()
+            } else {
+              console.log(err)
+              res.status(504)
+              res.end()
+            }
+          })
+    })
+  })
 })
 
 module.exports = router
