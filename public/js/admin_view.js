@@ -47,7 +47,7 @@ var view = {
           nm = x.name;
           abts = 0;
         }
-        absents += "<div class='row' style='padding-top:5px;padding-bottom:5px;overflow-y:auto;margin-top:5px;background-color:rgba(200,200,200,.5);border-radius:3px;text-transform:capitalize'><div class='col-xs-6' style='border-right:solid 1px white;font-weight:bold;color:rgb(70,70,70)'>" + nm + "</div><div class='col-xs-6'>" + abts + "</div></div>";
+        absents += "<div class='row' style='padding-top:5px;padding-bottom:5px;overflow-y:auto;margin-top:5px;background-color:rgba(200,200,200,.5);border-radius:3px;text-transform:uppercase'><div class='col-xs-6' style='border-right:solid 1px white;color:rgb(70,70,70);font-size:13px'>" + nm + "</div><div class='col-xs-6'>" + abts + "</div></div>";
       })
       absents += "</div></div></div></div>";
       var msgs = [];
@@ -64,18 +64,24 @@ var view = {
       })
       fcbmsgs = "";
       t.forEach(function(x,i){
-        fcbmsgs += "<div class='row' style='border-radius:3px;margin-top:5px'><div class='col-xs-7 col-xs-offset-1' style='background-color:rgba(200,200,200,.3);border-radius:3px;color: rgb(70,70,70);font-weight:bold;text-transform:capitalize;padding-top:5px;padding-bottom:5px;'>" + x.name + "</div><div class='col-xs-2 col-xs-offset-1' style='background-color:rgba(200,200,200,.4);border-radius:3px;color: rgb(70,70,70);font-weight:bold;padding-top:5px;padding-bottom:5px;'>" + x.cnt + "</div></div>";
+        fcbmsgs += "<div class='row' style='border-radius:3px;margin-top:5px'><div class='col-xs-7 col-xs-offset-1' style='background-color:rgba(200,200,200,.3);border-radius:3px;color: rgb(70,70,70);text-transform:uppercase;padding-top:5px;padding-bottom:5px;font-font-size:12px'>" + x.name + "</div><div class='col-xs-2 col-xs-offset-1' style='background-color:rgba(200,200,200,.4);border-radius:3px;color: rgb(70,70,70);font-weight:bold;padding-top:5px;padding-bottom:5px;'>" + x.cnt + "</div></div>";
       })
 
-      var messages = "<div class='row'><div class='col-xs-9 col-xs-offset-2' style='border:solid 1px rgba(160,160,160,.8);border-radius:3px;background-color:white;margin-top:5px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='row' style=';padding-top:10px;padding-bottom:10px'><div class='col-xs-5' style='border-right: solid 1px rgb(160,160,160)'><div class='row'><div class='col-xs-12' style='font-size:22px'><span style='padding-bottom:5px;color:rgb(80,80,80);'>Messages This Month</span></div><div class='col-xs-12' style='font-size:32px;padding-top:15px;padding-bottom:15px'><span style='border-top: solid 1px rgb(160,160,160);color:rgb(91, 183, 216)'>" + model.info.recent_messages + "</span></div></div></div><div class='col-xs-7'><div class='row'><div class='col-xs-12'><h5><span style='padding-bottom:5px;border-bottom: solid 1px rgb(160,160,160);font-weight:bold;color:rgb(110,110,110)'>Messages ( By Faculties )</span></h5></div><div class='col-xs-12' style='max-height:80px;overflow-y:auto'>" + fcbmsgs + "</div></div></div></div></div></div>"
+      var messages = "<div class='row'><div class='col-xs-9 col-xs-offset-2' style='border:solid 1px rgba(160,160,160,.8);border-radius:3px;background-color:white;margin-top:5px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='row' style='padding-top:10px;padding-bottom:10px'><div class='col-xs-5' style='border-right: solid 1px rgb(160,160,160)'><div class='row'><div class='col-xs-12' style='font-size:22px'><span style='padding-bottom:5px;color:rgb(80,80,80);'>Messages This Month</span></div><div class='col-xs-12' style='font-size:32px;padding-top:15px;padding-bottom:15px'><span style='border-top: solid 1px rgb(160,160,160);color:rgb(91, 183, 216)'>" + model.info.recent_messages + "</span></div></div></div><div class='col-xs-7'><div class='row'><div class='col-xs-12'><h5><span style='padding-bottom:5px;border-bottom: solid 1px rgb(160,160,160);font-weight:bold;color:rgb(110,110,110)'>Messages ( By Faculties )</span></h5></div><div class='col-xs-12' style='max-height:80px;overflow-y:auto;font-size:13px'>" + fcbmsgs + "</div></div></div></div></div></div>"
 
-      var header_options = "<div class='col-xs-10 col-xs-offset-1 text-center' style='background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);color:rgb(110,110,110);font-weight:bold;cursor:pointer'><div class='row'><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.showAddFacultyModal()'>New Faculty</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.showAddBatchModal()'>New Class</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.messageFaculties()'>Message Faculties</div><div class='col-xs-3' onclick='view.notifyParents()'>Notify Parents</div></div></div>";
+      var header_options = "<div class='btn btn-group btn-group-justified' role='group' aria-label='...'><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.showAddBatchModal()'>New Batch</button></div><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.showAddFacultyModal()'>New Faculty</button></div><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.messageFaculties()'>Message Faculties</button></div><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.notifyParents()'>Message Parents</button></div></div>";
+
+      /*
+
+      <div class='col-xs-10 col-xs-offset-1 text-center' style='background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);color:rgb(110,110,110);font-weight:bold;cursor:pointer'><div class='row'><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.showAddFacultyModal()'>New Faculty</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.showAddBatchModal()'>New Class</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.messageFaculties()'>Message Faculties</div><div class='col-xs-3' onclick='view.notifyParents()'>Notify Parents</div></div></div>
+
+      */
 
 
           var left = "<div class='col-xs-9' style='max-height:550px;margin-top:25px;overflow-y:auto;'>" + messages + absentFaculties + absents + "<div class='row'><div class='col-xs-10 col-xs-offset-2' style='margin-top:25px'></div></div></div>";
           var right = "<div class='col-xs-2 col-xs-offset-1' style='margin-top:50px;'><div class='row'><div class='col-xs-12'><div class='row' style='background-color:white;border-radius:3px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);cursor:pointer' onclick='view.showClasses()'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Total Classes</h4></div><div class='col-xs-12 text-primary' style='font-size:48px;'>" + model.info.batches.length + "</div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);cursor:pointer' onclick='view.showFacultyNames()'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Total Faculties</h4></div><div class='col-xs-12' style='font-size:48px;color:rgb(66, 206, 244)'>" + model.info.faculties.length + "</div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Total Students</h4></div><div class='col-xs-12' style='font-size:48px;color:rgb(66, 206, 244)'>" + "0" + "</div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Data/Reports</h4></div><div class='col-xs-12' style='border-bottom:solid 1px rgb(190,190,190);font-size:12px;cursor:not-allowed;padding-top:5px;padding-bottom:5px;color:rgb(80,80,80)'>Download</div><div class='col-xs-12' style='font-size:12px;cursor:not-allowed;padding-top:5px;padding-bottom:5px;color:rgb(80,80,80)'>Save to Google Drive</div></div></div></div></div>";
 
-      var content = "<div class='col-xs-12 text-center' style='margin-top:15px'>" + "<div class='row' style='margin-bottom:15px'>" + header_options + "</div>" + "<div class='row'>" + left + right + "</div></div>";
+      var content = "<div class='col-xs-12 text-center' style='margin-top:15px'>" + "<div class='row' style='margin-bottom:25px'>" + header_options + "</div>" + "<div class='row'>" + left + right + "</div></div>";
 
       document.getElementById('report_section').innerHTML = content;
       /*
@@ -202,7 +208,13 @@ var view = {
 
     var central = "<div id='central' class='col-sm-7 text-center' style='margin-left:15px;max-height:500px;overflow-y:auto'><div class='row'><div class='col-xs-12' style='background-color:rgba(160,160,160,.4);border-radius:3px;height:250px;padding-top:110px;font-size:24px'>Select A Class</div></div></div>";
 
-    var header_options = "<div class='row' style='margin-top:15px;margin-bottom:25px'><div class='col-xs-10 col-xs-offset-1 text-center' style='background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);color:rgb(110,110,110);font-weight:bold;cursor:pointer'><div class='row'><div class='col-xs-4' style='border-right:solid 1px rgb(160,160,160)' onclick='view.assignNewBatch(0)'>Assign New Batch</div><div class='col-xs-4' style='border-right:solid 1px rgb(160,160,160)' onclick='view.showSmsModal()'>Message Faculty</div><div class='col-xs-4 text-danger' onclick='view.removeFaculty()'>Delete</div></div></div></div>";
+    var header_options = "<div class='btn btn-group btn-group-justified' role='group' aria-label='...' style='margin-bottom:25px'><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.assignNewSubject()'>Assign New Batch</button></div><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.customMessagesModal()'>Message Faculty</button></div><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.messageWholeClassModal()'>Delete</button></div></div>";
+
+    /*
+
+    <div class='row' style='margin-top:15px;margin-bottom:25px'><div class='col-xs-10 col-xs-offset-1 text-center' style='background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);color:rgb(110,110,110);font-weight:bold;cursor:pointer'><div class='row'><div class='col-xs-4' style='border-right:solid 1px rgb(160,160,160)' onclick='view.assignNewBatch(0)'>Assign New Batch</div><div class='col-xs-4' style='border-right:solid 1px rgb(160,160,160)' onclick='view.showSmsModal()'>Message Faculty</div><div class='col-xs-4 text-danger' onclick='view.removeFaculty()'>Delete</div></div></div></div>
+
+    */
 
     var content = header_options + "<div class='row'>" + otherInfo + central + facultyInfo + "</div></div>"
     document.getElementById("report_section").innerHTML = content;
@@ -487,22 +499,31 @@ var view = {
     }
     var right = "<div class='col-xs-2' style='position:fixed;right:45px;margin-top:50px;'><div class='row'><div class='col-xs-12'><div class='row' style='background-color:white;border-radius:3px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Class</h4></div><div class='col-xs-12 text-primary' style='font-size:300%;'>" + model.selectedBatch.class + th + "</div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Strength</h4></div><div class='col-xs-12' style='font-size:48px;color:rgb(66, 206, 244)'>" + model.selectedBatch.students.length + "</div></div><div class='row' style='background-color:white;border-radius:3px;margin-top:15px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);color:rgb(110,110,110)'><h4>Data/Reports</h4></div><div class='col-xs-12' style='font-size:48px;color:rgb(66, 206, 244)'><div class='col-xs-12' style='border-bottom:solid 1px rgb(190,190,190);font-size:12px;cursor:not-allowed;padding-top:5px;padding-bottom:5px;color:rgb(80,80,80)'><a href='http://localhost:80/download/examscores/all/" + model.selectedBatch._id + "' target='_blank'>Download</a></div><div class='col-xs-12' style='font-size:12px;cursor:not-allowed;padding-top:5px;padding-bottom:5px;color:rgb(80,80,80)'>Save to Google Drive</div></div></div></div></div></div></div>";
     console.log(model);
+    var exams = "<div class='row' style='margin-top:25px'><div class='col-xs-11 col-xs-offset-1'><div class='row'>";
+    Object.keys(model.selectedBatch.tests).forEach((x,i)=>{
+      if(model.selectedBatch.tests[x].length === Object.keys(model.selectedBatch.current_faculties).length){
+        exams += "<div class='col-xs-1 tabs1' style='background-color:rgb(66, 244, 152);color:rgb(70,70,70);font-weight:bold'>" + x + " <span class='glyphicon glyphicon-ok-sign' style='font-size:14px;color:white'></span></div>";
+      } else {
+        exams += "<div class='col-xs-1 tabs1' style='background-color:rgb(239, 86, 86);color:rgb(70,70,70);font-weight:bold'>" + x + " <span class='glyphicon glyphicon-remove-sign' style='font-size:14px'></span></div>";
+      }
+    })
+
+     exams += "</div></div></div>";
       if(model.selectedBatch.current_faculties.length != 0){
-        var subjects = "<div class='row' style='margin-top:25px'><div class='col-xs-11 col-xs-offset-1'><div class='row'>";
+        var subjects = "<div class='row' style='margin-top:10px'><div class='col-xs-11 col-xs-offset-1'><div class='row'>";
         var sn=0;
         model.selectedBatch.current_faculties.forEach(function(x,i){
           if(i===0){
             console.log(x);
             model.SF = {};
             model.SF._id = x[Object.keys(x)[0]];
-            subjects += "<div id='" + x[Object.keys(x)[0]] + "' class='col-xs-1 tabs' style='background-color:rgb(203, 208, 216)' onclick='controller.selectThisFaculty(event)'>" + Object.keys(x)[0] + "</div>";
+            subjects += "<div id='" + x[Object.keys(x)[0]] + "' class='col-xs-1 tabs' style='background-color:white' onclick='controller.selectThisFaculty(event)'>" + Object.keys(x)[0] + "</div>";
           } else {
-            subjects += "<div id='" + x[Object.keys(x)[0]] + "' class='col-xs-1 tabs' onclick='controller.selectThisFaculty(event)' style='background-color:white'>" + Object.keys(x)[0] + "</div>";
+            subjects += "<div id='" + x[Object.keys(x)[0]] + "' class='col-xs-1 tabs' onclick='controller.selectThisFaculty(event)' style='background-color:rgb(203, 208, 216)'>" + Object.keys(x)[0] + "</div>";
           }
 
         })
-
-         subjects += "</div></div></div>";
+        subjects += "</div></div></div>";
 
          left = "<div class='col-xs-9' style='height:500px;overflow-y:auto;padding-right:75px;margin-top:25px;'><div class='row'><div class='col-xs-10 col-xs-offset-2' style='margin-top:25px'><canvas id='pastSevenDays'></canvas></div></div><div class='row' id='classStudentData' style='margin-top:35px'></div></div>";
       } else {
@@ -510,9 +531,13 @@ var view = {
         subjects = ""
       }
 
-    var header_options = "<div class='col-xs-8 text-center' style='position:fixed;top:15px;right:120px;z-index:1;background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);cursor:pointer;font-weight:bold;color:rgb(110,110,110)'><div class='row'><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.assignNewSubject()'>New Subject</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.messageWholeClassModal()'>Message Whole Class</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.customMessagesModal()'>Add Score</div><div class='col-xs-3'>Settings</div></div></div><div class='glyphicon glyphicon-arrow-left' style='position:fixed;right:20px;top:15px;padding:10px;background-color:white;border-radius:3px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);font-size:20px;color:rgb(70,70,70);cursor:pointer' onclick='view.showClasses()'></div>";
+    var header_options = "<div class='col-xs-8 text-center' style='position:fixed;top:15px;right:120px;z-index:1;'><div class='btn btn-group btn-group-justified' role='group' aria-label='...'><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.assignNewSubject()'>New Subject</button></div><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.customMessagesModal()'>Exam-score</button></div><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.messageWholeClassModal()'>Message</button></div><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.showSettings()'>Settings</button></div></div></div><div class='glyphicon glyphicon-arrow-left' style='position:fixed;right:20px;top:15px;padding:10px;background-color:white;border-radius:3px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);font-size:20px;color:rgb(70,70,70);cursor:pointer' onclick='view.showClasses()'></div>";
 
-    var content = "<div class='col-xs-12 text-center' style='margin-bottom:15px'>" + "<div class='row' style='margin-bottom:15px'>" + header_options + "</div>" + "<div class='row'><div class='col-xs-12' style='margin-top:45px'>" + subjects + "</div></div><div class='row'><div style='overflow:none'>" + left + "</div>" + right + "</div></div>";
+    /*
+    var header_options = "<div class='col-xs-8 text-center' style='position:fixed;top:15px;right:120px;z-index:1;background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);cursor:pointer;font-weight:bold;color:rgb(110,110,110)'><div class='row'><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.assignNewSubject()'>New Subject</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.messageWholeClassModal()'>Message Whole Class</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.customMessagesModal()'>Add Score</div><div class='col-xs-3' onclick='view.showSettings()'>Settings</div></div></div><div class='glyphicon glyphicon-arrow-left' style='position:fixed;right:20px;top:15px;padding:10px;background-color:white;border-radius:3px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);font-size:20px;color:rgb(70,70,70);cursor:pointer' onclick='view.showClasses()'></div>";
+    */
+
+    var content = "<div class='col-xs-12 text-center' style='margin-bottom:15px'>" + "<div class='row' style='margin-bottom:15px'>" + header_options + "</div>" + "<div class='row'><div class='col-xs-12' style='margin-top:45px'>" + exams + subjects + "</div></div><div class='row'><div style='overflow:none'>" + left + "</div>" + right + "</div></div>";
 
     document.getElementById('report_section').innerHTML = content;
     controller.selectThisFaculty(1);
@@ -558,6 +583,15 @@ var view = {
 
     } else if(a===1){
       document.getElementById('notifText').style.backgroundColor = "lightgreen";
+      document.getElementById('notifText').style.opacity = ".6";
+      document.getElementById('notifText').innerHTML = str;
+      document.getElementById('notifyUser').style.display = "block";
+      setTimeout(function(){
+        document.getElementById('notifyUser').style.display = "none";
+      },3000);
+
+    } else if(a===2){
+      document.getElementById('notifText').style.backgroundColor = "rgb(244, 167, 66)";
       document.getElementById('notifText').style.opacity = ".6";
       document.getElementById('notifText').innerHTML = str;
       document.getElementById('notifyUser').style.display = "block";
@@ -676,7 +710,7 @@ selectAll: function(){
 },
 
 customMessagesModal: function(){
-  document.getElementsByTagName('body')[0].innerHTML += "<div id='customMessagesModal' class='modal col-xs-12 text-center'><div class='row'><div class='col-xs-4 col-xs-offset-4' style='background-color:white;border-radius:2px;padding-top:20px;padding-bottom:5px;margin-top:20px'><div class='row'><div class='col-xs-12 text-danger' style='border-bottom: solid 1px rgb(160,160,160);padding-bottom:20px'><h1>How would you like to Create Score List ?</h1></div></div><div class='row' style='padding-top:10px;padding-bottom:10px;font-size:16px;border-bottom:Solid 1px rgb(200,200,200);cursor:pointer'><div class='col-xs-12' onclick='view.addTestScoreManually()' style='font-weight:bold'>Add Test Score Manually and Notify Parents</div></div><div class='row' style='padding-top:10px;font-size:16px;padding-bottom:10px;cursor:pointer'><div class='col-xs-12' style='font-weight:bold'>Upload Test Score Excel sheet and Notify Parents</div></div></div><div class='close' style='position:fixed;top:50px;right:100px;font-size:48px'><span class='glyphicon glyphicon-remove' onclick='view.closeCustomMessagesModal()'></span></div></div></div></div>";
+  document.getElementsByTagName('body')[0].innerHTML += "<div id='customMessagesModal' class='modal col-xs-12 text-center'><div class='row'><div class='col-xs-4 col-xs-offset-4' style='background-color:white;border-radius:2px;padding-top:20px;padding-bottom:5px;margin-top:20px'><div class='row'><div class='col-xs-12 text-danger' style='border-bottom: solid 1px rgb(160,160,160);padding-bottom:20px'><h1>How would you like to Create Score List ?</h1></div></div><div class='row' style='padding-top:10px;padding-bottom:10px;font-size:16px;border-bottom:Solid 1px rgb(200,200,200);cursor:pointer'><div class='col-xs-12' onclick='view.addTestScoreManually()'>Add Test Score Manually and Notify Parents</div></div><div class='row' style='padding-top:10px;font-size:16px;padding-bottom:10px;cursor:pointer'><div class='col-xs-12'>Upload Test Score Excel sheet and Notify Parents</div></div></div><div class='close' style='position:fixed;top:50px;right:100px;font-size:48px'><span class='glyphicon glyphicon-remove' onclick='view.closeCustomMessagesModal()'></span></div></div></div></div>";
   document.getElementById('customMessagesModal').style.display = "block";
 },
 
@@ -768,10 +802,33 @@ showSelectedSubjectData: function(e){
       document.getElementById('student_detail_section').innerHTML += "<div class='row' style='margin-top:20px'><div class='col-xs-10 col-xs-offset-1'><div class='row'><div class='col-xs-12' style='border-bottom: solid 1px rgb(200,200,200);color:rgb(110,110,110)'><h3>Exams Scores</h3></div></div></div>";
 
       document.getElementById('student_detail_section').innerHTML += "<div class='row' style='padding-top:20px;padding-bottom:20px;margin-top:20px'><div class='col-xs-10 col-xs-offset-1' id='examScores'></div></div>";
-      let y = "<div class='row'><div class='col-xs-12' style='border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);padding-bottom:10px;border-radius:3px'><div class='row' style='padding-top:10px;padding-bottom:10px;font-size:20px;border-bottom: solid 1px rgb(190,190,190);color:rgb(40,40,40)'><div class='col-xs-3'>Test Name</div><div class='col-xs-3'>Test Date</div><div class='col-xs-3'>Score</div><div class='col-xs-3'>Max score</div></div><div class='row'><table class='col-xs-12 table table-striped text-center' style='max-height:200px;overflow-y:auto'>"
+      let y = "<div class='row'><div class='col-xs-12' style='border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);padding-bottom:10px;border-radius:3px'><div class='row' style='padding-top:10px;padding-bottom:10px;font-size:20px;border-bottom: solid 1px rgb(190,190,190);color:rgb(40,40,40)'><div class='col-xs-3'>Test Name</div><div class='col-xs-3'>Test Date</div><div class='col-xs-2'>Score</div><div class='col-xs-2'>Change</div><div class='col-xs-2'>Max</div></div><div class='row'><table class='col-xs-12 table table-striped text-center' style='max-height:200px;overflow-y:auto'>";
+
+      let prev = 0;
+      let change = "";
       model.selectedStudent[model.selectedStudent.selectedSubject].scores.forEach(function(x,i){
-        console.log(x)
-        y += "<tr class='row' style='color:rgb(70,70,70);font-size:14px'><td class='col-xs-3'>" + x.test_name + "</td><td class='col-xs-3'>" + (new Date(Number(x.test_id.split('/')[3]))).toDateString() + "</td><td class='col-xs-3'>" + x.score + " (" + Math.round(x.score/x.max_score*10000)/100 + "%)</td><td class='col-xs-3'>" + x.max_score + "</td></tr>";
+        let l = Number(x.score)*100/Number(x.max_score);
+        if(prev!=0 && x.score != "A" && i!=0){
+          if(x.score>prev){
+            change = " <span class='glyphicon glyphicon-circle-arrow-up text-success'></span>" + Math.ceil((l - prev)*1000/prev)/10 + "%";
+          } else {
+            change = " <span class='glyphicon glyphicon-circle-arrow-down text-danger'></span>" + Math.ceil(Number(prev - l)*1000/prev)/10 + "%";
+          }
+        } else if(prev===0 && x.score != "A"){
+          change = "-- --";
+        } else if(x.score == "A"){
+          change = "";
+        }
+        let z;
+        if(x.score != "A"){
+          z = x.score + " (" + Math.round(x.score/x.max_score*10000)/100 + "%)"
+        } else {
+          z = "<span class='text-danger'>ABSENT</span>"
+        }
+        y += "<tr class='row' style='color:rgb(70,70,70);font-size:14px'><td class='col-xs-3'>" + x.test_name + "</td><td class='col-xs-3'>" + (new Date(Number(x.test_id.split('/')[3]))).toDateString() + "</td><td class='col-xs-2 text-primary'>" + z + "</td><td class='col-xs-2 text-primary'>" + change + "</td><td class='col-xs-2'>" + x.max_score + "</td></tr>";
+        if(x.score != "A"){
+          prev = l;
+        }
       })
       y+= "</table></div>";
       document.getElementById('examScores').innerHTML = y;
@@ -780,6 +837,17 @@ showSelectedSubjectData: function(e){
     }
     graph.studentAbsents();
     graph.pastTenExams();
+},
+
+showSettings: function(){
+        var content = "<select id='faculty'>";
+        model.info.faculties.forEach(function(x){
+            content += "<option value='" + x.id + "'>" + x.name + "</option>";
+        })
+        content += "</select>";
+
+            document.getElementsByTagName("body")[0].innerHTML += "<div id='showSettings' class='text-center modal col-sm-12' style='padding-top:100px'><div class='row'><div class='col-sm-4 col-sm-offset-4 modalContent'><div class='row modelHeader' style='border-bottom: solid 1px rgba(160,160,160,.6)'><div class='col-sm-12'><h2>Settings</h2></div></div><div class='row'><div class='col-xs-12' style='margin-top:30px;'><b>Class Teacher</b> " + content + "</div></div></div><div class='col-xs-1 close' style='font-size:40px;font-weight:bold;cursor:pointer;padding:0px;' onclick='view.closeSettings()'>&times;</div></div><div class='row'><div style='margin-top:15px;' class='col-xs-2 col-xs-offset-5'><button class='btn btn-danger' onclick='controller.settings()'>Done</button></div></div></div>";
+      document.getElementById("showSettings").style.display = "block" ;
 },
 
 closeFacultyList: function(){
@@ -867,6 +935,12 @@ closeReportIssueModal: function(){
 closeShowStudentModal: function(){
   document.getElementById('student_profile').style.display = "none";
   document.getElementById("student_profile").parentNode.removeChild(document.getElementById("student_profile"));
+  controller.getBatchData(1);
+},
+
+closeSettings: function(){
+  document.getElementById('showSettings').style.display = "none";
+  document.getElementById("showSettings").parentNode.removeChild(document.getElementById("showSettings"));
   controller.getBatchData(1);
 }
 
