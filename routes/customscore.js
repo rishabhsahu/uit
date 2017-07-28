@@ -27,9 +27,36 @@ router.post('/add-test-score-manually/',function(req,res){
               }
               db.collection("classes").update({_id:req.body.selectedBatch,"student_data.enroll_number":std},{$addToSet:obj})
             }
+            let onj = {}
+            onj["tests." + req.body.testname] = req.body.subject
+            db.collection("classes").update({_id:req.body.selectedBatch},{$addToSet:onj})
             db.close()
-            res.status(200)
-            res.end()
+            request({
+              url:"http://localhost:2768/check/allsubjectsscores",
+              method:'POST',
+              body:{
+                batch: req.body.selectedBatch,
+                test_name: req.body.testname
+              },
+              json: true
+            },function(err,resp,body){
+              if(!err){
+                if(resp.statusCode === 403){
+                  res.status(403)
+                  res.end()
+                } else if(resp.statusCode === 200){
+                  res.status(200)
+                  res.end()
+                } else {
+                  res.status(504)
+                  res.end()
+                }
+              } else {
+                res.status(504)
+                res.end()
+              }
+            })
+            /*
             request({
               url:"http://localhost:80/sendsms/scorereport-admin",
               method:'POST',
@@ -41,6 +68,7 @@ router.post('/add-test-score-manually/',function(req,res){
                 res.end()
               }
             })
+            */
           } else {
             db.close()
             errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
