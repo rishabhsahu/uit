@@ -29,12 +29,13 @@
 				margin-top: 10px;
 				border: none;
 				border-bottom: solid 2px rgb(160,160,160);
-				color: white;
+				color: rgb(70,70,70);
+				width: 100%;
 			}
 
 			input:focus {
 				outline: 0 none;
-				border-bottom-color: rgb(40,204,130);
+				border-bottom-color: rgb(47, 148, 249);
 			}
 
 			#submit {
@@ -98,6 +99,24 @@
 				from {position: absolute;top: -100%;}
 				to {position: absolute;top:20px;}
 			}
+
+			#loginModal {
+	    background: rgb(220,220,220); /* For browsers that do not support gradients */
+	    background: -webkit-linear-gradient(left top, rgb(220,220,220), white); /* For Safari 5.1 to 6.0 */
+	    background: -o-linear-gradient(bottom right, rgb(220,220,220), white); /* For Opera 11.1 to 12.0 */
+	    background: -moz-linear-gradient(bottom right, rgb(220,220,220), white); /* For Firefox 3.6 to 15 */
+	    background: linear-gradient(to bottom right, rgb(220,220,220), white); /* Standard syntax (must be last) */
+		}
+
+		.btn {
+			border-radius: 2px;
+		}
+
+		@media screen and (max-device-width : 780px){
+			input {
+				width: 100%;
+			}
+		}
 
 
 		</style>
@@ -167,7 +186,7 @@
 				xhr.onreadystatechange = function(){
 					if(xhr.readyState === 4 && xhr.status === 401 ){
 						document.getElementById('messageFolder').innerHTML = "<span class='text-danger'>Invalid Username/Password</span>";
-					} else if(xhr.readyState === 4 && xhr.status === 202){
+					} else if(xhr.readyState === 4 && xhr.status === 200){
 						document.location = "http://localhost:80";
 					}
 				}
@@ -206,25 +225,29 @@
 	</div>
 		</div>
 		<button class="btn btn-danger" style="background-color:white;color:rgb(66, 134, 244);font-weight:bold;position:absolute;bottom:20px;right:40px;border-radius:2px" onclick="showLogin()">LOGIN BETA</button>
-		<div id="loginModal" class="col-xs-12 modal" style="background-color:rgb(244, 65, 65);animation-name:modalDrop;animation-duration:.3s;">
+		<div id="loginModal" class="col-xs-12 modal" style="animation-name:modalDrop;animation-duration:.3s;">
 					<div class="row">
-						<div class="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-4" style="background-color:white;border-radius:5px;padding-top:20px;padding-bottom:50px">
+						<div class="col-xs-10 col-xs-offset-1 col-sm-4 col-sm-offset-4" style="background-color:white;border-radius:2px;padding-top:20px;padding-bottom:50px;border:solid 1px rgb(200,200,200);box-shadow: 0px 2px 5px rgb(180,180,180)">
 							<div class='row'>
-									<div class='col-xs-8 col-xs-offset-2 col-sm-8 col-sm-offset-2  text-center' style="background-color:rgba(230,230,230,.6);border:solid 1px rgb(160,160,160);border-radius:5px;padding-top:10px;padding-bottom:10px;margin-top:20px;" id="messageFolder"><span class=' text-primary'>Login to Continue</span></div>
+									<div class='col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1  text-center' style="padding-top:10px;padding-bottom:10px;margin-top:20px;" id="messageFolder"><div class="row text-left"><div class="col-xs-12"><h3>Sign in</h3></div><div class='col-xs-12'>To Continue using oniv</div></div></div>
 									<div class='col-xs-12 col-sm-12' id='login'><br>
 										<div class='row text-center' style="text-transform:bold;text-transform:bold;font-size:18px;padding-top:5px;padding-bottom:5px">
-											<div class="col-xs-12  col-sm-6 col-sm-offset-3 text-center"><input placeholder="username" type='text' name='username' id='username' size=15 autofocus></div>
+											<div class="col-xs-12  col-sm-10 col-sm-offset-1 text-center"><input placeholder="username" type='text' name='username' id='username' autofocus></div>
 										</div>
 										<div class='row text-center' style="text-transform:bold;color: rgb(70,70,70);text-transform:bold;font-size:18px;padding-top:5px;padding-bottom:5px">
-											<div class="col-xs-12 col-sm-6 col-sm-offset-3"><input placeholder="password" type='password' name='password' id='password' size=15></div>
+											<div class="col-xs-12 col-sm-10 col-sm-offset-1"><input placeholder="password" type='password' name='password' id='password'></div>
+										</div>
+										<div class="row" style='padding-top:15px'>
+											<div class="col-xs-6 text-center text-primary">Forgot Password?</div>
+											<div class="col-xs-6">
+												<div class='text-center'><button class="btn" onclick='sendLogin()' style='background-color:rgb(47, 148, 249);color:white;padding-left:20px;padding-right:20px;box-shadow: 0px 3px 5px rgb(200,200,200)'>NEXT</button></div>
+											</div>
 										</div>
 									</div>
 								</div>
-						</div>
-					</div>
-					<div class="row" style='padding-top:10px'>
-						<div class="col-xs-12">
-							<p class='text-center'><button class="btn btn-primary" onclick='sendLogin()'>Submit</button></p>
+								<div class="row" style='padding-top:50px'>
+
+								</div>
 						</div>
 					</div>
 		</div>
