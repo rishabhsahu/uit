@@ -18,6 +18,16 @@
 			min-width: 970px !important;
 		}
 		</style>
+		<script>
+			window.onclick= function(event){
+				if(!event.target.matches(".drpdnbtn")){
+					let x = document.getElementsByClassName('dropdown-content');
+					Array.prototype.forEach.call(x,(y)=>{
+						y.style.display = "none";
+					})
+				}
+			}
+		</script>
 	</head>
 	<body>
 		<div class='container-fluid'>
