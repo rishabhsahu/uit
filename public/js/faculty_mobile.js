@@ -18,7 +18,7 @@ var view = {
             if(model.personalInfo.absent.indexOf(d.valueOf())>-1){
               absent += "<div class='col-xs-12' style='border-radius:3px;font-size:18px;border:solid 1px rgb(239, 62, 62);box-shadow:0px 1px 10px rgba(160,160,160,.8);background-color:white;color:rgb(239, 62, 62);padding-top:10px;padding-bottom:10px;'><div class='row' style='margin-top:3px;margin-bottom:15px;'><div class='col-xs-12'>You marked yourself Absent/Busy for today</div></div></div><div class='col-xs-12' style='border-radius:3px;font-size:18px;border:solid 1px rgba(110,110,110,.45);background-color:#0D47A1;color:white;margin-top:3px;padding-top:10px;padding-bottom:10px'><div class='row'><div class='col-xs-12'>Mark Present</div></div></div>";
             } else {
-              absent += "<div class='col-xs-12' style='background-color:white;border-radius:3px;border:solid 1px rgba(200,200,200,.8);box-shadow:0px 1px 10px rgba(200,200,200,1);padding-top:10px;padding-bottom:10px'><div class='row'><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-danger' onclick='view.showAbsentOption()'>Absent</div></div><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-primary' onclick=''>Present</div></div></div></div>";
+              absent += "<div class='col-xs-12' style='background-color:white;border-radius:3px;border:solid 1px rgba(200,200,200,.8);box-shadow:0px 1px 10px rgba(200,200,200,1);padding-top:10px;padding-bottom:10px'><div class='row'><div class='col-xs-4 col-xs-offset-1'><div id='markabsent' class='btn btn-danger'>Absent</div></div><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-primary' onclick=''>Present</div></div></div></div>";
             }
           } else {
             absent += "<div class='col-xs-12' style='border-radius:3px;border:solid 1px rgba(160,160,160,.6);box-shadow:0px 1px 10px rgba(160,160,160,.8);padding-top:10px;padding-bottom:10px;background-color:white'><div class='row'><div class='col-xs-12'><div class='row'><div class='col-xs-12' style='padding-top:5px;padding-bottom:5px;margin-bottom:10px;font-size:14px'>What is your status about Today</div></div><div class='row'><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-danger' onclick='view.showAbsentOption()'>Absent</div></div><div class='col-xs-4 col-xs-offset-1'><div class='btn btn-primary' onclick=''>Present</div></div></div></div></div></div>";
@@ -65,12 +65,17 @@ var view = {
 
         var content2 = "<div class='col-xs-12'><div class='row' id='batch_list_header' style='margin-top:20px;margin-bottom:20px;border-radius:3px'><div class='col-xs-12'><span style='color:rgb(110,110,110);font-size:18px;border-top: solid 1px rgb(65, 104, 244);padding-top:5px'>Classes Today</span></div></div></div><div class='col-xs-12' style='border-radius:2px;margin-bottom:5px;background-color:white;border:solid 1px rgba(200,200,200,1);box-shadow:0px 1px 5px rgba(200,200,200,1)'>" + ctd + absent;
         document.getElementById('home_section').innerHTML = content2;
+
         content = "<div id='notifyUser' class='notif-modal'><div class='row text-center'><div class='col-xs-8 col-xs-offset-2' style='opacity:.85;border-radius:3px;padding-top:5px;padding-bottom:5px;font-size:16px' id='notifText'></div></div></div><div id='notifyError' class='col-xs-12 modal'><div class='row text-center' style='padding-top:120px'><div class='col-xs-8 col-xs-offset-2' style='padding-top:10px;padding-bottom:10px;;border-radius:3px;background-color:white' id='notifText2'></div></div></div>";
         document.getElementsByTagName('body')[0].innerHTML += content;
         document.getElementById('main').style.overflowY = "auto";
         this.loadReportSection();
 
       }
+      let options = [
+        {id:"absent#0",title:"Holiday"},{id:"absent#1",title:"On-Duty"}
+      ];
+      document.getElementById('markabsent').addEventListener('click',function(){ view.showBatchOptionModal("Absent for",options,"")});
   },
 
   showDownloadOptions: function(){
@@ -125,6 +130,10 @@ var view = {
     var content = "<div class='row'><div class='col-xs-12 batches_box;' style='overflow-x:hidden;display:fixed;margin-top:5px;'><div class='row' id='batch_list_header' style='margin-top:20px;margin-bottom:20px;border-radius:3px'><div class='col-xs-12'><span style='color:rgb(110,110,110);font-size:18px;border-top: solid 1px rgb(65, 244, 67);padding-top:5px'>Batches You Teach</div></div><div id='batches_cards' style='margin-bottom:10px'></div></div></div>";
     document.getElementById('mainX').innerHTML = content;
     var contentX = "";
+    let options = [
+      {id:"attendance",title:"Take Attendance"},{id:"score",title:"Exam-scores"},{id:"schedule",title:"Set Schedule"},{id:"notifyClass",title:"Notify All"}
+    ]
+
     if(model.personalInfo.current_classes && model.personalInfo.current_classes.length>0){
       model.personalInfo.current_classes.forEach(function(x,i){
         var days = ["Mon","Tue","Wed","Thu","Fri","Sat"];
@@ -149,7 +158,7 @@ var view = {
           }
         }
 
-        contentX += "<div class='row text-center classes-card'><div class='col-xs-12'><div class='row'><div class='col-xs-4 classes-card-header'><div class='row'><div class='col-xs-12;'>" + x.class + th + "</div></div></div><div class='col-xs-7'><h1 class='classes-card-subject'>" + x.subject + "</h1><div class='row' style='margin-top:0px'></div></div></div><div class='row classes-card-class-timings'>" + classes_timing + "</div><div class='row classes-card-footer'><div class='col-xs-6 col-xs-offset-2 lelo' id='report#"+x._id+"'><span id='report#"+x._id+"'  class='glyphicon glyphicon-circle-arrow-right' style='font-size:16px;color:rgb(70,70,70);cursor:pointer;'></span></div><div class='col-xs-4' id='options#" + x._id + "' onclick='view.showBatchOptionModal(event)'><span id='options#"+x._id+"' class='glyphicon glyphicon glyphicon-option-vertical' style='color:rgb(70,70,70)'></span></div></div></div></div>";
+        contentX += "<div class='row text-center classes-card'><div class='col-xs-12'><div class='row'><div class='col-xs-4 classes-card-header'><div class='row'><div class='col-xs-12;'>" + x.class + th + "</div></div></div><div class='col-xs-7'><h1 class='classes-card-subject'>" + x.subject + "</h1><div class='row' style='margin-top:0px'></div></div></div><div class='row classes-card-class-timings'>" + classes_timing + "</div><div class='row classes-card-footer'><div class='col-xs-6 col-xs-offset-2 lelo' id='report#"+x._id+"'><span id='report#"+x._id+"'  class='glyphicon glyphicon-circle-arrow-right' style='font-size:16px;color:rgb(70,70,70);cursor:pointer;'></span></div><div class='col-xs-4' id='options" + x._id + "'><span id='options#"+x._id+"' class='glyphicon glyphicon glyphicon-option-vertical' style='color:rgb(70,70,70)'></span></div></div></div></div>";
       })
     } else {
       contentX = "<div class='row'><div class='col-xs-12' style='border-radius:3px;margin-bottom:10px;border:solid 1px rgba(110,110,110,.45);box-shadow:1px 1px 5px rgba(160,160,160,.5);background-color:white;font-size:20px;color:rgb(70,70,70,.8);padding-top:10;padding-bottom:10px'>No Batch Alloted</div></div>";
@@ -157,12 +166,9 @@ var view = {
     document.getElementById('batches_cards').innerHTML = contentX;
     model.personalInfo.current_classes.forEach(function(x,i){
       document.getElementsByClassName('lelo')[i].onclick = controller.routes;
+      document.getElementById('options#' + x._id).addEventListener('click',function(){view.showBatchOptionModal("Options",options,x._id)})
     })
 
-  },
-
-  showReport:function(x){
-    document.getElementById("main").innerHTML = x;
   },
 
   showAttendanceOptions: function(){
@@ -191,7 +197,7 @@ var view = {
     model.scoreSettings = [];
     model.studentCount = 0;
     model.studentScores = {scores:{}};
-    var content = "<div class='col-xs-12'><div class='row' style='margin-top:25px;'><div class='col-xs-10 col-xs-offset-1' style='border-bottom: solid 1px rgb(200,200,200);color:rgb(110,110,110)'><h2>Class - " + model.selectedBatch.class + "</h2></div></div><div class='row' style='margin-top:25px'><div class='col-xs-10 col-xs-offset-1' style='border-radius:3px'><div class='row'><h4 class='col-xs-12' id='scoreSettings' style='color:rgb(70,70,70)'>Settings</h4></div><div class='row' style='margin-top:10px'><div class='col-xs-12'><input type='text' id='scoreSettingInput' style='background-color:rgb(249, 250, 252);border:none;border-bottom: solid 2px rgb(160,160,160);' autofocus></div></div><div class='row btn btn-warning' style='margin-top:10px;margin-bottom:10px'><div class='' onclick='controller.addScoreSetting()'>Done</div></div></div></div></div>";
+    var content = "<div class='col-xs-12'><div class='row' style='margin-top:25px;'><div class='col-xs-10 col-xs-offset-1' style='border-bottom: solid 1px rgb(200,200,200);color:rgb(110,110,110)'><h2>Class - " + model.selectedBatch.class + "</h2></div></div><div class='row' style='margin-top:25px'><div class='col-xs-10 col-xs-offset-1' style='border-radius:3px'><div class='row'><h4 class='col-xs-12' id='scoreSettings' style='color:rgb(70,70,70)'>Settings</h4></div><div class='row' style='margin-top:10px'><div class='col-xs-12'><input type='text' id='scoreSettingInput' style='background-color:rgb(249, 250, 252);border:none;border-bottom: solid 2px rgb(160,160,160);text-transform:uppercase' autofocus></div></div><div class='row btn btn-warning' style='margin-top:10px;margin-bottom:10px'><div class='' onclick='controller.addScoreSetting()'>Done</div></div></div></div></div>";
     document.getElementById('main').innerHTML = content;
     document.getElementById('scoreSettingInput').focus();
     document.getElementById('scoreSettings').innerHTML = model.scoreSettinglist[model.scoreSettingCount];
@@ -278,11 +284,6 @@ var view = {
     document.getElementById('batchListModal').style.display = "none";
     document.getElementById('batchListModal').parentNode.removeChild(document.getElementById('batchListModal'));
     controller.getReport();
-  },
-
-  closeAbsentModal: function(){
-    document.getElementById('absentModal').style.display = "none";
-    document.getElementById('absentModal').parentNode.removeChild(document.getElementById('absentModal'));
   },
 
   closeBatchOptionModal: function(n){
@@ -372,33 +373,27 @@ var view = {
 
   },
 
-  showBatchOptionModal: function(e){
-    var batch = e.target.id.split('#')[1];
+  showBatchOptionModal: function(title,options,id){
+    var batch = id;
     console.log(batch);
     model.selectedBatch._id = batch;
-    let options = {
-      attendance: "Take Attendance",
-      score: "Exam-Scores",
-      schedule: "Set Schedule",
-      notifyClass: "Notify All"
-    }
     let str = "";
-    for(const p in options){
-      str += "<div class='row text-center' style='margin-top:5px' onclick='controller.routes(event)'><div id='" + p + "#" + batch + "' class='col-xs-6 col-xs-offset-3 btn btn-default'>" + options[p] + "</div></div>";
-    }
-    document.getElementsByTagName('body')[0].innerHTML += "<div class='modal col-xs-12 text-center' id='batchOptionModal'><div class='row' style='animation-name: pushup;animation-duration:.25s;position:fixed;bottom:0;height:50%;width:100%;background-color:white;border-radius: 10px'><div class='col-xs-12'><div class='row' style='margin-bottom:15px;'><div class='col-xs-12' style='border-bottom: 1px solid grey'><h3>Select list<span style='position:absolute;right: 10%;font-size: 26px;color:rgb(239, 108, 88);cursor:pointer' onclick='view.closeBatchOptionModal(0)'>&times;</span></h3></div><div class='col-xs-12' style='margin-top:10px'>" + str + "</div></div></div></div></div>";
+    options.forEach((x,i)=>{
+      str += "<div class='row text-center' style='margin-top:5px' onclick='controller.routes(event)'><div id='" + x.id + "#" + batch + "' class='col-xs-10 col-xs-offset-1 btn btn-default'>" + x.title + "</div></div>";
+    })
+    document.getElementsByTagName('body')[0].innerHTML += "<div class='modal col-xs-12 text-center' id='batchOptionModal'><div class='row' style='animation-name: pushup;animation-duration:.25s;position:fixed;bottom:0;height:50%;width:100%;background-color:white;border-radius: 10px'><div class='col-xs-12'><div class='row' style='margin-bottom:15px;'><div class='col-xs-12' style='border-bottom: 1px solid grey'><h3>" + title + "<span style='position:absolute;right: 10%;font-size: 26px;color:rgb(239, 108, 88);cursor:pointer' onclick='view.closeBatchOptionModal(0)'>&times;</span></h3></div><div class='col-xs-12' style='margin-top:10px'>" + str + "</div></div></div></div></div>";
     document.getElementById('batchOptionModal').style.display = "block";
   },
 
   setScheduleModal: function(){
     this.closeBatchOptionModal(0);
-    var day ="<div class='col-xs-12'><div class='row' style='margin-top:5px;margin-bottom:5px;color:rgb(90,90,90)'><div class='col-xs-6'><h5>Days</h5></div><div class='row'><div class='col-xs-6'><h5>Period</h5></div></div><div style='height:170px;overflow-y:auto;overflow-x:hidden;border-top:solid 1px rgba(70,70,70,.6);border-bottom:solid 1px rgba(70,70,70,.6);padding-top:5px;padding-bottom:5px'>";
+    var day ="<div class='col-xs-12'><div class='row' style='margin-top:5px;margin-bottom:5px;color:rgb(90,90,90)'><div class='col-xs-6'><h3>Days</h3></div><div class='row'><div class='col-xs-6'><h3>Period</h3></div></div><div style='height:170px;overflow-y:auto;overflow-x:hidden;padding-top:5px;padding-bottom:5px'>";
     var days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
     days.forEach(function(x,i){
-      day += "<div class='row' style='margin-top:5px;margin-bottom:5px;color:rgb(160,160,160)'><div class='col-xs-6' style='padding-top:5px;font-size:16px'>" + days[i] + "</div><div class='col-xs-3 col-xs-offset-1'><input type='text' size=2 maxlength=2 style='border-radius:3px;border: solid 1px rgba(0,0,0,.5)' class='pr' id='day" + i + "'></div></div>";
+      day += "<div class='row' style='margin-top:5px;margin-bottom:5px;color:rgb(90,90,90)'><div class='col-xs-6' style='padding-top:5px;font-size:16px'>" + days[i] + "</div><div class='col-xs-3 col-xs-offset-1'><input type='text' size=2 maxlength=2 style='border:none;border-bottom: solid 2px rgb(160,160,160)' class='pr' id='day" + i + "'></div></div>";
     })
-    day += "</div>";
-    document.getElementsByTagName('body')[0].innerHTML += "<div class='col-xs-12 modal' style='color:rgb(70,70,70);background-color:black' id='setSchedule'><div class='row text-center'><div class='col-xs-8 col-xs-offset-2'><div class='row' style='background-color:white;border-radius:4px;margin-top:20%;'>" + day + "<div class='col-xs-12' style='padding-top:5px;padding-bottom:5px;font-size:14px;color:rgb(90,90,90);font-weight:bold' onclick='controller.setSchedule()'>set</div></div></div></div></div></div><div class='row' style='margin-top:20px'><div class='col-xs-12 text-center' style='position:absolute;bottom:50px'><span class='glyphicon glyphicon-remove' style='font-size:24px;color:white' onclick='view.closeSetSchedule()'></span></div></div></div>";
+    day += "</div></div></div>";
+    document.getElementsByTagName('body')[0].innerHTML += "<div class='col-xs-12 modal' style='color:rgb(70,70,70);background-color:black' id='setSchedule'><div class='row text-center'><div class='col-xs-8 col-xs-offset-2'><div class='row' style='background-color:white;border-radius:2px;margin-top:20%;'>" + day + "</div><div class='row' style='margin-top:15px;padding-top:5px;padding-bottom:5px;font-size:14px;color:rgb(90,90,90);font-weight:bold'><div class='col-xs-12'><div class='btn btn-primary' onclick='controller.setSchedule()'>set</div></div></div></div></div><div class='col-xs-12 text-center' style='margin-top:50px'><span class='glyphicon glyphicon-remove' style='font-size:24px;color:white' onclick='view.closeSetSchedule()'></span></div></div>";
     document.getElementById('setSchedule').style.display = "block";
   },
 

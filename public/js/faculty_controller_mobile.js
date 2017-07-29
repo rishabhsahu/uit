@@ -119,9 +119,17 @@ routes: function(e){
       view.closeBatchOptionModal();
       break;
 
-      case "notifyClass":
+    case "notifyClass":
         view.notifyClass();
         view.closeBatchOptionModal();
+        break;
+
+    case "download":
+        window.open(id,'_blank');
+        break;
+
+    case "absent":
+        this.willBeAbsent(Number(id));
         break;
   }
 },
@@ -255,9 +263,7 @@ getReport: function(){
       model.reportData = JSON.parse(requestReport.response);
       var reportData = model.reportData;
       console.log(model.reportData);
-      var content2 = "<div class='modal col-xs-12 text-center' id='downloadsOptionModal'><div class='row' style='animation-name: pushup;animation-duration:.25s;position:fixed;bottom:0;height:50%;width:100%;background-color:white;border-radius: 10px'><div class='col-xs-12'><div class='row' style='margin-bottom:15px;'><div class='col-xs-12' style='border-bottom: 1px solid grey'><h3>Select list<span style='position:absolute;right: 10%;font-size: 26px;color:rgb(239, 108, 88);cursor:pointer' onclick='view.closeDownloadListModal()'>&times;</span></h3></div><div class='col-xs-12' style='margin-top:10px'><div class='row' style='margin-top:10px'><div class='col-xs-12'><a href='http://localhost:80/download/attendanceOverview/" + model.selectedBatch._id + "/" + model.personalInfo._id + "/" + model.selectedBatch.subject + "' target='_blank' class='btn btn-default'>Attendance Report ( Overview )</a></div></div></div></div></div></div></div>";
-      document.getElementsByTagName('body')[0].innerHTML += content2;
-      var x = "<div id='downloads' onclick='view.showDownloadOptions()'><span class='glyphicon glyphicon-download' style='font-size:20px;padding:5px;'></span></div><div class='row' style='overflow-x: hidden;margin-right:0px'><div class='col-xs-12' id='student_list_box'>";
+      var x = "<div id='downloads'><span class='glyphicon glyphicon-download' style='font-size:20px;padding:5px;'></span></div><div class='row' style='overflow-x: hidden;margin-right:0px'><div class='col-xs-12' id='student_list_box'>";
       var dcs = 1;
 
       reportData.student_data.forEach(function(student){
@@ -290,7 +296,14 @@ getReport: function(){
              x += "<div class='row'><div class='col-xs-10 col-xs-offset-1' style='padding-top:10px;padding-bottom:10px;margin-top:5px;cursor:pointer;background-color:white;border:solid 1px rgba(180,180,180,.8);box-shadow:0px 1px 5px rgba(200,200,200,.8);border-radius:3px;font-family:Roboto'><div class='row text-left'><div class='col-xs-12'><span class='' style='font-size:14px;text-transform:capitalize;'><b>" + student.name + "</b></span></div></div><div class='row'><div class='col-xs-9'><div class='row text-left'><div class='col-xs-12' style='font-size:12px'>" + student.enroll_number + "</div><div class='col-xs-12' style='color:rgb(70,70,70);font-size:14px;font-weight:bold'>Attendance ( <span style='color:rgb(17, 45, 89)'>" + count + "/" + dcs + "</span> ) <span style='color:green'>" + Math.ceil((count/dcs)*100) + "%</span></div><div class='col-xs-12'>" + tests + " </div></div></div><div class='col-xs-3 glyphicon glyphicon-option-vertical' style='margin-top:-5px;font-size:16px;color:rgb(70,70,70)'></div></div></div></div>";
            }
       })
-      view.showReport(x);
+      document.getElementById("main").innerHTML = x;
+      let options = [
+        {
+          id:"download#http://localhost:80/download/attendanceOverview/" + model.selectedBatch._id + "/" + model.personalInfo._id + "/" + model.selectedBatch.subject,
+          title: "Attendance( Overview )"
+        }
+      ]
+      document.getElementById('downloads').addEventListener('click',function(){view.showBatchOptionModal("Select Download",options,model.selectedBatch._id)})
     } else if(requestReport.status === 504 && requestReport.readyState === 4){
       controller.notifyUser("Internal Server Error. Try again",0);
     }
@@ -352,11 +365,11 @@ willBeAbsent: function(n){
 
   xhr.onreadystatechange = function(){
     if(xhr.status === 200 && xhr.readyState === 4){
-      view.closeAbsentModal();
+      view.closeBatchOptionModal();
       controller.facultyData();
       controller.notifyUser("Marked Absent",1);
     } else if(xhr.status === 504){
-      view.closeAbsentModal();
+      view.closeBatchOptionModal();
       controller.facultyData();
       controller.notifyUser("Internal Server error",0);
     }
