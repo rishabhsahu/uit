@@ -459,15 +459,16 @@ var controller = {
       }
     }
     if(er===0){
-      switch(n){
+      switch(Number(n)){
         case 0:controller.addNewFaculty();
         break;
 
         case 1:controller.addNewBatch();
           break;
 
-        case "2":controller.batchOptions(m);
-        break;
+        case 2:
+          controller.batchOptions(m);
+          break;
       }
     }
   },
@@ -564,7 +565,7 @@ var controller = {
 
   batchOptions: function(m){
     const st = {};
-    st.batch = model.selectedBatch._id;
+    st.batch = model.selectedBatch._id || document.getElementById('batch').value;
     st.name = document.getElementById('name').value;
     st.parent_name = document.getElementById('pn').value;
     st.enroll_number = document.getElementById('en').value;
@@ -575,7 +576,32 @@ var controller = {
     st.mobile.parent_number2 = document.getElementsByClassName('nm')[1].value;
     st.mobile.student_number = document.getElementsByClassName('nm')[2].value
     st.mobile.other = document.getElementsByClassName('nm')[3].value
-    console.log(st)
+    model.students.list.push(st);
+    let cl = document.getElementsByClassName('inps')
+    Array.prototype.forEach.call(cl,function(c,i){
+      c.value = "";
+      document.getElementById('name').focus();
+    })
+
+    if(m == 0){
+      let xhr = new XMLHttpRequest()
+      xhr.onreadystatechange = function(){
+        if(xhr.readyState === 4){
+          if(xhr.status === 200){
+            view.closeBatchOptions();
+            view.notifyUser('New Student Added',1);
+          } else {
+            if(xhr.status === 504){
+              view.closeBatchOptions();
+              view.notifyUser('Internal Server Error<br>Unable to add new student',0);
+            }
+          }
+        }
+      }
+      xhr.open('POST','http://localhost:80/admin/batchsettings/addNewStudent/0',true);
+      xhr.setRequestHeader('Content-type','application/json');
+      xhr.send(JSON.stringify(model.students));
+    }
   }
 
 };

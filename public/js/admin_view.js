@@ -69,7 +69,7 @@ var view = {
 
       var messages = "<div class='row'><div class='col-xs-9 col-xs-offset-2' style='border:solid 1px rgba(160,160,160,.8);border-radius:3px;background-color:white;margin-top:5px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='row' style='padding-top:10px;padding-bottom:10px'><div class='col-xs-5' style='border-right: solid 1px rgb(160,160,160)'><div class='row'><div class='col-xs-12' style='font-size:18px'><span style='padding-bottom:5px;color:rgb(80,80,80);'>Messages ( By Faculties )</span></div><div class='col-xs-12' style='font-size:32px;padding-top:15px;padding-bottom:15px'><span style='border-top: solid 1px rgb(160,160,160);color:rgb(91, 183, 216)'>" + model.info.recent_messages + "</span></div></div></div><div class='col-xs-7'><div class='row'><div class='col-xs-12'><h5><span style='padding-bottom:5px;border-bottom: solid 1px rgb(160,160,160);font-weight:bold;color:rgb(110,110,110)'>Messages ( By Faculties )</span></h5></div><div class='col-xs-12' style='max-height:80px;overflow-y:auto;font-size:13px'>" + fcbmsgs + "</div></div></div></div></div></div>"
 
-      var header_options = "<div class='btn btn-group btn-group-justified' role='group' aria-label='...'><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.showAddBatchModal()' style='padding-top:10px;padding-bottom:10px'>New Batch</button></div><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.showAddFacultyModal()' style='padding-top:10px;padding-bottom:10px'>New Faculty</button></div><div class='btn-group' role='group'><div class='dropdown'><button type='button' class='btn btn-default drpdnbtn' onclick='view.dropdown(event)' style='padding-top:10px;padding-bottom:10px' tg='admin#message'>Message <span class='caret'></span></button><div id='admin#message' class='dropdown-content'><div onclick='view.notifyParents()'>Message Parents</div><div onclick='view.messageFaculties()'>Message Faculties</div></div></div></div><div class='btn-group' role='group'><div class='dropdown'><button type='button' class='btn btn-default drpdnbtn' onclick='view.dropdown(event)' tg='admin#options' style='padding-top:10px;padding-bottom:10px'>Options <span class='caret'></span></button><div id='admin#options' class='dropdown-content'><div onclick='view.createNewExam()'>Create New Exam</div></div></div></div></div>";
+      var header_options = "<div class='btn btn-group btn-group-justified' role='group' aria-label='...'><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.showAddBatchModal()' style='padding-top:10px;padding-bottom:10px'>New Batch</button></div><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.showAddFacultyModal()' style='padding-top:10px;padding-bottom:10px'>New Faculty</button></div><div class='btn-group' role='group'><div class='dropdown'><button type='button' class='btn btn-default drpdnbtn' onclick='view.dropdown(event)' style='padding-top:10px;padding-bottom:10px' tg='admin#message'>Message <span class='caret'></span></button><div id='admin#message' class='dropdown-content'><div onclick='view.notifyParents()'>Message Parents</div><div onclick='view.messageFaculties()'>Message Faculties</div></div></div></div><div class='btn-group' role='group'><div class='dropdown'><button type='button' class='btn btn-default drpdnbtn' onclick='view.dropdown(event)' tg='admin#options' style='padding-top:10px;padding-bottom:10px'>Options <span class='caret'></span></button><div id='admin#options' class='dropdown-content'><div id='addNewStudent' onclick='view.batchOptions(event)'>Add New Student</div></div></div></div></div>";
 
       /*
 
@@ -843,35 +843,47 @@ showSelectedSubjectData: function(e){
 
 batchOptions: function(e){
   let fields = ""
-  let content = "<div class='row'><div class='col-xs-12' style='margin-top:30px;'><b>Personal Information</b></div></div>"
+  let content = "<div class='row'><div class='col-xs-12' style='max-height:350px;overflow-y:auto'><div class='row'><div class='col-xs-12' style='margin-top:10px;'><b>Personal Information</b></div></div>"
   let xltd = function(){}
   switch(e.target.id){
     case "addNewStudent":
-    var option = 0
     let xltd = function(){
+      model.students = {list:[]};
+      if(!model.selectedBatch._id){
+        let str = ""
+        model.info.batches.forEach((x,i)=>{
+          str += "<option value='" + x._id + "'>" + x.class + "/" + x._id.split('/')[2] + "</option>"
+        })
+        content += "<div class='row' style='margin-top:20px'><div class='col-xs-4 col-xs-offset-1 text-right' style='font-weight:bold'>Batch</div><div class='col-xs-4 col-xs-offset-1 text-left'><select id='batch'>" + str + "</select></div></div>"
+      } else {
+        content += "<div class='row' style='margin-top:20px;font-weight:bold'><div class='col-xs-6'>Batch</div><div class='col-xs-6' style='color:rgb(90,90,90)'>" + model.selectedBatch.class + "/" + model.selectedBatch.section + "</div></div>"
+      }
       const o = {name:"Name",en:"Enrollment Number",pn:"Parents Name",add:"Address",ct:"City",nm:["Parent no.1","Parent no.2","Students no.","Other"]}
       for(var x in o){
         if(x == "nm"){
-          content += "<div class='row' style='margin-top:10px;margin-bottom:10px'><div class='col-xs-12' style='font-weight:bold'>Contact Numbers</div></div>";
+          content += "<div class='row' style='margin-top:20px;margin-bottom:20px'><div class='col-xs-12' style='font-weight:bold'>Contact Numbers</div></div>";
           o[x].forEach((y,i)=>{
             if(i === 0){
-              content += "<div class='row' style='margin-top:10px;margin-bottom:10px'><div class='col-xs-12'><input class='nm required' type='text' name='numbers' placeholder='" + y + "'></div></div>";
+              content += "<div class='row' style='margin-top:35px;margin-bottom:35px'><div class='col-xs-12'><input class='nm required inps' type='text' name='numbers' placeholder='" + y + "' maxlength=10></div></div>";
             } else {
-              content += "<div class='row' style='margin-top:10px;margin-bottom:10px'><div class='col-xs-12'><input class='nm' type='text' name='numbers' placeholder='" + y + "'></div></div>";
+              content += "<div class='row' style='margin-top:35px;margin-bottom:35px'><div class='col-xs-12'><input class='nm inps' type='text' name='numbers' placeholder='" + y + "' maxlength=10></div></div>";
             }
           })
+        } else if(x === "name"){
+          content += "<div class='row' style='margin-top:35px;margin-bottom:35px'><div class='col-xs-12'><input type='text' name='" + x + "' id='" + x + "' class='required inps' placeholder='" + o[x] + "' style='width:60%' autofocus></div></div>";
         } else {
-          content += "<div class='row' style='margin-top:10px;margin-bottom:10px'><div class='col-xs-12'><input type='text' name='" + x + "' id='" + x + "' class='required' placeholder='" + o[x] + "'></div></div>";
+          content += "<div class='row' style='margin-top:35px;margin-bottom:35px'><div class='col-xs-12'><input type='text' name='" + x + "' id='" + x + "' class='required inps' placeholder='" + o[x] + "' style='width:60%'></div></div>";
         }
       }
+      content += "</div></div>";
     }
     xltd();
     break;
   }
 
 
-            document.getElementsByTagName("body")[0].innerHTML += "<div id='showSettings' class='text-center modal col-sm-12' style='padding-top:100px'><div class='row'><div class='col-sm-4 col-sm-offset-4 modalContent'><div class='row modelHeader' style='border-bottom: solid 1px rgba(160,160,160,.6)'><div class='col-sm-12'><h2>New Student Registration</h2></div></div>" + content + "</div><div class='col-xs-1 close' style='font-size:40px;font-weight:bold;cursor:pointer;padding:0px;' onclick='view.closeSettings()'>&times;</div></div><div class='row'><div style='margin-top:15px;' class='col-xs-2 col-xs-offset-5'><button class='btn btn-danger' onclick='controller.checkAll(2," + option + ")'>Done</button></div></div></div>";
-      document.getElementById("showSettings").style.display = "block" ;
+            document.getElementsByTagName("body")[0].innerHTML += "<div id='batchOptions' class='text-center modal col-sm-12' style='padding-top:100px'><div class='row'><div class='col-sm-4 col-sm-offset-4 modalContent'><div class='row modelHeader' style='border-bottom: solid 1px rgba(160,160,160,.6)'><div class='col-sm-12'><h2>New Student Registration</h2></div></div>" + content + "</div><div class='col-xs-1 close' style='font-size:40px;font-weight:bold;cursor:pointer;padding:0px;' onclick='view.closeBatchOptions()'>&times;</div></div><div class='row' style='margin-top:15px;'><div class='col-xs-2 col-xs-offset-4'><button class='btn btn-warning' onclick='controller.checkAll(2,1)'>Add More</button></div><div class='col-xs-2'><button class='btn btn-danger' onclick='controller.checkAll(2,0)'>Done</button></div></div></div>";
+      document.getElementById("batchOptions").style.display = "block" ;
 },
 
 closeFacultyList: function(){
@@ -962,9 +974,9 @@ closeShowStudentModal: function(){
   controller.getBatchData(1);
 },
 
-closeSettings: function(){
-  document.getElementById('showSettings').style.display = "none";
-  document.getElementById("showSettings").parentNode.removeChild(document.getElementById("showSettings"));
+closeBatchOptions: function(){
+  document.getElementById('batchOptions').style.display = "none";
+  document.getElementById("batchOptions").parentNode.removeChild(document.getElementById("batchOptions"));
   controller.getBatchData(1);
 },
 
