@@ -67,7 +67,7 @@ var view = {
         fcbmsgs += "<div class='row' style='border-radius:3px;margin-top:5px'><div class='col-xs-7 col-xs-offset-1' style='background-color:rgba(200,200,200,.3);border-radius:3px;color: rgb(70,70,70);text-transform:uppercase;padding-top:5px;padding-bottom:5px;font-font-size:12px'>" + x.name + "</div><div class='col-xs-2 col-xs-offset-1' style='background-color:rgba(200,200,200,.4);border-radius:3px;color: rgb(70,70,70);font-weight:bold;padding-top:5px;padding-bottom:5px;'>" + x.cnt + "</div></div>";
       })
 
-      var messages = "<div class='row'><div class='col-xs-9 col-xs-offset-2' style='border:solid 1px rgba(160,160,160,.8);border-radius:3px;background-color:white;margin-top:5px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='row' style='padding-top:10px;padding-bottom:10px'><div class='col-xs-5' style='border-right: solid 1px rgb(160,160,160)'><div class='row'><div class='col-xs-12' style='font-size:18px'><span style='padding-bottom:5px;color:rgb(80,80,80);'>Messages ( By Parents )</span></div><div class='col-xs-12' style='font-size:32px;padding-top:15px;padding-bottom:15px'><span style='border-top: solid 1px rgb(160,160,160);color:rgb(91, 183, 216)'>" + "0" + "</span></div></div></div><div class='col-xs-7'><div class='row'><div class='col-xs-12'><h5><span style='padding-bottom:5px;border-bottom: solid 1px rgb(160,160,160);font-weight:bold;color:rgb(110,110,110)'>Messages ( By Faculties )</span></h5></div><div class='col-xs-12' style='max-height:80px;overflow-y:auto;font-size:13px'>" + fcbmsgs + "</div></div></div></div></div></div>"
+      var messages = "<div class='row'><div class='col-xs-9 col-xs-offset-2' style='border:solid 1px rgba(160,160,160,.8);border-radius:3px;background-color:white;margin-top:5px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8)'><div class='row' style='padding-top:10px;padding-bottom:10px'><div class='col-xs-5' style='border-right: solid 1px rgb(160,160,160)'><div class='row'><div class='col-xs-12' style='font-size:18px'><span style='padding-bottom:5px;color:rgb(80,80,80);'>Messages ( By Faculties )</span></div><div class='col-xs-12' style='font-size:32px;padding-top:15px;padding-bottom:15px'><span style='border-top: solid 1px rgb(160,160,160);color:rgb(91, 183, 216)'>" + model.info.recent_messages + "</span></div></div></div><div class='col-xs-7'><div class='row'><div class='col-xs-12'><h5><span style='padding-bottom:5px;border-bottom: solid 1px rgb(160,160,160);font-weight:bold;color:rgb(110,110,110)'>Messages ( By Faculties )</span></h5></div><div class='col-xs-12' style='max-height:80px;overflow-y:auto;font-size:13px'>" + fcbmsgs + "</div></div></div></div></div></div>"
 
       var header_options = "<div class='btn btn-group btn-group-justified' role='group' aria-label='...'><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.showAddBatchModal()' style='padding-top:10px;padding-bottom:10px'>New Batch</button></div><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.showAddFacultyModal()' style='padding-top:10px;padding-bottom:10px'>New Faculty</button></div><div class='btn-group' role='group'><div class='dropdown'><button type='button' class='btn btn-default drpdnbtn' onclick='view.dropdown(event)' style='padding-top:10px;padding-bottom:10px' tg='admin#message'>Message <span class='caret'></span></button><div id='admin#message' class='dropdown-content'><div onclick='view.notifyParents()'>Message Parents</div><div onclick='view.messageFaculties()'>Message Faculties</div></div></div></div><div class='btn-group' role='group'><div class='dropdown'><button type='button' class='btn btn-default drpdnbtn' onclick='view.dropdown(event)' tg='admin#options' style='padding-top:10px;padding-bottom:10px'>Options <span class='caret'></span></button><div id='admin#options' class='dropdown-content'><div onclick='view.createNewExam()'>Create New Exam</div></div></div></div></div>";
 
@@ -533,7 +533,7 @@ var view = {
         subjects = ""
       }
 
-    var header_options = "<div class='col-xs-8 text-center' style='position:fixed;top:15px;right:120px;z-index:1;'><div class='btn btn-group btn-group-justified' role='group' aria-label='...'><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.assignNewSubject()'>New Subject</button></div><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.customMessagesModal()'>Exam-score</button></div><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.messageWholeClassModal()'>Message</button></div><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.showSettings()'>Settings</button></div></div></div><div class='glyphicon glyphicon-arrow-left' style='position:fixed;right:20px;top:15px;padding:10px;background-color:white;border-radius:3px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);font-size:20px;color:rgb(70,70,70);cursor:pointer' onclick='view.showClasses()'></div>";
+    var header_options = "<div class='col-xs-8 text-center' style='position:fixed;top:15px;right:120px;z-index:1;'><div class='btn btn-group btn-group-justified' role='group' aria-label='...'><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.assignNewSubject()'>New Subject</button></div><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.customMessagesModal()'>Exam-score</button></div><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.messageWholeClassModal()'>Message</button></div><div class='btn-group' role='group'><div class='dropdown'><button type='button' class='btn btn-default drpdnbtn' onclick='view.dropdown(event)' tg='batch#options' style='padding-top:10px;padding-bottom:10px'>Options <span class='caret'></span></button><div id='batch#options' class='dropdown-content'><div onclick='view.batchOptions(event)' id='addNewStudent'>Add New Student</div></div></div></div></div></div><div class='glyphicon glyphicon-arrow-left' style='position:fixed;right:20px;top:15px;padding:10px;background-color:white;border-radius:3px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);font-size:20px;color:rgb(70,70,70);cursor:pointer' onclick='view.showClasses()'></div>";
 
     /*
     var header_options = "<div class='col-xs-8 text-center' style='position:fixed;top:15px;right:120px;z-index:1;background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);cursor:pointer;font-weight:bold;color:rgb(110,110,110)'><div class='row'><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.assignNewSubject()'>New Subject</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.messageWholeClassModal()'>Message Whole Class</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.customMessagesModal()'>Add Score</div><div class='col-xs-3' onclick='view.showSettings()'>Settings</div></div></div><div class='glyphicon glyphicon-arrow-left' style='position:fixed;right:20px;top:15px;padding:10px;background-color:white;border-radius:3px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);font-size:20px;color:rgb(70,70,70);cursor:pointer' onclick='view.showClasses()'></div>";
@@ -841,14 +841,36 @@ showSelectedSubjectData: function(e){
     graph.pastTenExams();
 },
 
-showSettings: function(){
-        var content = "<select id='faculty'>";
-        model.info.faculties.forEach(function(x){
-            content += "<option value='" + x.id + "'>" + x.name + "</option>";
-        })
-        content += "</select>";
+batchOptions: function(e){
+  let fields = ""
+  let content = "<div class='row'><div class='col-xs-12' style='margin-top:30px;'><b>Personal Information</b></div></div>"
+  let xltd = function(){}
+  switch(e.target.id){
+    case "addNewStudent":
+    var option = 0
+    let xltd = function(){
+      const o = {name:"Name",en:"Enrollment Number",pn:"Parents Name",add:"Address",ct:"City",nm:["Parent no.1","Parent no.2","Students no.","Other"]}
+      for(var x in o){
+        if(x == "nm"){
+          content += "<div class='row' style='margin-top:10px;margin-bottom:10px'><div class='col-xs-12' style='font-weight:bold'>Contact Numbers</div></div>";
+          o[x].forEach((y,i)=>{
+            if(i === 0){
+              content += "<div class='row' style='margin-top:10px;margin-bottom:10px'><div class='col-xs-12'><input class='nm required' type='text' name='numbers' placeholder='" + y + "'></div></div>";
+            } else {
+              content += "<div class='row' style='margin-top:10px;margin-bottom:10px'><div class='col-xs-12'><input class='nm' type='text' name='numbers' placeholder='" + y + "'></div></div>";
+            }
+          })
+        } else {
+          content += "<div class='row' style='margin-top:10px;margin-bottom:10px'><div class='col-xs-12'><input type='text' name='" + x + "' id='" + x + "' class='required' placeholder='" + o[x] + "'></div></div>";
+        }
+      }
+    }
+    xltd();
+    break;
+  }
 
-            document.getElementsByTagName("body")[0].innerHTML += "<div id='showSettings' class='text-center modal col-sm-12' style='padding-top:100px'><div class='row'><div class='col-sm-4 col-sm-offset-4 modalContent'><div class='row modelHeader' style='border-bottom: solid 1px rgba(160,160,160,.6)'><div class='col-sm-12'><h2>Settings</h2></div></div><div class='row'><div class='col-xs-12' style='margin-top:30px;'><b>Class Teacher</b> " + content + "</div></div></div><div class='col-xs-1 close' style='font-size:40px;font-weight:bold;cursor:pointer;padding:0px;' onclick='view.closeSettings()'>&times;</div></div><div class='row'><div style='margin-top:15px;' class='col-xs-2 col-xs-offset-5'><button class='btn btn-danger' onclick='controller.settings()'>Done</button></div></div></div>";
+
+            document.getElementsByTagName("body")[0].innerHTML += "<div id='showSettings' class='text-center modal col-sm-12' style='padding-top:100px'><div class='row'><div class='col-sm-4 col-sm-offset-4 modalContent'><div class='row modelHeader' style='border-bottom: solid 1px rgba(160,160,160,.6)'><div class='col-sm-12'><h2>New Student Registration</h2></div></div>" + content + "</div><div class='col-xs-1 close' style='font-size:40px;font-weight:bold;cursor:pointer;padding:0px;' onclick='view.closeSettings()'>&times;</div></div><div class='row'><div style='margin-top:15px;' class='col-xs-2 col-xs-offset-5'><button class='btn btn-danger' onclick='controller.checkAll(2," + option + ")'>Done</button></div></div></div>";
       document.getElementById("showSettings").style.display = "block" ;
 },
 
