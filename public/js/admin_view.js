@@ -533,7 +533,7 @@ var view = {
         subjects = ""
       }
 
-    var header_options = "<div class='col-xs-8 text-center' style='position:fixed;top:15px;right:120px;z-index:1;'><div class='btn btn-group btn-group-justified' role='group' aria-label='...'><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.assignNewSubject()'>New Subject</button></div><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.customMessagesModal()'>Exam-score</button></div><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.messageWholeClassModal()'>Message</button></div><div class='btn-group' role='group'><div class='dropdown'><button type='button' class='btn btn-default drpdnbtn' onclick='view.dropdown(event)' tg='batch#options' style='padding-top:10px;padding-bottom:10px'>Options <span class='caret'></span></button><div id='batch#options' class='dropdown-content'><div onclick='view.batchOptions(event)' id='addNewStudent'>Add New Student</div></div></div></div></div></div><div class='glyphicon glyphicon-arrow-left' style='position:fixed;right:20px;top:15px;padding:10px;background-color:white;border-radius:3px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);font-size:20px;color:rgb(70,70,70);cursor:pointer' onclick='view.showClasses()'></div>";
+    var header_options = "<div class='col-xs-8 text-center' style='position:fixed;top:15px;right:120px;z-index:1;'><div class='btn btn-group btn-group-justified' role='group' aria-label='...'><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.assignNewSubject()'>New Subject</button></div><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.customMessagesModal()'>Exam-score</button></div><div class='btn-group' role='group'><button type='button' class='btn btn-default' onclick='view.messageWholeClassModal()'>Message</button></div><div class='btn-group' role='group'><div class='dropdown'><button type='button' class='btn btn-default drpdnbtn' onclick='view.dropdown(event)' tg='batch#options' style='padding-top:10px;padding-bottom:10px'>Options <span class='caret'></span></button><div id='batch#options' class='dropdown-content'><div onclick='view.batchOptions(event)' id='addNewStudent'>Add New Student</div><div onclick='view.batchOptions(event)' id='takeAttendance'>Take Attendance</div></div></div></div></div></div><div class='glyphicon glyphicon-arrow-left' style='position:fixed;right:20px;top:15px;padding:10px;background-color:white;border-radius:3px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);font-size:20px;color:rgb(70,70,70);cursor:pointer' onclick='view.showClasses()'></div>";
 
     /*
     var header_options = "<div class='col-xs-8 text-center' style='position:fixed;top:15px;right:120px;z-index:1;background-color:white;border-radius:3px;padding-top:10px;padding-bottom:10px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);cursor:pointer;font-weight:bold;color:rgb(110,110,110)'><div class='row'><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.assignNewSubject()'>New Subject</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.messageWholeClassModal()'>Message Whole Class</div><div class='col-xs-3' style='border-right:solid 1px rgb(160,160,160)' onclick='view.customMessagesModal()'>Add Score</div><div class='col-xs-3' onclick='view.showSettings()'>Settings</div></div></div><div class='glyphicon glyphicon-arrow-left' style='position:fixed;right:20px;top:15px;padding:10px;background-color:white;border-radius:3px;border:solid 1px rgba(160,160,160,.8);box-shadow:1px 2px 5px rgba(160,160,160,.8);font-size:20px;color:rgb(70,70,70);cursor:pointer' onclick='view.showClasses()'></div>";
@@ -843,7 +843,7 @@ showSelectedSubjectData: function(e){
 
 batchOptions: function(e){
   let fields = ""
-  let content = "<div class='row'><div class='col-xs-12' style='max-height:350px;overflow-y:auto'><div class='row'><div class='col-xs-12' style='margin-top:10px;'><b>Personal Information</b></div></div>"
+  let content = "<div class='row'><div class='col-xs-12' style='max-height:400px;overflow-y:auto'><div class='row'><div class='col-xs-12' style='margin-top:10px;'><b>Personal Information</b></div></div>"
   let xltd = function(){}
   switch(e.target.id){
     case "addNewStudent":
@@ -876,14 +876,16 @@ batchOptions: function(e){
         }
       }
       content += "</div></div>";
+      document.getElementsByTagName("body")[0].innerHTML += "<div id='batchOptions' class='text-center modal col-sm-12' style='padding-top:50px'><div class='row'><div class='col-sm-6 col-sm-offset-3 modalContent'><div class='row modelHeader' style='border-bottom: solid 1px rgba(160,160,160,.6)'><div class='col-sm-12'><h2>New Student Registration</h2></div></div>" + content + "</div><div class='col-xs-1 close' style='font-size:40px;font-weight:bold;cursor:pointer;padding:0px;' onclick='view.closeBatchOptions()'>&times;</div></div><div class='row' style='margin-top:15px;'><div class='col-xs-2 col-xs-offset-4'><button class='btn btn-warning' onclick='controller.checkAll(2,1)'>Add More</button></div><div class='col-xs-2'><button class='btn btn-danger' onclick='controller.checkAll(2,0)'>Done</button></div></div></div>";
+document.getElementById("batchOptions").style.display = "block" ;
     }
     xltd();
     break;
+
+    case "takeAttendance":
+      window.open("http://localhost:80/admin/takeattendance","_blank");
+      break;
   }
-
-
-            document.getElementsByTagName("body")[0].innerHTML += "<div id='batchOptions' class='text-center modal col-sm-12' style='padding-top:100px'><div class='row'><div class='col-sm-4 col-sm-offset-4 modalContent'><div class='row modelHeader' style='border-bottom: solid 1px rgba(160,160,160,.6)'><div class='col-sm-12'><h2>New Student Registration</h2></div></div>" + content + "</div><div class='col-xs-1 close' style='font-size:40px;font-weight:bold;cursor:pointer;padding:0px;' onclick='view.closeBatchOptions()'>&times;</div></div><div class='row' style='margin-top:15px;'><div class='col-xs-2 col-xs-offset-4'><button class='btn btn-warning' onclick='controller.checkAll(2,1)'>Add More</button></div><div class='col-xs-2'><button class='btn btn-danger' onclick='controller.checkAll(2,0)'>Done</button></div></div></div>";
-      document.getElementById("batchOptions").style.display = "block" ;
 },
 
 closeFacultyList: function(){
