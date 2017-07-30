@@ -439,22 +439,35 @@ var controller = {
     xhr.send(JSON.stringify(ob));
   },
 
-  checkAll: function(n){
-    var el = document.getElementsByClassName('showRequiredError');
-    var tl = document.getElementsByClassName('required');
-    var er=0;
-    for(var i=0;i<tl.length;i++){
-      if(tl[i].value.length===0){
-        el[i].style.color = "red";
-        er++;
+  checkAll: function(n,m){
+    let el = document.getElementsByClassName('showRequiredError');
+    let tl = document.getElementsByClassName('required');
+    let er=0;
+    if(n!="2"){
+      for(let i=0;i<tl.length;i++){
+        if(tl[i].value.length===0){
+          el[i].style.color = "red";
+          er++;
+        }
+      }
+    } else {
+      for(let i=0;i<tl.length;i++){
+        if(tl[i].value.length===0){
+          tl[i].style.borderBottom = "solid 2px rgb(249, 67, 67)";
+          er++;
+        }
       }
     }
     if(er===0){
       switch(n){
-        case 0:this.addNewFaculty();
+        case 0:controller.addNewFaculty();
         break;
 
-        case 1:this.addNewBatch();
+        case 1:controller.addNewBatch();
+          break;
+
+        case "2":controller.batchOptions(m);
+        break;
       }
     }
   },
@@ -549,29 +562,20 @@ var controller = {
     xhr.send(null);
   },
 
-  settings: function(){
+  batchOptions: function(m){
     const st = {};
     st.batch = model.selectedBatch._id;
-    st.class_teacher = document.getElementById('faculty').value;
-    const xhr = new XMLHttpRequest();
-
-    xhr.onreadystatechange = function(){
-      if(xhr.readyState === 4){
-        if(xhr.status === 200){
-          view.closeSettings();
-          view.notifyUser('Class Teacher Appointed',1);
-        } else {
-          if(xhr.status === 504){
-            view.closeSettings();
-            view.notifyUser('Internal Server Error',0);
-          }
-        }
-      }
-    }
-
-    xhr.open('POST','http://localhost:80/admin/batchsettings',true);
-    xhr.setRequestHeader('Content-type','application/json');
-    xhr.send(JSON.stringify(st));
+    st.name = document.getElementById('name').value;
+    st.parent_name = document.getElementById('pn').value;
+    st.enroll_number = document.getElementById('en').value;
+    st.add = document.getElementById('add').value;
+    st.city = document.getElementById('ct').value;
+    st.mobile = {};
+    st.mobile.parent_number1 = document.getElementsByClassName('nm')[0].value;
+    st.mobile.parent_number2 = document.getElementsByClassName('nm')[1].value;
+    st.mobile.student_number = document.getElementsByClassName('nm')[2].value
+    st.mobile.other = document.getElementsByClassName('nm')[3].value
+    console.log(st)
   }
 
 };
