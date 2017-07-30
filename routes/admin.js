@@ -216,6 +216,7 @@ router.post('/addnewbatch/:domain_name/:batch/:section/:cls/:school',function(re
         class_data.students = std
         class_data.student_data = std
         class_data.prev_faculties = {}
+        class_data.tests = {}
         class_data.current_faculties = []
         console.log(class_data)
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
