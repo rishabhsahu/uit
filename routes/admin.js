@@ -14,6 +14,7 @@ let getDepartmentData = require('./admin/get.js').getDepartmentData
 let getFacultyData = require('./admin/get.js').getFacultyData
 let classesheld = require('./admin/get.js').classesheld
 let getBatchData = require('./admin/get.js').getBatchData
+let getAllStudents = require('./admin/get.js').getAllStudents
 
 router.get('/getDepartmentData',getDepartmentData)
 
@@ -22,6 +23,7 @@ router.get('/getFacultyData/:id',getFacultyData)
 router.get('/classesheld/:faculty_id/:school/:batch/:section',classesheld)
 
 router.get('/getBatchData/:domain_name/:section/:batch',getBatchData)
+router.get('/getallstudents',getAllStudents)
 
 router.post('/addnewbatch/:domain_name/:batch/:section/:cls/:school',addnewbatch)
 
@@ -115,39 +117,74 @@ router.post('/assignFacultyNewBatch/:faculty_id',function(req,res){
 })
 
 router.post('/batchsettings/addNewStudent/:n',function(req,res){
+  let cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
     errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
     res.status(500)
     res.end()
   } else {
-  var cookies = cookie.parse(req.headers.cookie || '')
-  jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
-    if(!err){
-      mongo.connect('mongodb://localhost:27018/data',function(err,db){
-        if(err){
-          errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
-          db.close()
-          res.status(500)
-          res.end()
-        } else {
-          req.body.list.forEach((x,i)=>{
-            const batch = x.batch
-            delete x.batch
-            db.collection('classes').update({_id:batch},{$addToSet:{"students":x}})
-            db.collection('classes').update({_id:batch},{$addToSet:{"student_data":x}})
-            res.status(200)
-          })
-          res.end()
-          db.close()
-        }
-      })
-    } else {
-      errRequest("http://localhost:80/error/nodejsErr/admin","jwt",err)
-      res.status(401)
-      res.end()
-    }
-  })
-}
+    jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+      if(!err){
+        mongo.connect('mongodb://localhost:27018/data',function(err,db){
+          if(err){
+            errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
+            db.close()
+            res.status(500)
+            res.end()
+          } else {
+            req.body.list.forEach((x,i)=>{
+              const batch = x.batch
+              delete x.batch
+              db.collection('classes').update({_id:batch},{$addToSet:{"students":x}})
+              db.collection('classes').update({_id:batch},{$addToSet:{"student_data":x}})
+              res.status(200)
+            })
+            res.end()
+            db.close()
+          }
+        })
+      } else {
+        errRequest("http://localhost:80/error/nodejsErr/admin","jwt",err)
+        res.status(401)
+        res.end()
+      }
+    })
+  }
+})
+
+router.get('/takeattendance/all',function(req,res){
+  let cookies = cookie.parse(req.headers.cookie || '')
+  if(!cookie){
+    errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
+    res.status(500)
+    res.end()
+  } else {
+    jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+      if(!err){
+        mongo.connect('mongodb://localhost:27018/data',function(err,db){
+          if(err){
+            errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
+            db.close()
+            res.status(500)
+            res.end()
+          } else {
+            db.collection('batches').findOne({_id:req.params.school + "/" + req.params.batch + "/" + req.params.section},{"students":1},function(err,item){
+              if(err){
+                errRequest("http://localhost:80/error/nodejsErr/admin","mongodb",err)
+              } else {
+                res.status(200)
+                fs.createReadStream(root + "/public/takeattendance.html").pipe(res)
+              }
+            })
+          }
+        })
+      } else {
+        errRequest("http://localhost:80/error/nodejsErr/admin","jwt",err)
+        res.status(401)
+        res.end()
+      }
+    })
+  }
 })
 
 router.delete('/deassignbatch/:id/:domain_name/:section/:batch',function(req,res){

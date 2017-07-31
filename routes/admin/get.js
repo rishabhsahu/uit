@@ -170,7 +170,65 @@ function getBatchData(req,res){
 }
 }
 
+function getAllStudents(req,res){
+  var cookies = cookie.parse(req.headers.cookie || '')
+  if(!cookie){
+    errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
+    res.status(500)
+    res.end()
+  } else {
+  jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+    if(!err){
+      console.log("Class data requested.")
+      mongo.connect('mongodb://localhost:27018/data',function(err,db){
+        if(!err){
+          var batches = []
+          let o = {}
+          db.collection('admin').findOne({_id:decoded.name},{"batches":1},function(err,item){
+            if(!err){
+              res.status(200)
+              res.json(item)
+              db.close()
+            } else {
+              errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
+              db.close()
+              res.status(404)
+              res.end()
+            }
+          })
+        } else {
+          console.log("failed to connect to db")
+          db.close()
+          res.status(500)
+          res.end()
+        }
+      })
+    } else {
+      errRequest("http://localhost:80/error/nodejsErr/admin","jwt",err)
+      res.status(401)
+      res.end()
+    }
+  })
+}
+}
+
+function errRequest(u,m,o){
+  var ed = (new Date()).toString()
+  o.time = ed;
+  o.module = m;
+  request({
+    method:"post",
+    url: u,
+    json:true,
+    body: o
+  },function(err,resp,body){
+
+  })
+
+}
+
 module.exports.getDepartmentData = getDepartmentData
 module.exports.getBatchData = getBatchData
 module.exports.classesheld = classesheld
 module.exports.getFacultyData = getFacultyData
+module.exports.getAllStudents = getAllStudents

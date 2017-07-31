@@ -34,24 +34,67 @@ function addnewbatch(req,res){
         var data = fs.readFileSync(root + "/data/" + name)
         data = data.toString()
         var list = data.split("\n")
-        for(var i=0;i<list.length-1;i++){
-          var obj = {}
-          entry = list[i].replace("\r","")
-          var ent = entry.split(',')
-          obj.enroll_number = ent[0]
-          obj.name = ent[1]
-          obj.mobile = ent[2]
-          std.push(obj)
-        }
-        var class_data = {}
+				const class_data = {}
+				class_data.students = []
+				class_data.student_data = []
+				list.forEach((x,i)=>{
+					const obj = {}
+          entry = x.replace("\r","")
+					let add;
+					console.log(entry,0)
+					if(entry.indexOf('\"')>0 && entry.indexOf('\"')<entry.length){
+						add = entry.split('\"')[1]
+						console.log(add)
+						entry = entry.replace('\"' + add + '\"','')
+						console.log(entry,1)
+					}
+          if(entry.length !=0 || entry != ""){
+						const ent = entry.split(',')
+						if(ent.length>5){
+		          obj.enroll_number = ent[0]
+		          const enrl = ent[0]
+		          obj.name = ent[1]
+		          obj.pname = ent[2]
+		          obj.add = add || ent[3]
+		          obj.city = ent[4]
+		          obj.mobiles = {}
+							for(let ni=5;ni<9;ni++){
+								if(ni===5){
+									if(ent[ni]){
+										obj.mobiles.parent1 = ent[ni]
+									} else {
+										res.status(400)
+										res.end()
+									}
+								} else {
+									if(ent[ni]){
+										switch(ni){
+											case 6:
+												obj.mobiles.parent2 = ent[ni]
+												break;
+
+											case 7:
+												obj.mobiles.student = ent[ni]
+												break;
+
+											case 8:
+												obj.mobiles.other = ent[ni]
+												break;
+										}
+									}
+								}
+						}
+            class_data.students.push(obj)
+            class_data.student_data.push(obj)
+					}
+					}
+				})
         class_data._id = req.params.domain_name + '/' + req.params.batch + '/' + req.params.section
         class_data.batch = req.params.batch
         class_data.school = req.params.school
         class_data.domain_name = req.params.domain_name
         class_data.class = req.params.cls
         class_data.section = req.params.section
-        class_data.students = std
-        class_data.student_data = std
         class_data.prev_faculties = {}
         class_data.tests = {}
         class_data.current_faculties = []
