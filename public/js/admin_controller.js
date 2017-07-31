@@ -567,15 +567,15 @@ var controller = {
     const st = {};
     st.batch = model.selectedBatch._id || document.getElementById('batch').value;
     st.name = document.getElementById('name').value;
-    st.parent_name = document.getElementById('pn').value;
+    st.pname = document.getElementById('pn').value;
     st.enroll_number = document.getElementById('en').value;
     st.add = document.getElementById('add').value;
     st.city = document.getElementById('ct').value;
-    st.mobile = {};
-    st.mobile.parent_number1 = document.getElementsByClassName('nm')[0].value;
-    st.mobile.parent_number2 = document.getElementsByClassName('nm')[1].value;
-    st.mobile.student_number = document.getElementsByClassName('nm')[2].value
-    st.mobile.other = document.getElementsByClassName('nm')[3].value
+    st.mobiles = {};
+    st.mobiles.parent_number1 = document.getElementsByClassName('nm')[0].value;
+    st.mobiles.parent_number2 = document.getElementsByClassName('nm')[1].value;
+    st.mobiles.student_number = document.getElementsByClassName('nm')[2].value
+    st.mobiles.other = document.getElementsByClassName('nm')[3].value
     model.students.list.push(st);
     let cl = document.getElementsByClassName('inps')
     Array.prototype.forEach.call(cl,function(c,i){
