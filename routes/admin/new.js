@@ -74,7 +74,7 @@ function addnewbatch(req,res){
 												break;
 
 											case 7:
-												obj.mobiles.student = ent[ni]
+												obj.mobiles.sn = ent[ni]
 												break;
 
 											case 8:
