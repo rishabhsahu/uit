@@ -3,7 +3,7 @@ var cookie = require('cookie')
 var jwt = require('jsonwebtoken')
 var mongo = require('mongodb').MongoClient()
 
-router.get("/:school/:batch/:section/:index",function(req,res){
+router.get("/:school/:batch/:section/:er",function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '' )
   jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
     if(!err){
@@ -13,9 +13,13 @@ router.get("/:school/:batch/:section/:index",function(req,res){
             if(!err){
               db.close()
               res.status(200)
-              const obj = item.student_data[req.params.index]
-              obj["current_faculties"] = item.current_faculties
-              res.json(obj)
+              item.student_data.forEach((x,i)=>{
+                if(x.enroll_number === req.params.er){
+                  const o = x
+                  o.current_faculties = item.current_faculties
+                  res.json(o)
+                }
+              })
             } else {
               db.close()
               res.status(404)
