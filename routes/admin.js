@@ -6,6 +6,7 @@ let jwt = require('jsonwebtoken')
 let formidable = require('formidable')
 let fs = require('fs')
 let path = require('path')
+let qs = require('querystring')
 let root = __dirname
 let request = require('request')
 let addnewbatch = require('./admin/new.js').addnewbatch
@@ -24,6 +25,34 @@ router.get('/classesheld/:faculty_id/:school/:batch/:section',classesheld)
 
 router.get('/getBatchData/:domain_name/:section/:batch',getBatchData)
 router.get('/getallstudents',getAllStudents)
+
+router.get('/student_images/:image',function getStudentImage(req,res){
+  var cookies = cookie.parse(req.headers.cookie || '')
+  if(!cookie){
+    errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
+    res.status(500)
+    res.end()
+  } else {
+  jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+    if(!err){
+      mongo.connect('mongodb://localhost:27018/data',function(err,db){
+        if(!err){
+          fs.createReadStream(root + '/public/student_images/' + req.params.image).pipe(res)
+        } else {
+          console.log("failed to connect to db")
+          db.close()
+          res.status(500)
+          res.end()
+        }
+      })
+    } else {
+      errRequest("http://localhost:80/error/nodejsErr/admin","jwt",err)
+      res.status(401)
+      res.end()
+    }
+  })
+}
+})
 
 router.post('/addnewbatch/:domain_name/:batch/:section/:cls/:school',addnewbatch)
 
@@ -116,7 +145,7 @@ router.post('/assignFacultyNewBatch/:faculty_id',function(req,res){
 }
 })
 
-router.post('/batchsettings/addNewStudent/:n',function(req,res){
+router.post('/batchsettings/addNewStudent/:expath',function(req,res){
   let cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
     errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
@@ -132,15 +161,47 @@ router.post('/batchsettings/addNewStudent/:n',function(req,res){
             res.status(500)
             res.end()
           } else {
-            req.body.list.forEach((x,i)=>{
-              const batch = x.batch
-              delete x.batch
-              db.collection('classes').update({_id:batch},{$addToSet:{"students":x}})
-              db.collection('classes').update({_id:batch},{$addToSet:{"student_data":x}})
-              res.status(200)
+            let form = formidable.IncomingForm()
+            form.uploadDir = root + "/public/student_images"
+            form.parse(req,function(err,fields,files){
+              if(err){
+                res.status(500)
+                res.end()
+              }
             })
-            res.end()
-            db.close()
+
+            form.on('file',function(name,file){
+              const o = qs.parse(req.params.expath)
+              const bt = o.batch
+              delete o.batch
+              o.image = path.basename(file.path)
+              o.mobiles = {}
+              if(o.parent1.length>0){
+                o.mobiles.parent1 = o.parent1
+              }
+              if(o.parent2 && o.parent2.length>0){
+                o.mobiles.parent2 = o.parent2
+              }
+              if(o.parent1 && o.parent1.length>0){
+                o.mobiles.sn = o.sn
+              }
+              if(o.parent1 && o.parent1.length>0){
+                o.mobiles.other = o.other
+              }
+              delete o.parent1
+              delete o.parent2
+              delete o.sn
+              delete o.other
+              db.collection('classes').update({_id:bt},{$addToSet:{"students":o}})
+              db.collection('classes').update({_id:bt},{$addToSet:{"student_data":o}})
+              res.status(200)
+              res.end()
+            })
+
+            form.on('error',function(){
+              res.status(500)
+              res.end()
+            })
           }
         })
       } else {
