@@ -177,7 +177,7 @@ var controller = {
         if(isNaN(t)){
           t=0;
         }
-        stdnm += "<tr class='row' style='font-size:12px'><td class='col-xs-4' id='" + model.selectedBatch._id + "/" + i + "' onclick='controller.getStudentData(event)' style='cursor:pointer'>" + x.name + "</td><td class='col-xs-4'>" + cp + "</td><td class='col-xs-4'>" + Math.ceil(t) + "</td></tr>";
+        stdnm += "<tr class='row' style='font-size:12px'><td class='col-xs-4' id='" + model.selectedBatch._id + "/" + x.enroll_number + "' onclick='controller.getStudentData(event)' style='cursor:pointer'>" + x.name + "</td><td class='col-xs-4'>" + cp + "</td><td class='col-xs-4'>" + Math.ceil(t) + "</td></tr>";
       }
     })
     if(ch === 0){
@@ -451,13 +451,23 @@ var controller = {
         }
       }
     } else {
-      for(let i=0;i<tl.length;i++){
-        if(tl[i].value.length===0){
-          tl[i].style.borderBottom = "solid 2px rgb(249, 67, 67)";
-          er++;
+        for(let i=0;i<tl.length;i++){
+          if(tl[i].id === "file"){
+            if(!document.getElementById('file').files[0]){
+              document.getElementById('fileErr2').style.display = "block";
+              er++;
+            } else if(document.getElementById('file').files[0].size > 100*1024){
+              document.getElementById('fileErr').style.display = "block";
+              er++;
+            }
+          } else {
+            if(tl[i].value.length===0){
+              tl[i].style.borderBottom = "solid 2px rgb(249, 67, 67)";
+              er++;
+            }
+          }
         }
       }
-    }
     if(er===0){
       switch(Number(n)){
         case 0:controller.addNewFaculty();
@@ -535,7 +545,7 @@ var controller = {
 
   getStudentData: function(e){
     model.selectedStudent = {};
-    model.selectedStudent._id = e.target.id;
+    model.selectedStudent._id = e.target.id.split('/')[3];
 
     let xhr = new XMLHttpRequest();
 
@@ -559,11 +569,13 @@ var controller = {
         }
       }
     }
-    xhr.open('GET','http://localhost:80/student/' + model.selectedStudent._id);
+    xhr.open('GET','http://localhost:80/student/' + e.target.id);
     xhr.send(null);
   },
 
   batchOptions: function(m){
+    let file = document.getElementById('file').files[0];
+    console.log(document.getElementById('file').files[0].name);
     const st = {};
     st.batch = model.selectedBatch._id || document.getElementById('batch').value;
     st.name = document.getElementById('name').value;
@@ -571,12 +583,16 @@ var controller = {
     st.enroll_number = document.getElementById('en').value;
     st.add = document.getElementById('add').value;
     st.city = document.getElementById('ct').value;
-    st.mobiles = {};
-    st.mobiles.parent_number1 = document.getElementsByClassName('nm')[0].value;
-    st.mobiles.parent_number2 = document.getElementsByClassName('nm')[1].value;
-    st.mobiles.student_number = document.getElementsByClassName('nm')[2].value
-    st.mobiles.other = document.getElementsByClassName('nm')[3].value
+    st.parent1 = document.getElementsByClassName('nm')[0].value;
+    st.parent2 = document.getElementsByClassName('nm')[1].value;
+    st.sn = document.getElementsByClassName('nm')[2].value
+    st.other = document.getElementsByClassName('nm')[3].value
     model.students.list.push(st);
+    let url = "http://localhost:80/admin/batchsettings/addNewStudent/";
+    let str = "";
+    for(let p in st){
+      str += encodeURIComponent(p) + "=" + encodeURIComponent(st[p]) + "&";
+    }
     let cl = document.getElementsByClassName('inps')
     Array.prototype.forEach.call(cl,function(c,i){
       c.value = "";
@@ -598,9 +614,9 @@ var controller = {
           }
         }
       }
-      xhr.open('POST','http://localhost:80/admin/batchsettings/addNewStudent/0',true);
-      xhr.setRequestHeader('Content-type','application/json');
-      xhr.send(JSON.stringify(model.students));
+      xhr.open('POST',url + str,true);
+      xhr.setRequestHeader('Content-type','application/octet-stream');
+      xhr.send(file);
     }
   }
 
