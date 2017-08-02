@@ -19,43 +19,101 @@
 			}
 
 			#batches {
-				color: rgb(66, 179, 244);
 				cursor: pointer;
 			}
+
+			#batches > div {
+				margin-top: 5px;
+				margin-bottom: 5px;
+			}
+
+			#batches > div {
+				color: rgb(160,160,160)
+			}
+
+			#batches > div:first-child {
+				color: rgb(66, 179, 244);
+			}
+
+			#student-list > div {
+				margin: 5px;
+				padding: 15px;
+				border: solid 1px rgb(160,160,160);
+				cursor: pointer;
+				background-color: rgba(160,160,160,.4);
+				border-radius: 2px;
+			}
+
+			::-webkit-scrollbar {
+				display: none;
+			}
+
+			input:focus::-webkit-input-placeholder {
+			  color: dodgerblue;
+			}
+
 		</style>
 		<script>
-			let model = {bts:[]}
-			let view = {
-				parseData: function(){
-					let btc = "<div class='row'>";
-					let stds = "<div class='row'>";
-					model.bts.forEach(function(x,i){
-						btc += "<div class='col-xs-12 " + x._id + "'>" + x._id + "</div>";
-						model.als[x._id].forEach((y,n)=>{
-							stds += "<div class='col-xs-12 " + y.enroll_number + " " + x._id + "' batch='" + x._id + "'>" + y.name + "</div>";
-						})
-					})
-					model.als.forEach(function(y,n){
+		function sbn(){
+			let input = document.getElementById('sbn').value;
+			console.log(input);
+			let stds = document.getElementsByClassName('std');
+			Array.prototype.forEach.call(stds,function(x,i){
+				if(x.attributes.nm.nodeValue.indexOf(input.toLowerCase())<0){
+					x.style.display = "none";
+				} else {
+					x.style.display = "block";
+				}
+			})
+		}
 
+		function sber(){
+			let input = document.getElementById('sber').value;
+			let stds = document.getElementsByClassName('std');
+			Array.prototype.forEach.call(stds,function(x,i){
+				if(x.attributes.er.nodeValue.indexOf(input.toLowerCase())<0){
+					x.style.display = "none";
+				} else {
+					x.style.display = "block";
+				}
+			})
+		}
+			let model = {bts:[],lk:[]}
+			let view = {
+				pb: function(){
+					let stds = "";
+					model.bts.forEach((x,i)=>{
+						stds += "<div class='col-xs-12 btc' btc=" + x._id + "'>" + x._id + "</div>";
 					})
-					stds += "</div>";
-					btc += "</div>";
-					document.getElementById('batches').innerHTML = btc;
+					document.getElementById('batches').innerHTML += stds;
+				},
+
+				ps: function(){
+					console.log(this)
+					let stds = "";
+					for(let ba in this){
+						for(let s in this[ba]){
+							stds += "<div class='col-xs-12 std' er=" + s.toLowerCase() + " nm='" + this[ba][s].name.toLowerCase() + "' btc=" + ba + ">" + this[ba][s].name.toUpperCase() + "''</div>";
+						}
+					}
 					document.getElementById('student-list').innerHTML = stds;
 				},
 
 				getAllBatchesData: function(){
 					let c = 0;
-					model.als = [];
+					model.als = {};
 					model.bts.forEach((x,i)=>{
 						let xhr = new XMLHttpRequest();
 						xhr.onreadystatechange = function(){
 							if(xhr.readyState === 4 && xhr.status === 200){
 								const resp = JSON.parse(xhr.response)
-								model.als[resp._id] = resp.students;
+								model.als[resp._id] = {};
+								resp.students.forEach((x,i)=>{
+									model.als[resp._id][x.enroll_number.toLowerCase()] = x
+								})
 								c++ ;
 								if(c===model.bts.length){
-									view.parseData();
+									view.ps.call(model.als);
 								}
 							}
 						}
@@ -65,10 +123,57 @@
 				}
 			}
 			window.onload = function(){
+				document.onkeydown = function(e){
+					if(e.key === 'e' || e.key ==='n'){
+						if(model.lk[0] === 'Control' || model.lk[1] === 'Alt'){
+							switch(e.key){
+								case 'e':
+									document.getElementById('sber').focus();
+									break;
+
+									case 'E':
+										document.getElementById('sber').focus();
+										break;
+
+										case 'n':
+											document.getElementById('sbn').focus();
+											break;
+
+											case 'N':
+												document.getElementById('sbn').focus();
+												break;
+							}
+						}
+					} else {
+						model.lk.push(e.key);
+						model.lk = model.lk.slice(-2);
+					}
+				}
+
+				document.onclick = function(e){
+					if(e.target.attributes.class.nodeValue === "col-xs-12 std"){
+						let xhr = new XMLHttpRequest();
+						xhr.onreadystatechange = function(){
+							if(xhr.readyState === 4 && xhr.status === 200){
+								let st = JSON.parse(xhr.response);
+								if(st.image && st.image.length>0){
+									im = st.image;
+								} else {
+									im = "img/flat-face-icon-23.png";
+								}
+								document.getElementById('sm').innerHTML = "<img class='img-responsive' id='student_image' style='z-index:1;max-height:300px' src='http://localhost:80/admin/student_images/" + im + "'>";
+								document.getElementById('xfs').style.display = "block";
+							}
+						}
+						xhr.open('GET',"http://localhost:80/student/" + e.target.attributes.btc.nodeValue + "/" + e.target.attributes.er.nodeValue,true);
+						xhr.send(null);
+					}
+				}
 				let xhr = new XMLHttpRequest();
 				xhr.onreadystatechange = function(){
 					if(xhr.readyState === 4 && xhr.status === 200){
 						model.bts = JSON.parse(xhr.response).batches;
+						view.pb();
 						view.getAllBatchesData();
 					}
 				}
@@ -81,31 +186,43 @@
 		<div class="container-fluid">
 			<div class="row text-center">
 				<div class="col-xs-12">
-					<div class="row" style="margin-top:50px;">
-						<div class="col-xs-6">
+					<div class="row" style="margin-top:25px;padding-bottom:25px;border-bottom: solid 1px rgb(200,200,200)">
+						<div class="col-xs-6" style="border-right: solid 1px rgb(200,200,200)">
 							<div class="row">
 								<div class='col-xs-8 col-xs-offset-2'>
-									<input type="text" placeholder="Search by Name">
+									<input id="sbn" type="text" onkeyup="sbn()" placeholder="Search by Name ( click here or press 'Ctrl + Alt + N')">
 								</div>
 							</div>
 						</div>
 						<div class="col-xs-6">
 							<div class="row">
 								<div class='col-xs-8 col-xs-offset-2'>
-									<input type="text" placeholder="Search by Enroll Number">
+									<input id="sber" type="text" onkeyup="sber()" placeholder="Search by Enroll Number ( click here or press 'Ctrl + Alt + E')">
 								</div>
 							</div>
 						</div>
 					</div>
-					<div class="row" style="margin-top:100px;height:300px">
-						<div class="col-xs-2 text-center" id="batches" style="margin-top:20px;border-right: solid 1px rgb(200,200,200)">
-
+					<div class="row" style="margin-top:70px;height:300px">
+						<div class="col-xs-2 text-center" style="margin-top:20px;border-right: solid 1px rgb(200,200,200)">
+							<div class="row" id="batches"><div class='col-xs-12 all'>All</div></div>
 						</div>
-						<div class="col-xs-6" id="student-list">
+						<div class="col-xs-6" id="student-list" style="height:450px;overflow-y:auto"><div class="row">
 
-						</div>
-						<div class="col-xs-3" id="student-info">
-
+						</div></div>
+						<div class="col-xs-3 col-xs-offset-1" id="student-info" style='padding-right:50px'>
+							<div class="row text-center">
+								<div class="col-xs-10 col-xs-offset-1" id="sm">
+								</div>
+								<div class="col-xs-10 col-xs-offset-1" id="xfs" style="margin-top:20px;display:none">
+									<div class="row">
+										<div class="col-xs-6"><span class='btn btn-success' style="border-radius:2px">Check In</span></div>
+										<div class="col-xs-6"><span class='btn btn-danger' style="border-radius:2px">Check Out</span></div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-xs-12" id="xns" style="display:none;margin-top:15px;border-top: solid 1px rgb(160,160,160)"></div>
+							</div>
 						</div>
 					</div>
 				</div>
