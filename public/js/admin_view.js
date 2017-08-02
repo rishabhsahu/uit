@@ -773,8 +773,13 @@ reportIssues: function(){
 },
 
 showStudent: function(){
-  document.getElementsByTagName('body')[0].innerHTML += "<div class='col-xs-12 modal text-center' id='student_profile'><div class='row'><div class='col-xs-10 col-xs-offset-1' style='background-color:white;border-radius:3px;height:85%;'><div class='row'><div id='student_personal_info' class='col-xs-2' style='background-color:rgb(230,230,230);height:100%;overflow-y:auto'><div class='row' style='background-color:rgb(55, 110, 198);'><div class='col-xs-12' style='padding-top:25px;padding-bottom:25px'><img id='student_image' class='img-responsive' width='100%'></div></div></div><div id='student_detail_section' class='col-xs-8' style='height:100%;border-left: solid 1px rgb(200,200,200)'></div><div class='col-xs-2' style='height:100%;border-left: solid 1px rgb(200,200,200);background-color:rgb(230,230,230)'><div class='row' style='padding-top:25px'><div class='col-xs-10 col-xs-offset-1' id='student_subjects'></div></div></div></div></div><div class='col-xs-1' style='font-size:28px;color:white;cursor:pointer' onclick='view.closeShowStudentModal()'><span class='glyphicon glyphicon-remove close'></span></div></div></div>";
-  document.getElementById('student_image').src = "img/flat-face-icon-23.png";
+  document.getElementsByTagName('body')[0].innerHTML += "<div class='col-xs-12 modal text-center' id='student_profile'><div class='row'><div class='col-xs-10 col-xs-offset-1' style='background-color:white;border-radius:3px;height:85%;'><div class='row'><div id='student_personal_info' class='col-xs-2' style='background-color:rgb(230,230,230);height:100%;overflow-y:auto'><div class='row' style='background-color:rgb(55, 110, 198);'><div class='col-xs-12' style='padding-top:10px;'><img id='student_image' class='img-responsive' width='100%'><div class='row'><div class='glyphicon glyphicon-camera col-xs-12 text-right' style='padding-bottom:5px;font-size:18px'></div></div></div></div></div><div id='student_detail_section' class='col-xs-8' style='height:100%;border-left: solid 1px rgb(200,200,200)'></div><div class='col-xs-2' style='height:100%;border-left: solid 1px rgb(200,200,200);background-color:rgb(230,230,230)'><div class='row' style='padding-top:25px'><div class='col-xs-10 col-xs-offset-1' id='student_subjects'></div></div></div></div></div><div class='col-xs-1' style='font-size:28px;color:white;cursor:pointer' onclick='view.closeShowStudentModal()'><span class='glyphicon glyphicon-remove close'></span></div></div></div>";
+  if(model.selectedStudent.image && model.selectedStudent.image.length > 0){
+    document.getElementById('student_image').src = "http://localhost:80/admin/student_images/" + model.selectedStudent.image || '';
+    document.getElementById('student_image').style.borderRadius = document.getElementById('student_image').width + "px" ;
+  } else {
+    document.getElementById('student_image').src = "img/flat-face-icon-23.png";
+  }
   let initials = "";
   let so = {
     name: "name",
@@ -898,7 +903,7 @@ batchOptions: function(e){
           content += "<div class='row' style='margin-top:35px;margin-bottom:35px'><div class='col-xs-12'><input type='text' name='" + x + "' id='" + x + "' class='required inps' placeholder='" + o[x] + "' style='width:60%'></div></div>";
         }
       }
-      content += "</div></div>";
+      content += "<div class='row' style='margin-top:10px;'><div class='col-xs-6 text-right' style='padding-top:4px;'><b>Student's Image</b>( .jpg/.jpeg )<br><span id='fileErr' style='display:none;color:red'>File size should be less than 100KB</span><span id='fileErr2' style='display:none;color:red'>Select A File</span></div><div class='col-xs-6 text-center'><input type='file' class='required' width='10' accept='.jpg,.jpeg' id='file' name='image'></div></div></div></div>";
       document.getElementsByTagName("body")[0].innerHTML += "<div id='batchOptions' class='text-center modal col-sm-12' style='padding-top:50px'><div class='row'><div class='col-sm-6 col-sm-offset-3 modalContent'><div class='row modelHeader' style='border-bottom: solid 1px rgba(160,160,160,.6)'><div class='col-sm-12'><h2>New Student Registration</h2></div></div>" + content + "</div><div class='col-xs-1 close' style='font-size:40px;font-weight:bold;cursor:pointer;padding:0px;' onclick='view.closeBatchOptions()'>&times;</div></div><div class='row' style='margin-top:15px;'><div class='col-xs-2 col-xs-offset-4'><button class='btn btn-warning' onclick='controller.checkAll(2,1)'>Add More</button></div><div class='col-xs-2'><button class='btn btn-danger' onclick='controller.checkAll(2,0)'>Done</button></div></div></div>";
 document.getElementById("batchOptions").style.display = "block" ;
     }
