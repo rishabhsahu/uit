@@ -93,7 +93,7 @@
 					let stds = "";
 					for(let ba in this){
 						for(let s in this[ba]){
-							stds += "<div class='col-xs-12 std' er=" + s.toLowerCase() + " nm='" + this[ba][s].name.toLowerCase() + "' btc=" + ba + ">" + this[ba][s].name.toUpperCase() + "''</div>";
+							stds += "<div class='col-xs-12' ty='std' er=" + s.toLowerCase() + " nm='" + this[ba][s].name.toLowerCase() + "' btc=" + ba + ">" + this[ba][s].name.toUpperCase() + "''</div>";
 						}
 					}
 					document.getElementById('student-list').innerHTML = stds;
@@ -151,22 +151,49 @@
 				}
 
 				document.onclick = function(e){
-					if(e.target.attributes.class.nodeValue === "col-xs-12 std"){
-						let xhr = new XMLHttpRequest();
-						xhr.onreadystatechange = function(){
-							if(xhr.readyState === 4 && xhr.status === 200){
-								let st = JSON.parse(xhr.response);
-								if(st.image && st.image.length>0){
-									im = st.image;
-								} else {
-									im = "img/flat-face-icon-23.png";
+					switch(e.target.attributes.ty.nodeValue){
+						case "std":
+								{
+									let xhr = new XMLHttpRequest();
+									xhr.onreadystatechange = function(){
+										if(xhr.readyState === 4 && xhr.status === 200){
+											let st = JSON.parse(xhr.response);
+											model.studentsBatch = e.target.attributes.btc.nodeValue;
+											model.selectedStudent = st;
+											console.log(st);
+											if(st.image && st.image.length>0){
+												im = st.image;
+											} else if(st.image || st.image.length===0){
+												im = "img/flat-face-icon-23.png";
+											}
+											document.getElementById('sm').innerHTML = "<img class='img-responsive img-thumbnail' id='student_image' style='z-index:1;max-height:250px' src='http://localhost:80/admin/student_images/" + im + "'>";
+											document.getElementById('xfs').style.display = "block";
+										}
+									}
+									xhr.open('GET',"http://localhost:80/student/" + e.target.attributes.btc.nodeValue + "/" + e.target.attributes.er.nodeValue,true);
+									xhr.send(null);
 								}
-								document.getElementById('sm').innerHTML = "<img class='img-responsive' id='student_image' style='z-index:1;max-height:300px' src='http://localhost:80/admin/student_images/" + im + "'>";
-								document.getElementById('xfs').style.display = "block";
-							}
-						}
-						xhr.open('GET',"http://localhost:80/student/" + e.target.attributes.btc.nodeValue + "/" + e.target.attributes.er.nodeValue,true);
-						xhr.send(null);
+								break;
+
+						case "ck":
+								{
+									console.log(e.target.attributes.cc.nodeValue);
+									let xhr = new XMLHttpRequest();
+									xhr.onreadystatechange = function(){
+										if(xhr.readyState === 4 && xhr.status === 200){
+
+										}
+									}
+									let o = {
+										batch:model.studentsBatch,
+										er:model.selectedStudent.enroll_number,
+										tm:new Date().setMilliseconds(0)
+									}
+									xhr.open('POST',"http://localhost:80/student/status/" + e.target.attributes.cc.nodeValue,true);
+									xhr.setRequestHeader('Content-type','application/json')
+									xhr.send(JSON.stringify(o));
+								}
+								break;
 					}
 				}
 				let xhr = new XMLHttpRequest();
@@ -211,12 +238,12 @@
 						</div></div>
 						<div class="col-xs-3 col-xs-offset-1" id="student-info" style='padding-right:50px'>
 							<div class="row text-center">
-								<div class="col-xs-10 col-xs-offset-1" id="sm">
+								<div class="col-xs-10 col-xs-offset-1" id="sm" style="padding-bottom:10px;border-bottom: solid 1px rgb(200,200,200)">
 								</div>
-								<div class="col-xs-10 col-xs-offset-1" id="xfs" style="margin-top:20px;display:none">
+								<div class="col-xs-10 col-xs-offset-1" id="xfs" style="margin-top:10px;display:none">
 									<div class="row">
-										<div class="col-xs-6"><span class='btn btn-success' style="border-radius:2px">Check In</span></div>
-										<div class="col-xs-6"><span class='btn btn-danger' style="border-radius:2px">Check Out</span></div>
+										<div class="col-xs-6"><span class='btn btn-success' ty="ck" cc="ci" style="border-radius:2px">Check In</span></div>
+										<div class="col-xs-6"><span class='btn btn-danger' ty="ck" cc="co" style="border-radius:2px">Check Out</span></div>
 									</div>
 								</div>
 							</div>

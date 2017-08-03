@@ -39,4 +39,38 @@ router.get("/:school/:batch/:section/:er",function(req,res){
   })
 })
 
+router.post('/status/:cc',function(req,res){
+  console.log(req.body)
+  var cookies = cookie.parse(req.headers.cookie || '')
+  if(!cookie){
+    errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
+    res.status(500)
+    res.end()
+  } else {
+  jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+    if(!err){
+      mongo.connect('mongodb://localhost:27018/data',function(err,db){
+        if(err){
+          errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
+          db.close()
+          res.status(500)
+          res.end()
+        } else {
+          let ob = {}
+          ob["student_data.$." + req.params.cc] = req.body.tm
+          db.collection("classes").update({_id:req.body.batch,"student_data.enroll_number":req.body.er},{$addToSet:ob})
+          db.close()
+          res.status(200)
+          res.end()
+        }
+      })
+    } else {
+      errRequest("http://localhost:80/error/nodejsErr/admin","jwt",err)
+      res.status(401)
+      res.end()
+    }
+  })
+}
+})
+
 module.exports = router

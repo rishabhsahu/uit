@@ -60,12 +60,12 @@ router.post('/addnewfaculty',addnewfaculty)
 
 router.post('/batchsettings',function(req,res){
   console.log(req.body)
+  var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
     errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
     res.status(500)
     res.end()
   } else {
-  var cookies = cookie.parse(req.headers.cookie || '')
   jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
     if(!err){
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
