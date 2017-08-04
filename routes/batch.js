@@ -57,11 +57,25 @@ router.post('/status/:cc',function(req,res){
           res.end()
         } else {
           let ob = {}
-          ob["student_data.$." + req.params.cc] = req.body.tm
-          db.collection("classes").update({_id:req.body.batch,"student_data.enroll_number":req.body.er},{$addToSet:ob})
-          db.close()
-          res.status(200)
-          res.end()
+          ob["student_data.$.cc." + req.body.tm] = req.params.cc
+          db.collection("classes").update({_id:req.body.batch,"student_data.enroll_number":req.body.er},{$set:ob})
+          db.collection('classes').findOne({_id:req.body.batch},{"student_data":1},function(err,item){
+            if(!err){
+              db.close()
+              res.status(200)
+              item.student_data.forEach((x,i)=>{
+                if(x.enroll_number == req.body.er){
+                  const o = x
+                  o.current_faculties = item.current_faculties
+                  res.json(o)
+                }
+              })
+            } else {
+              db.close()
+              res.status(404)
+              res.end()
+            }
+          })
         }
       })
     } else {
