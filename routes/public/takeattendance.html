@@ -38,9 +38,9 @@
 			#student-list > div {
 				margin: 5px;
 				padding: 15px;
-				border: solid 1px rgb(160,160,160);
+				border: solid 1px rgb(180,180,180);
 				cursor: pointer;
-				background-color: rgba(160,160,160,.4);
+				background-color: rgba(200,200,200,.4);
 				border-radius: 2px;
 			}
 
@@ -83,7 +83,7 @@
 				pb: function(){
 					let stds = "";
 					model.bts.forEach((x,i)=>{
-						stds += "<div class='col-xs-12 btc' btc=" + x._id + "'>" + x._id + "</div>";
+						stds += "<div class='col-xs-12 btc' btc=" + x._id + "'>" + x.class + " / " + x._id.split('/')[2] + "</div>";
 					})
 					document.getElementById('batches').innerHTML += stds;
 				},
@@ -93,7 +93,7 @@
 					let stds = "";
 					for(let ba in this){
 						for(let s in this[ba]){
-							stds += "<div class='col-xs-12' ty='std' er=" + s.toLowerCase() + " nm='" + this[ba][s].name.toLowerCase() + "' btc=" + ba + ">" + this[ba][s].name.toUpperCase() + "''</div>";
+							stds += "<div class='col-xs-12 std' ty='std' er=" + s.toLowerCase() + " nm='" + this[ba][s].name.toLowerCase() + "' btc=" + ba + ">" + this[ba][s].name.toUpperCase() + "</div>";
 						}
 					}
 					document.getElementById('student-list').innerHTML = stds;
@@ -120,8 +120,108 @@
 						xhr.open('GET',"http://localhost:80/admin/getBatchData/" + x._id,true);
 						xhr.send(null);
 					})
+				},
+
+				lH: function(){
+					if(model.selectedStudent.image && model.selectedStudent.image.length>0){
+						im = model.selectedStudent.image;
+					} else if(!model.selectedStudent.image || model.selectedStudent.image.length===0){
+						im = "flat-face-icon-23.png";
+					}
+					document.getElementById('sm').innerHTML = "<img class='img-responsive img-thumbnail' id='student_image' style='z-index:1;max-height:250px' src='http://localhost:80/admin/student_images/" + im + "'>";
+					document.getElementById('xfs').style.display = "block";
+					document.getElementById('xns').style.display = "block";
+					let str = "<table class='table col-xs-12'>";
+					if(model.selectedStudent.cc && Object.keys(model.selectedStudent.cc).length>0){
+						let arr = Object.keys(model.selectedStudent.cc).reverse()
+						arr.forEach((x,i)=>{
+							if(i === 0){
+								model.selectedStudent.ls = model.selectedStudent.cc[x];
+								fcs = "autofocus/";
+							}
+							if(model.selectedStudent.ls === "ci"){
+								let ci = document.getElementById('ci');
+								let co = document.getElementById('co');
+								ci.setAttribute("class","btn btn-success disabled");
+								co.setAttribute("class","btn btn-danger");
+								ci.innerHTML = "checked in";
+								co.innerHTML = "check out";
+							} else {
+								let ci = document.getElementById('ci');
+								let co = document.getElementById('co');
+								co.setAttribute("class","btn btn-danger disabled");
+								ci.setAttribute("class","btn btn-success");
+								ci.innerHTML = "check in";
+								co.innerHTML = "checked out";
+							}
+							if(model.selectedStudent.cc[x] == 'ci'){
+								str += "<tr class='row text-success xdts' style='border-bottom:solid 1px rgb(180,180,180)'><td class='col-xs-6'>" + new Date(Number(x)).toString().replace(' GMT+0530 (IST)','') + "</td><td class='col-xs-6'>" + "checked in" + "</td></tr>";
+							} else {
+								str += "<tr class='row text-danger xdts' style='border-bottom:solid 1px rgb(180,180,180)'><td class='col-xs-6'>" + new Date(Number(x)).toString().replace(' GMT+0530 (IST)','') + "</td><td class='col-xs-6'>" + "checked out" + "</td></tr>";
+							}
+						})
+					} else {
+						str += "<tr class='row text-success xdts text-center' style='color:rgb(180,180,180)'><td class='col-xs-12'>No Data</td></tr>";
+					}
+					str += "</table>";
+					document.getElementById('xns').innerHTML = str;
+					document.getElementsByClassName('xdts')[0].scrollIntoView(true);
 				}
 			}
+
+			controller = {
+				gS: function(b,s){
+					let xhr = new XMLHttpRequest();
+					xhr.onreadystatechange = function(){
+						if(xhr.readyState === 4 && xhr.status === 200){
+							let st = JSON.parse(xhr.response);
+							model.studentsBatch = b;
+							model.selectedStudent = st;
+							view.lH();
+						}
+					}
+					xhr.open('GET',"http://localhost:80/student/" + b + "/" + s,true);
+					xhr.send(null);
+				}
+			}
+
+			document.onclick = function(e){
+				switch(e.target.attributes.ty.nodeValue){
+					case "std":
+							if(document.getElementsByClassName('selected')[0]){
+								document.getElementsByClassName('selected')[0].style.backgroundColor = "rgba(200,200,200,.4)";
+								document.getElementsByClassName('selected')[0].setAttribute('class','col-xs-12 std');
+							}
+							e.target.setAttribute('class','col-xs-12 std selected');
+							document.getElementsByClassName('selected')[0].style.backgroundColor = "rgb(102, 160, 255)";
+							controller.gS(e.target.attributes.btc.nodeValue,e.target.attributes.er.nodeValue);
+							break;
+
+					case "ck":
+							if(e.target.attributes.class.nodeValue.indexOf('disabled')<0){
+								let ctm = new Date().setMilliseconds(0)
+										{
+											let o = {
+												batch:model.studentsBatch,
+												er:model.selectedStudent.enroll_number,
+												tm:ctm
+											}
+											let xhr = new XMLHttpRequest();
+											xhr.onreadystatechange = function(){
+												if(xhr.readyState === 4 && xhr.status === 200){
+													controller.gS(o.batch,o.er);
+													view.lH();
+												}
+											}
+											xhr.open('POST',"http://localhost:80/student/status/" + e.target.attributes.cc.nodeValue,true);
+											xhr.setRequestHeader('Content-type','application/json')
+											xhr.send(JSON.stringify(o));
+										}
+							}
+							break;
+				}
+			}
+
 			window.onload = function(){
 				document.onkeydown = function(e){
 					if(e.key === 'e' || e.key ==='n'){
@@ -147,53 +247,6 @@
 					} else {
 						model.lk.push(e.key);
 						model.lk = model.lk.slice(-2);
-					}
-				}
-
-				document.onclick = function(e){
-					switch(e.target.attributes.ty.nodeValue){
-						case "std":
-								{
-									let xhr = new XMLHttpRequest();
-									xhr.onreadystatechange = function(){
-										if(xhr.readyState === 4 && xhr.status === 200){
-											let st = JSON.parse(xhr.response);
-											model.studentsBatch = e.target.attributes.btc.nodeValue;
-											model.selectedStudent = st;
-											console.log(st);
-											if(st.image && st.image.length>0){
-												im = st.image;
-											} else if(st.image || st.image.length===0){
-												im = "img/flat-face-icon-23.png";
-											}
-											document.getElementById('sm').innerHTML = "<img class='img-responsive img-thumbnail' id='student_image' style='z-index:1;max-height:250px' src='http://localhost:80/admin/student_images/" + im + "'>";
-											document.getElementById('xfs').style.display = "block";
-										}
-									}
-									xhr.open('GET',"http://localhost:80/student/" + e.target.attributes.btc.nodeValue + "/" + e.target.attributes.er.nodeValue,true);
-									xhr.send(null);
-								}
-								break;
-
-						case "ck":
-								{
-									console.log(e.target.attributes.cc.nodeValue);
-									let xhr = new XMLHttpRequest();
-									xhr.onreadystatechange = function(){
-										if(xhr.readyState === 4 && xhr.status === 200){
-
-										}
-									}
-									let o = {
-										batch:model.studentsBatch,
-										er:model.selectedStudent.enroll_number,
-										tm:new Date().setMilliseconds(0)
-									}
-									xhr.open('POST',"http://localhost:80/student/status/" + e.target.attributes.cc.nodeValue,true);
-									xhr.setRequestHeader('Content-type','application/json')
-									xhr.send(JSON.stringify(o));
-								}
-								break;
 					}
 				}
 				let xhr = new XMLHttpRequest();
@@ -242,13 +295,13 @@
 								</div>
 								<div class="col-xs-10 col-xs-offset-1" id="xfs" style="margin-top:10px;display:none">
 									<div class="row">
-										<div class="col-xs-6"><span class='btn btn-success' ty="ck" cc="ci" style="border-radius:2px">Check In</span></div>
-										<div class="col-xs-6"><span class='btn btn-danger' ty="ck" cc="co" style="border-radius:2px">Check Out</span></div>
+										<div class="col-xs-6"><span id="ci" class='btn btn-success' ty="ck" cc="ci" style="border-radius:2px">Check In</span></div>
+										<div class="col-xs-6"><span id="co" class='btn btn-danger' ty="ck" cc="co" style="border-radius:2px">Check Out</span></div>
 									</div>
 								</div>
 							</div>
-							<div class="row">
-								<div class="col-xs-12" id="xns" style="display:none;margin-top:15px;border-top: solid 1px rgb(160,160,160)"></div>
+							<div id="xns" class="row" style='display:none;margin-top:15px;border-top: solid 1px rgb(160,160,160);max-height:200px;overflow-y:auto'>
+
 							</div>
 						</div>
 					</div>
