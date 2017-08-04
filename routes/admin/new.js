@@ -51,12 +51,16 @@ function addnewbatch(req,res){
           if(entry.length !=0 || entry != ""){
 						const ent = entry.split(',')
 						if(ent.length>5){
-		          obj.enroll_number = ent[0]
+		          obj.enroll_number = ent[0].toLowerCase()
 		          const enrl = ent[0]
-		          obj.name = ent[1]
-		          obj.pname = ent[2]
-		          obj.add = add || ent[3]
-		          obj.city = ent[4]
+		          obj.name = ent[1].toLowerCase()
+		          obj.pname = ent[2].toLowerCase()
+		          if(add){
+                obj.add = add.toLowerCase()
+              } else {
+                obj.add = ent[3].toLowerCase()
+              }
+		          obj.city = ent[4].toLowerCase()
 		          obj.mobiles = {}
 							for(let ni=5;ni<9;ni++){
 								if(ni===5){
