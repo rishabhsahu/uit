@@ -298,7 +298,9 @@ input:focus::-webkit-input-placeholder {
 					.dropdown-content>div {
 						padding-top: 7px;
 						padding-bottom: 7px;
-						border-bottom: solid 1px rgb(220,220,220);
+						border-bottom: solid 1px rgb(180,180,180);
+						color: white;
+						background-color: rgba(97, 143, 226,.9);
 					}
 
 					.student_data_tabs > div:first-child {
