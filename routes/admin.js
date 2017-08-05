@@ -1,28 +1,28 @@
-let router = require('express').Router()
-let mongo = require('mongodb').MongoClient
-let ObjectId = require('mongodb').ObjectId
-let cookie = require('cookie')
-let jwt = require('jsonwebtoken')
-let formidable = require('formidable')
-let fs = require('fs')
-let path = require('path')
-let qs = require('querystring')
-let root = __dirname
-let request = require('request')
-let addnewbatch = require('./admin/new.js').addnewbatch
-let addnewfaculty = require('./admin/new.js').addnewfaculty
-let getDepartmentData = require('./admin/get.js').getDepartmentData
-let getFacultyData = require('./admin/get.js').getFacultyData
-let classesheld = require('./admin/get.js').classesheld
-let getBatchData = require('./admin/get.js').getBatchData
-let getAllStudents = require('./admin/get.js').getAllStudents
+const router = require('express').Router()
+const mongo = require('mongodb').MongoClient
+const ObjectId = require('mongodb').ObjectId
+const cookie = require('cookie')
+const jwt = require('jsonwebtoken')
+const formidable = require('formidable')
+const fs = require('fs')
+const path = require('path')
+const qs = require('querystring')
+const root = __dirname
+const request = require('request')
+
+const addNewBatch = require('./admin/new.js').addNewBatch
+const addNewFaculty = require('./admin/new.js').addNewFaculty
+const addNewStudent = require('./admin/new.js').addNewStudent
+
+const getDepartmentData = require('./admin/get.js').getDepartmentData
+const getFacultyData = require('./admin/get.js').getFacultyData
+const classesheld = require('./admin/get.js').classesheld
+const getBatchData = require('./admin/get.js').getBatchData
+const getAllStudents = require('./admin/get.js').getAllStudents
 
 router.get('/getDepartmentData',getDepartmentData)
-
 router.get('/getFacultyData/:id',getFacultyData)
-
 router.get('/classesheld/:faculty_id/:school/:batch/:section',classesheld)
-
 router.get('/getBatchData/:domain_name/:section/:batch',getBatchData)
 router.get('/getallstudents',getAllStudents)
 
@@ -54,9 +54,9 @@ router.get('/student_images/:image',function getStudentImage(req,res){
 }
 })
 
-router.post('/addnewbatch/:domain_name/:batch/:section/:cls/:school',addnewbatch)
-
-router.post('/addnewfaculty',addnewfaculty)
+router.post('/addnewbatch/:domain_name/:batch/:section/:cls/:school',addNewBatch)
+router.post('/addnewfaculty',addNewFaculty)
+router.post('/batchsettings/addNewStudent/:expath',addNewStudent)
 
 router.post('/batchsettings',function(req,res){
   console.log(req.body)
@@ -143,74 +143,6 @@ router.post('/assignFacultyNewBatch/:faculty_id',function(req,res){
     }
   })
 }
-})
-
-router.post('/batchsettings/addNewStudent/:expath',function(req,res){
-  let cookies = cookie.parse(req.headers.cookie || '')
-  if(!cookie){
-    errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
-    res.status(500)
-    res.end()
-  } else {
-    jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
-      if(!err){
-        mongo.connect('mongodb://localhost:27018/data',function(err,db){
-          if(err){
-            errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
-            db.close()
-            res.status(500)
-            res.end()
-          } else {
-            let form = formidable.IncomingForm()
-            form.uploadDir = root + "/public/student_images"
-            form.parse(req,function(err,fields,files){
-              if(err){
-                res.status(500)
-                res.end()
-              }
-            })
-
-            form.on('file',function(name,file){
-              const o = qs.parse(req.params.expath)
-              const bt = o.batch
-              delete o.batch
-              o.image = path.basename(file.path)
-              o.mobiles = {}
-              if(o.parent1.length>0){
-                o.mobiles.parent1 = o.parent1
-              }
-              if(o.parent2 && o.parent2.length>0){
-                o.mobiles.parent2 = o.parent2
-              }
-              if(o.parent1 && o.parent1.length>0){
-                o.mobiles.sn = o.sn
-              }
-              if(o.parent1 && o.parent1.length>0){
-                o.mobiles.other = o.other
-              }
-              delete o.parent1
-              delete o.parent2
-              delete o.sn
-              delete o.other
-              db.collection('classes').update({_id:bt},{$addToSet:{"students":o}})
-              db.collection('classes').update({_id:bt},{$addToSet:{"student_data":o}})
-              res.status(200)
-              res.end()
-            })
-
-            form.on('error',function(){
-              res.status(500)
-              res.end()
-            })
-          }
-        })
-      } else {
-        errRequest("http://localhost:80/error/nodejsErr/admin","jwt",err)
-        res.status(401)
-        res.end()
-      }
-    })
-  }
 })
 
 router.get('/takeattendance/all',function(req,res){
