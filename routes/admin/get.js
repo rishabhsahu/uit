@@ -1,12 +1,12 @@
-let mongo = require('mongodb').MongoClient
-let ObjectId = require('mongodb').ObjectId
-let cookie = require('cookie')
-let jwt = require('jsonwebtoken')
-let formidable = require('formidable')
-let fs = require('fs')
-let path = require('path')
-let root = __dirname
-let request = require('request')
+const mongo = require('mongodb').MongoClient
+const ObjectId = require('mongodb').ObjectId
+const cookie = require('cookie')
+const jwt = require('jsonwebtoken')
+const formidable = require('formidable')
+const fs = require('fs')
+const path = require('path')
+const root = __dirname
+const request = require('request')
 
 function getDepartmentData(req,res){
   console.log("admin connected")
