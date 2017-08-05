@@ -1,7 +1,8 @@
-var router = require('express').Router()
-var cookie = require('cookie')
-var jwt = require('jsonwebtoken')
-var mongo = require('mongodb').MongoClient()
+const router = require('express').Router()
+const cookie = require('cookie')
+const jwt = require('jsonwebtoken')
+const mongo = require('mongodb').MongoClient()
+const request = require('request');
 
 router.get("/:school/:batch/:section/:er",function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '' )
@@ -56,6 +57,17 @@ router.post('/status/:cc',function(req,res){
           res.status(500)
           res.end()
         } else {
+          request({
+            url: "http://localhost:8000/sendsms/informparents/" + req.params.cc,
+            method: 'POST',
+            body: req.body,
+            json: true
+          },function(err,resp,body){
+            if(err){
+              res.status(500)
+              res.end()
+            }
+          })
           let ob = {}
           ob["student_data.$.cc." + req.body.tm] = req.params.cc
           db.collection("classes").update({_id:req.body.batch,"student_data.enroll_number":req.body.er},{$set:ob})
