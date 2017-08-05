@@ -1,14 +1,14 @@
-let mongo = require('mongodb').MongoClient
-let ObjectId = require('mongodb').ObjectId
-let cookie = require('cookie')
-let jwt = require('jsonwebtoken')
-let formidable = require('formidable')
-let fs = require('fs')
-let path = require('path')
-let root = __dirname
-let request = require('request')
+const mongo = require('mongodb').MongoClient
+const ObjectId = require('mongodb').ObjectId
+const cookie = require('cookie')
+const jwt = require('jsonwebtoken')
+const formidable = require('formidable')
+const fs = require('fs')
+const path = require('path')
+const root = __dirname
+const request = require('request')
 
-function addnewbatch(req,res){
+function addNewBatch(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
     errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
@@ -127,7 +127,7 @@ function addnewbatch(req,res){
 }
 }
 
-function addnewfaculty(req,res){
+function addNewFaculty(req,res){
   console.log(req.body)
   if(!cookie){
     errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
@@ -149,7 +149,7 @@ function addnewfaculty(req,res){
           db.collection('faculty').insert(req.body)
           db.collection('admin').update({_id:decoded.name},{$addToSet:{"faculties":{"id": req.body._id,"name": req.body.name,"recent_messages":{},"total_messages":{}}}})
           request({
-            url:'http://localhost:80/sendsms/facultyotp',
+            url:'http://localhost:8000/sendsms/facultyotp',
             body: {name:req.body.name,username:req.body._id,mobile:req.body.mobile,otp:req.body.otp,school:req.body.school},
             json:true,
             method:'POST'
@@ -178,5 +178,74 @@ function addnewfaculty(req,res){
 }
 }
 
-module.exports.addnewbatch = addnewbatch
-module.exports.addnewfaculty = addnewfaculty
+function addNewStudent(req,res){
+  let cookies = cookie.parse(req.headers.cookie || '')
+  if(!cookie){
+    errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
+    res.status(500)
+    res.end()
+  } else {
+    jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+      if(!err){
+        mongo.connect('mongodb://localhost:27018/data',function(err,db){
+          if(err){
+            errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
+            db.close()
+            res.status(500)
+            res.end()
+          } else {
+            let form = formidable.IncomingForm()
+            form.uploadDir = root + "/public/student_images"
+            form.parse(req,function(err,fields,files){
+              if(err){
+                res.status(500)
+                res.end()
+              }
+            })
+
+            form.on('file',function(name,file){
+              const o = qs.parse(req.params.expath)
+              const bt = o.batch
+              delete o.batch
+              o.image = path.basename(file.path)
+              o.mobiles = {}
+              if(o.parent1.length>0){
+                o.mobiles.parent1 = o.parent1
+              }
+              if(o.parent2 && o.parent2.length>0){
+                o.mobiles.parent2 = o.parent2
+              }
+              if(o.parent1 && o.parent1.length>0){
+                o.mobiles.sn = o.sn
+              }
+              if(o.parent1 && o.parent1.length>0){
+                o.mobiles.other = o.other
+              }
+              delete o.parent1
+              delete o.parent2
+              delete o.sn
+              delete o.other
+              db.collection('classes').update({_id:bt},{$addToSet:{"students":o}})
+              db.collection('classes').update({_id:bt},{$addToSet:{"student_data":o}})
+              res.status(200)
+              res.end()
+            })
+
+            form.on('error',function(){
+              res.status(500)
+              res.end()
+            })
+          }
+        })
+      } else {
+        errRequest("http://localhost:80/error/nodejsErr/admin","jwt",err)
+        res.status(401)
+        res.end()
+      }
+    })
+  }
+}
+
+module.exports.addNewBatch = addNewBatch
+module.exports.addNewFaculty = addNewFaculty
+module.exports.addNewStudent = addNewStudent
