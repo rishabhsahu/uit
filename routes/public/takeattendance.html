@@ -52,6 +52,10 @@
 			  color: dodgerblue;
 			}
 
+			tr {
+				font-size: 14px;
+			}
+
 		</style>
 		<script>
 		function sbn(){
@@ -155,9 +159,9 @@
 								co.innerHTML = "checked out";
 							}
 							if(model.selectedStudent.cc[x] == 'ci'){
-								str += "<tr class='row text-success xdts' style='border-bottom:solid 1px rgb(180,180,180)'><td class='col-xs-6'>" + new Date(Number(x)).toString().replace(' GMT+0530 (IST)','') + "</td><td class='col-xs-6'>" + "checked in" + "</td></tr>";
+								str += "<tr class='row text-success xdts' style='border-bottom:solid 1px rgb(180,180,180)'><td class='col-xs-8'>" + new Date(Number(x)).toString().replace(' GMT+0530 (IST)','') + "</td><td class='col-xs-4'>" + "checked in" + "</td></tr>";
 							} else {
-								str += "<tr class='row text-danger xdts' style='border-bottom:solid 1px rgb(180,180,180)'><td class='col-xs-6'>" + new Date(Number(x)).toString().replace(' GMT+0530 (IST)','') + "</td><td class='col-xs-6'>" + "checked out" + "</td></tr>";
+								str += "<tr class='row text-danger xdts' style='border-bottom:solid 1px rgb(180,180,180)'><td class='col-xs-8'>" + new Date(Number(x)).toString().replace(' GMT+0530 (IST)','') + "</td><td class='col-xs-4'>" + "checked out" + "</td></tr>";
 							}
 						})
 					} else {
@@ -204,6 +208,8 @@
 											let o = {
 												batch:model.studentsBatch,
 												er:model.selectedStudent.enroll_number,
+												nm: model.selectedStudent.name,
+												mo: model.selectedStudent.mobiles.parent1,
 												tm:ctm
 											}
 											let xhr = new XMLHttpRequest();
