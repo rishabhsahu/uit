@@ -20,16 +20,44 @@ const classesheld = require('./admin/get.js').classesheld
 const getBatchData = require('./admin/get.js').getBatchData
 const getAllStudents = require('./admin/get.js').getAllStudents
 
+const smsFaculties = require('./admin/sms.js').smsFaculties
+const smsClass = require('./admin/sms.js').smsClass
+
 router.get('/getDepartmentData',getDepartmentData)
 router.get('/getFacultyData/:id',getFacultyData)
 router.get('/classesheld/:faculty_id/:school/:batch/:section',classesheld)
 router.get('/getBatchData/:domain_name/:section/:batch',getBatchData)
 router.get('/getallstudents',getAllStudents)
 
+router.post('/smsFaculties',smsFaculties)
+router.post('/smsClass',smsClass)
+const serverRequest = function(){
+  request(this,function(err,resp,body){
+		console.log(body,"body")
+		if(!err && resp.statusCode === 200){
+			res.status(200)
+			res.end()
+		} else {
+			console.log(err)
+			res.status(504)
+			res.end()
+		}
+	})
+}
+
+let errRequest = function(u,m,e){
+  serverRequest.call({
+    url:u + "/" + m,
+    method: 'post',
+    body: e,
+    json: true
+  },res)
+}
+
 router.get('/student_images/:image',function getStudentImage(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
+    errRequest("http://localhost:8000/error/nodejsErr/admin","cookies",err)
     res.status(500)
     res.end()
   } else {
@@ -46,7 +74,7 @@ router.get('/student_images/:image',function getStudentImage(req,res){
         }
       })
     } else {
-      errRequest("http://localhost:80/error/nodejsErr/admin","jwt",err)
+      errRequest("http://localhost:8000/error/nodejsErr/admin","jwt",err)
       res.status(401)
       res.end()
     }
@@ -62,7 +90,7 @@ router.post('/batchsettings',function(req,res){
   console.log(req.body)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
+    errRequest("http://localhost:8000/error/nodejsErr/admin","cookies",err)
     res.status(500)
     res.end()
   } else {
@@ -70,7 +98,7 @@ router.post('/batchsettings',function(req,res){
     if(!err){
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(err){
-          errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
+          errRequest("http://localhost:8000/error/mongoErr/admin","mongodb",err)
           db.close()
           res.status(500)
           res.end()
@@ -82,7 +110,7 @@ router.post('/batchsettings',function(req,res){
         }
       })
     } else {
-      errRequest("http://localhost:80/error/nodejsErr/admin","jwt",err)
+      errRequest("http://localhost:8000/error/nodejsErr/admin","jwt",err)
       res.status(401)
       res.end()
     }
@@ -94,7 +122,7 @@ router.post('/assignFacultyNewBatch/:faculty_id',function(req,res){
   console.log('assignFacultyNewBatch request');
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
+    errRequest("http://localhost:8000/error/nodejsErr/admin","cookies",err)
     res.status(500)
     res.end()
   } else {
@@ -123,21 +151,21 @@ router.post('/assignFacultyNewBatch/:faculty_id',function(req,res){
                 res.end()
               }
             } else {
-              errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
+              errRequest("http://localhost:8000/error/mongoErr/admin","mongodb",err)
               db.close()
               res.status(404)
               res.end()
             }
           })
         } else {
-          errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
+          errRequest("http://localhost:8000/error/mongoErr/admin","mongodb",err)
           db.close()
           res.status(500)
           res.end()
         }
       })
     } else {
-      errRequest("http://localhost:80/error/nodejsErr/admin","jwt",err)
+      errRequest("http://localhost:8000/error/nodejsErr/admin","jwt",err)
       res.status(401)
       res.end()
     }
@@ -148,7 +176,7 @@ router.post('/assignFacultyNewBatch/:faculty_id',function(req,res){
 router.get('/takeattendance/all',function(req,res){
   let cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
+    errRequest("http://localhost:8000/error/nodejsErr/admin","cookies",err)
     res.status(500)
     res.end()
   } else {
@@ -156,14 +184,14 @@ router.get('/takeattendance/all',function(req,res){
       if(!err){
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
-            errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
+            errRequest("http://localhost:8000/error/mongoErr/admin","mongodb",err)
             db.close()
             res.status(500)
             res.end()
           } else {
             db.collection('batches').findOne({_id:req.params.school + "/" + req.params.batch + "/" + req.params.section},{"students":1},function(err,item){
               if(err){
-                errRequest("http://localhost:80/error/nodejsErr/admin","mongodb",err)
+                errRequest("http://localhost:8000/error/nodejsErr/admin","mongodb",err)
               } else {
                 res.status(200)
                 fs.createReadStream(root + "/public/takeattendance.html").pipe(res)
@@ -172,7 +200,7 @@ router.get('/takeattendance/all',function(req,res){
           }
         })
       } else {
-        errRequest("http://localhost:80/error/nodejsErr/admin","jwt",err)
+        errRequest("http://localhost:8000/error/nodejsErr/admin","jwt",err)
         res.status(401)
         res.end()
       }
@@ -184,7 +212,7 @@ router.delete('/deassignbatch/:id/:domain_name/:section/:batch',function(req,res
   console.log('De-Assign Faculty Batch request');
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
+    errRequest("http://localhost:8000/error/nodejsErr/admin","cookies",err)
     res.status(500)
     res.end()
   } else {
@@ -218,21 +246,21 @@ router.delete('/deassignbatch/:id/:domain_name/:section/:batch',function(req,res
                 }
               })
             } else {
-              errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
+              errRequest("http://localhost:8000/error/mongoErr/admin","mongodb",err)
               db.close()
               res.status(404)
               res.end()
             }
           })
         } else {
-          errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
+          errRequest("http://localhost:8000/error/mongoErr/admin","mongodb",err)
           db.close()
           res.status(500)
           res.end()
         }
       })
     } else {
-      errRequest("http://localhost:80/error/nodejsErr/admin","jwt",err)
+      errRequest("http://localhost:8000/error/nodejsErr/admin","jwt",err)
       res.status(401)
       res.end()
     }
@@ -243,7 +271,7 @@ router.delete('/deassignbatch/:id/:domain_name/:section/:batch',function(req,res
 router.delete('/removefaculty/:id',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
+    errRequest("http://localhost:8000/error/nodejsErr/admin","cookies",err)
     res.status(500)
     res.end()
   } else {
@@ -259,14 +287,14 @@ router.delete('/removefaculty/:id',function(req,res){
           res.status(200)
           res.end()
         } else {
-          errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
+          errRequest("http://localhost:8000/error/mongoErr/admin","mongodb",err)
           db.close()
           res.status(500)
           res.end()
         }
       })
     } else {
-      errRequest("http://localhost:80/error/nodejsErr/admin","jwt",err)
+      errRequest("http://localhost:8000/error/nodejsErr/admin","jwt",err)
       res.status(401)
       res.end()
     }
@@ -277,7 +305,7 @@ router.delete('/removefaculty/:id',function(req,res){
 router.delete('/removebatch/:domain_name/:section/:batch',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
+    errRequest("http://localhost:8000/error/nodejsErr/admin","cookies",err)
     res.status(500)
     res.end()
   } else {
@@ -293,14 +321,14 @@ router.delete('/removebatch/:domain_name/:section/:batch',function(req,res){
           res.end()
           db.close()
         } else {
-          errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
+          errRequest("http://localhost:8000/error/mongoErr/admin","mongodb",err)
           db.close()
           res.status(500)
           res.end()
         }
       })
     } else {
-      errRequest("http://localhost:80/error/nodejsErr/admin","jwt",err)
+      errRequest("http://localhost:8000/error/nodejsErr/admin","jwt",err)
       res.status(401)
       res.end()
     }
