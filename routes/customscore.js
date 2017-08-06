@@ -6,6 +6,7 @@ var fs = require('fs')
 var request = require('request')
 
 router.post('/add-test-score-manually/',function(req,res){
+  console.log(req.body);
   var cookies = cookie.parse(req.headers.cookie || "")
   if(!cookies){
     errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
@@ -32,12 +33,9 @@ router.post('/add-test-score-manually/',function(req,res){
             db.collection("classes").update({_id:req.body.selectedBatch},{$addToSet:onj})
             db.close()
             request({
-              url:"http://localhost:2768/check/allsubjectsscores",
+              url:"http://localhost:8000/sendsms/scorereport",
               method:'POST',
-              body:{
-                batch: req.body.selectedBatch,
-                test_name: req.body.testname
-              },
+              body:req.body,
               json: true
             },function(err,resp,body){
               if(!err){
