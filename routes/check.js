@@ -3,6 +3,7 @@ let request = require('request')
 let mongo = require('mongodb').MongoClient
 
 router.post('/allsubjectsscores',function(req,res){
+	console.log(req.body);
 	mongo.connect('mongodb://localhost:27018/data',function(err,db){
 		if(!err){
 			db.collection('classes').findOne({_id:req.body.batch},{"current_faculties":1,"tests":1},function(err,item){

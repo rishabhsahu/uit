@@ -3,6 +3,28 @@ const cookie = require('cookie')
 const jwt = require('jsonwebtoken')
 const mongo = require('mongodb').MongoClient()
 const request = require('request');
+const serverRequest = function(){
+  request(this,function(err,resp,body){
+		console.log(body,"body")
+		if(!err && resp.statusCode === 200){
+			res.status(200)
+			res.end()
+		} else {
+			console.log(err)
+			res.status(504)
+			res.end()
+		}
+	})
+}
+
+const errRequest = function(u,m,e){
+  serverRequest.call({
+    url:u + "/" + m,
+    method: 'post',
+    body: e,
+    json: true
+  },res)
+}
 
 router.get("/:school/:batch/:section/:er",function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '' )
@@ -44,7 +66,7 @@ router.post('/status/:cc',function(req,res){
   console.log(req.body)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
+    errRequest("http://localhost:8000/error/nodejsErr/admin","cookies",err)
     res.status(500)
     res.end()
   } else {
@@ -52,22 +74,17 @@ router.post('/status/:cc',function(req,res){
     if(!err){
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(err){
-          errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
+          errRequest("http://localhost:8000/error/mongoErr/admin","mongodb",err)
           db.close()
           res.status(500)
           res.end()
         } else {
-          request({
+          serverRequest.call({
             url: "http://localhost:8000/sendsms/informparents/" + req.params.cc,
             method: 'POST',
             body: req.body,
             json: true
-          },function(err,resp,body){
-            if(err){
-              res.status(500)
-              res.end()
-            }
-          })
+          },res)
           let ob = {}
           ob["student_data.$.cc." + req.body.tm] = req.params.cc
           db.collection("classes").update({_id:req.body.batch,"student_data.enroll_number":req.body.er},{$set:ob})
@@ -91,7 +108,7 @@ router.post('/status/:cc',function(req,res){
         }
       })
     } else {
-      errRequest("http://localhost:80/error/nodejsErr/admin","jwt",err)
+      errRequest("http://localhost:8000/error/nodejsErr/admin","jwt",err)
       res.status(401)
       res.end()
     }

@@ -27,7 +27,6 @@ app.use('/custom-testscore',bp.json(),customscore)
 app.use('/faculty',bp.json(),faculty)
 app.use('/student',bp.json(),batch)
 app.use('/download',download)
-app.use('/error',bp.json(),errorRecorder)
 app.get('/logout',function(req,res){
   console.log('logout')
   res.setHeader('Set-cookie',cookie.serialize('user','',{expires: new Date(1),httpOnly:true}))
