@@ -271,7 +271,7 @@ var view = {
          } else {
            var pc = Math.ceil(count/ch*100);
          }
-         std += "<tr class='row text-center c'><td class='col-xs-4' style='font-size:12px;font-family:notosans'>" + student.name + "</td><td class='col-xs-4'>" + count + "</td><td>" + pc + "</td></tr>";
+         std += "<tr class='row text-center c'><td id='" + model.selectedBatch._id + "/" + student.enroll_number + "' onclick='controller.getStudentData(event)' class='col-xs-4' style='font-size:12px;font-family:notosans'>" + student.name + "</td><td class='col-xs-4'>" + count + "</td><td>" + pc + "</td></tr>";
       }
     });
     var x = "<div class='row'><div class='col-xs-10 col-xs-offset-1' style='max-height:350px'><canvas id='7DayChart'></canvas></div></div><div class='row' style='margin-bottom:25px'><div class='col-sm-12' style='background-color:white;color:black;border-radius:5px;border:solid 1px rgba(160,160,160,.6)'>" + "<div class='row' style='padding-top:10px;padding-bottom:10px;background-color:white;color:rgb(70,70,70);border-radius:5px 5px 0px 0px;border-bottom:solid 1px rgba(160,160,160,.5)'>" +"<div class='col-xs-6 text-center' style='font-size:32px'>" + model.selectedFaculty.current_classes[e].subject + "</div><div class='col-xs-2 text-center' style='font-size:14px;font-size:18px;font-weight:bold;color:rgb(80,80,80)'>" + ch + " <br><span style='font-size:10px;color:rgba(40,40,40,.7);color:green'>classes held</span></div><div class='col-xs-3 text-center' style='font-size:14px;font-size:16px;font-weight:bold;color:color:rgb(80,80,80)'>" + d + "<br><span style='font-size:10px;color:rgba(40,40,40,.7);color:green'>first class</span></div></div><div class='row text-center' style='padding-top:10px;padding-bottom:10px;background-color:white;color:rgb(70,70,70);border-bottom:solid 1px rgba(160,160,160,.5);font-weight:bold;'><div class='col-xs-4'>Name</div><div class='col-xs-4'>Classes Taken</div><div class='col-xs-4'>Percentage</div></div><div class='row' style='max-height:250px;overflow-y:auto;'><table class='col-xs-12 table-condensed table-striped'>" + std + "</table></div></div></div>";
@@ -512,16 +512,16 @@ var view = {
 
      exams += "</div></div></div>";
       if(model.selectedBatch.current_faculties.length != 0){
-        var subjects = "<div class='row' style='margin-top:10px'><div class='col-xs-11 col-xs-offset-1'><div class='row'>";
+        var subjects = "<div class='row' style='margin-top:10px'><div class='col-xs-10 col-xs-offset-1'><div class='row'>";
         var sn=0;
         model.selectedBatch.current_faculties.forEach(function(x,i){
           if(i===0){
             console.log(x);
             model.SF = {};
             model.SF._id = x[Object.keys(x)[0]];
-            subjects += "<div id='" + x[Object.keys(x)[0]] + "' class='col-xs-1 tabs' style='background-color:white' onclick='controller.selectThisFaculty(event)'>" + Object.keys(x)[0] + "</div>";
+            subjects += "<div id='" + x[Object.keys(x)[0]] + "' class='col-xs-2 tabs' style='background-color:white' onclick='controller.selectThisFaculty(event)'>" + Object.keys(x)[0] + "</div>";
           } else {
-            subjects += "<div id='" + x[Object.keys(x)[0]] + "' class='col-xs-1 tabs' onclick='controller.selectThisFaculty(event)' style='background-color:rgb(203, 208, 216)'>" + Object.keys(x)[0] + "</div>";
+            subjects += "<div id='" + x[Object.keys(x)[0]] + "' class='col-xs-2 tabs' onclick='controller.selectThisFaculty(event)' style='background-color:rgb(203, 208, 216)'>" + Object.keys(x)[0] + "</div>";
           }
 
         })
@@ -638,7 +638,11 @@ var view = {
     model.student_mobiles = {};
     model.selectedMobiles = [];
     model.selectedBatch.students.forEach(function(x,i){
-      model.student_mobiles[x.enroll_number] = x.mobile;
+      if(x.mobiles.parent2 && x.mobiles.parent2.toString().length === 10){
+        model.student_mobiles[x.enroll_number] = [x.mobiles.parent1,x.mobiles.parent2];
+      } else {
+        model.student_mobiles[x.enroll_number] = [x.mobiles.parent1];
+      }
     })
     if(document.getElementById('messageClassModal')){
       document.getElementById('messageClassModal').parentNode.removeChild(document.getElementById('messageClassModal'));
@@ -690,7 +694,10 @@ selectAll: function(){
   if(model.selectedMobiles.length===0){
     model.selectedBatch.students.forEach(function(x,i){
       if(x.name != null){
-        model.selectedMobiles.push(x.mobile);
+        model.selectedMobiles.push(x.mobiles.parent1);
+        if(x.mobiles.parent2 && x.mobiles.parent1.toString().length === 10){
+          model.selectedMobiles.push(x.mobiles.parent2);
+        }
         model.selectedNames.push(x.enroll_number);
         document.getElementById(x.enroll_number).style.backgroundColor = "rgb(83, 176, 226)";
         document.getElementById(x.enroll_number).style.color = "white";
@@ -735,7 +742,7 @@ addTestScoreManually: function(){
   var studentList = "<div class='row' style='margin-top:50px;margin-bottom:50px;'><div class='col-xs-10 col-xs-offset-1'><div class='row'><div class='col-xs-8 col-xs-offset-2 text-danger' style='padding-top:20px;padding-bottom:20px;border-radius:5px;border:solid 1px #d9534f;background-color:rgba(237, 239, 242,.5)'>*Note - If student was Absent from the test, then leave the input form-field empty</div></div>";
   model.selectedBatch.students.forEach(function(x,i){
     if(x.name && x.enroll_number){
-      studentList += "<div class='row' style='padding-top:10px;padding-bottom:10px;font-size:18px;margin-top:20px;'><div class='col-xs-6 text-right' style='padding-top:5px;color:rgb(70,70,70)'>" + x.name + "</div><div class='col-xs-6 text-left'><input mobile='" + x.mobile + "' type=text id='" + x.enroll_number + "' class='testscoreip' oninput='view.checkScore(event)'></div></div>";
+      studentList += "<div class='row' style='padding-top:10px;padding-bottom:10px;font-size:18px;margin-top:20px;'><div class='col-xs-6 text-right' style='padding-top:5px;color:rgb(70,70,70)'>" + x.name + "</div><div class='col-xs-6 text-left'><input mobile='" + x.mobiles.parent1 + "' type=text id='" + x.enroll_number + "' class='testscoreip' oninput='view.checkScore(event)'></div></div>";
     }
   })
   studentList += "</div></div>";
