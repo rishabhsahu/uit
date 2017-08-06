@@ -7,6 +7,7 @@ const fs = require('fs')
 const path = require('path')
 const root = __dirname
 const request = require('request')
+const qs = require('querystring')
 
 function addNewBatch(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
@@ -195,7 +196,8 @@ function addNewStudent(req,res){
             res.end()
           } else {
             let form = formidable.IncomingForm()
-            form.uploadDir = root + "/public/student_images"
+            console.log(root);
+            form.uploadDir = root + "/../public/student_images"
             form.parse(req,function(err,fields,files){
               if(err){
                 res.status(500)
