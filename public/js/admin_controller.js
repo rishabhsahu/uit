@@ -371,19 +371,18 @@ var controller = {
   },
 
   sendFacultySms: function(){
-    var obj = {};
+    const obj = {};
+    obj.mobiles = [];
     obj.text = document.getElementById('sms-text').value;
-    obj.mobile = model.selectedFaculty.mobile;
-    obj.faculty = model.selectedFaculty._id;
-    obj.user_id = model.info._id;
+    obj.mobiles[0] = model.selectedFaculty.mobile;
 
-    var xhr = new XMLHttpRequest();
+    const xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function(){
       if(xhr.status === 200 && xhr.readyState === 4){
         controller.getFacultyData();
       }
     }
-    xhr.open('POST',"http://localhost:80/sendsms/smsfaculty",true);
+    xhr.open('POST',"http://localhost:80/admin/smsFaculties",true);
     xhr.setRequestHeader('Content-type','application/json');
     xhr.send(JSON.stringify(obj));
   },
@@ -411,17 +410,17 @@ var controller = {
 
       }
     }
-    xhr.open('POST',"http://localhost:80/sendsms/sendsmstoclass",true);
+    xhr.open('POST',"http://localhost:80/admin/smsClass",true);
     xhr.setRequestHeader('Content-type','application/json');
     xhr.send(JSON.stringify(ob));
   },
 
   sendSMStoFaculties: function(){
-    var ob = {}
+    let ob = {}
     ob.mobiles = model.selectedMobiles;
     ob.text = document.getElementById('SMSfacultytext').value;
     console.log(ob);
-    var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function(){
       if(xhr.readyState === 4){
         if(xhr.status === 200){
@@ -434,7 +433,7 @@ var controller = {
 
       }
     }
-    xhr.open('POST',"http://localhost:80/sendsms/sendsmstofaculties",true);
+    xhr.open('POST',"http://localhost:80/admin/smsFaculties",true);
     xhr.setRequestHeader('Content-type','application/json');
     xhr.send(JSON.stringify(ob));
   },
@@ -484,8 +483,8 @@ var controller = {
   },
 
   submitManualScore: function(){
-    var obj = {scores:{},mobiles:{}}
-    var els = document.getElementsByClassName('testscoreip');
+    let obj = {scores:{},mobiles:{}}
+    let els = document.getElementsByClassName('testscoreip');
     Array.prototype.forEach.call(els,function(el){
       if(el.value.length != 0){
         obj.scores[el.id] = el.value;
@@ -508,9 +507,6 @@ var controller = {
         if(xhr.status === 200){
           view.closeAddTestScoreManually();
           view.notifyUser("Test Score Saved on Database and Parents were Informed",1);
-        } else if(xhr.status === 403){
-          view.closeAddTestScoreManually();
-          view.notifyUser("Parents will be informed when scores for all subject will be added",2);
         } else {
           view.closeSettings();
           view.notifyUser('Operation Failed. Please try again',5);
