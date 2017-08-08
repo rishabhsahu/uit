@@ -33,24 +33,16 @@ router.post('/add-test-score-manually/',function(req,res){
             db.collection("classes").update({_id:req.body.selectedBatch},{$addToSet:onj})
             db.close()
             request({
-              url:"http://localhost:8000/sendsms/scorereport",
+              url:"http://oniv.in/sendsms/scorereport",
               method:'POST',
               body:req.body,
               json: true
             },function(err,resp,body){
-              if(!err){
-                if(resp.statusCode === 403){
-                  res.status(403)
-                  res.end()
-                } else if(resp.statusCode === 200){
-                  res.status(200)
-                  res.end()
-                } else {
-                  res.status(504)
-                  res.end()
-                }
+              if(!err && resp.statusCode === 200){
+                res.status(200)
+                res.end()
               } else {
-                res.status(504)
+                res.status(500)
                 res.end()
               }
             })

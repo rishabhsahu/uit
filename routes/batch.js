@@ -3,7 +3,7 @@ const cookie = require('cookie')
 const jwt = require('jsonwebtoken')
 const mongo = require('mongodb').MongoClient()
 const request = require('request');
-const serverRequest = function(){
+const serverRequest = function(res){
   request(this,function(err,resp,body){
 		console.log(body,"body")
 		if(!err && resp.statusCode === 200){
@@ -66,7 +66,7 @@ router.post('/status/:cc',function(req,res){
   console.log(req.body)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("http://localhost:8000/error/nodejsErr/admin","cookies",err)
+    errRequest("http://oniv.in/error/nodejsErr/admin","cookies",err)
     res.status(500)
     res.end()
   } else {
@@ -74,13 +74,13 @@ router.post('/status/:cc',function(req,res){
     if(!err){
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(err){
-          errRequest("http://localhost:8000/error/mongoErr/admin","mongodb",err)
+          errRequest("http://oniv.in/error/mongoErr/admin","mongodb",err)
           db.close()
           res.status(500)
           res.end()
         } else {
           serverRequest.call({
-            url: "http://localhost:8000/sendsms/informparents/" + req.params.cc,
+            url: "http://oniv.in/sendsms/informparents/" + req.params.cc,
             method: 'POST',
             body: req.body,
             json: true
@@ -108,7 +108,7 @@ router.post('/status/:cc',function(req,res){
         }
       })
     } else {
-      errRequest("http://localhost:8000/error/nodejsErr/admin","jwt",err)
+      errRequest("http://oniv.in/error/nodejsErr/admin","jwt",err)
       res.status(401)
       res.end()
     }
