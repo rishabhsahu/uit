@@ -99,7 +99,7 @@ var controller = {
         view.renderBatchData();
         }
       } else if(batchDataRequest.status === 500 && batchDataRequest.readyState === 4){
-        view.notifyUser("Internal Server Error",1);
+        view.notifyUser("Internal Server Error<br>Failed to Get Data",1);
       }
     }
 
@@ -192,7 +192,7 @@ var controller = {
       })
       schdg += "</div></div></div>";
     } else {
-      schdg = "<div class='row' style='margin-top:3px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);'><div class='col-xs-12 text-danger'><h2 style='margin-top:10px;margin-bottom:10px'>Schedule not Set</h2></div></div></div>";
+      schdg = "<div class='row' style='margin-top:3px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);'><div class='col-xs-12 text-primary' style='margin-top:10px;margin-bottom:10px;font-size:24px;cursor:pointer;text-decoration:underline' onclick='view.setSchedule()'>Set Schedule</div></div></div>";
     }
     document.getElementById('classStudentData').innerHTML = "<div class='col-xs-10 col-xs-offset-2'><div class='row'><div class='col-xs-12'><div class='row' style='font-size:14px'><div class='col-xs-4' style='color:rgb(70,70,70);padding-top:5px;padding-bottom:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160)'><span>Classes Held</span> - <span style='font-size:14px'>" + ch + "</span></div><div class='col-xs-8' style='color:rgb(70,70,70);padding-top:5px;padding-bottom:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);'><span>Faculty - </span><span style='font-size:14px'>" + model.SF.name + "</span></div></div></div></div><div class='row' style='margin-top:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);color:" + cl + "'><div class='col-xs-12'><div class='row' style='color:rgba(0,0,0,.7);font-weight:bold;border-bottom:solid 1px rgba(160,160,160,.5)'><div class='col-xs-4'><h4>Name</h4></div><div class='col-xs-4'><h4>Present</h4></div><div class='col-xs-4'><h4>Attendance</h4></div></div><div class='row' style='max-height:200px;overflow-y:auto'><table class='col-xs-12 table table-striped text-center'>" + stdnm + "</table></div></div></div>" + schdg + "</div>";
     graph.pastSevenDays();
@@ -248,7 +248,7 @@ var controller = {
         view.notifyUser("Internal Server Error Occured while creating Batch",0);
       } else if(newBatchData.status != 200 && newBatchData.status !== 500 && newBatchData.readyState === 4){
         view.closeAddBatchModal()
-        view.notifyUser("Faculty Registered",5);
+        view.notifyUser("Error Adding Faculty",0);
         controller.sectionData();
       }
     }
@@ -403,11 +403,15 @@ var controller = {
         if(xhr.status === 200){
           model.selectedMobiles = [];
           model.selectedNames = [];
-          view.closeMessageClassModal();
           view.notifyUser("Message sent",1);
+        } else if(xhr.status === 500){
+          model.selectedMobiles = [];
+          model.selectedNames = [];
+          view.notifyUser("Failed to send message",0);
         }
-      } else {
-
+      } else if(xhr.readyState === 1){
+        view.notifyUser("Sending Message",2);
+        view.closeMessageClassModal();
       }
     }
     xhr.open('POST',"http://localhost:80/admin/smsClass",true);
@@ -426,11 +430,15 @@ var controller = {
         if(xhr.status === 200){
           model.selectedMobiles = [];
           model.selectedNames = [];
-          view.closeMessageFacultiesModal();
           view.notifyUser("Message sent",1);
+        } else if(xhr.status === 500){
+          model.selectedMobiles = [];
+          model.selectedNames = [];
+          view.notifyUser("Failed to send message",0);
         }
-      } else {
-
+      } else if(xhr.readyState === 1){
+        view.closeMessageFacultiesModal();
+        view.notifyUser("Sending Message",2);
       }
     }
     xhr.open('POST',"http://localhost:80/admin/smsFaculties",true);
@@ -508,8 +516,7 @@ var controller = {
           view.closeAddTestScoreManually();
           view.notifyUser("Test Score Saved on Database and Parents were Informed",1);
         } else {
-          view.closeSettings();
-          view.notifyUser('Operation Failed. Please try again',5);
+          view.notifyUser('Operation Failed. Please try again',0);
         }
       }
     }
@@ -534,7 +541,7 @@ var controller = {
       }
     }
 
-    xhr.open('POST','http://localhost:80/error/reportissue',true);
+    xhr.open('POST','http://oniv.in/error/reportissue',true);
     xhr.setRequestHeader('Content-Type','application/json');
     xhr.send(JSON.stringify(obj));
   },
@@ -603,7 +610,7 @@ var controller = {
             view.closeBatchOptions();
             view.notifyUser('New Student Added',1);
           } else {
-            if(xhr.status === 504){
+            if(xhr.status === 500){
               view.closeBatchOptions();
               view.notifyUser('Internal Server Error<br>Unable to add new student',0);
             }
@@ -614,6 +621,37 @@ var controller = {
       xhr.setRequestHeader('Content-type','application/octet-stream');
       xhr.send(file);
     }
+  },
+
+  setSchedule: function(){
+    let o = {sch:{}};
+    const h = document.getElementsByClassName('h');
+    const m = document.getElementsByClassName('m');
+    Array.prototype.forEach.call(h,(x,i)=>{
+      o.sch[model.days.indexOf(x.id)] = {};
+      o.sch[model.days.indexOf(x.id)]["h"] = x.value;
+    })
+    Array.prototype.forEach.call(m,(x,i)=>{
+      o.sch[model.days.indexOf(x.id)]["m"] = x.value;
+    })
+    o.btc = model.selectedBatch._id;
+    o.sf = model.SF._id;
+    console.log(o);
+    let xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function(){
+      if(xhr.readyState === 4 && xhr.status === 200){
+        view.closeBatchOptions();
+        view.notifyUser('Students will be informed',0);
+      } else if(xhr.readyState === 4 && xhr.status === 500){
+        view.closeBatchOptions();
+        view.notifyUser('Internal Server Error<br>Unable to set Schedule',1);
+      } else if(readyState != 4){
+
+      }
+    }
+    xhr.open('POST','http://localhost:80/admin/setSchedule',true);
+    xhr.setRequestHeader('Content-type','application/json');
+    xhr.send(JSON.stringify(o));
   }
 
 };
