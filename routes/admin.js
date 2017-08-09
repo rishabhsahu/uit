@@ -67,6 +67,7 @@ router.get('/student_images/:image',function getStudentImage(req,res){
     if(!err){
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(!err){
+          res.header({'Cache-Control':'public, max-age=31557600'})
           fs.createReadStream(root + '/public/student_images/' + req.params.image).pipe(res)
         } else {
           console.log("failed to connect to db")
