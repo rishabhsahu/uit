@@ -3,6 +3,8 @@ const cookie = require('cookie')
 const jwt = require('jsonwebtoken')
 const mongo = require('mongodb').MongoClient()
 const request = require('request');
+const path = require('path');
+const formidable = require('formidable');
 const serverRequest = function(res){
   request(this,function(err,resp,body){
 		console.log(body,"body")
@@ -104,6 +106,53 @@ router.post('/status/:cc',function(req,res){
               res.status(404)
               res.end()
             }
+          })
+        }
+      })
+    } else {
+      errRequest("http://oniv.in/error/nodejsErr/admin","jwt",err)
+      res.status(401)
+      res.end()
+    }
+  })
+}
+})
+
+router.post('/addStudentImage/:sc/:b/:se/:en',function(req,res){
+  console.log(req.body)
+  var cookies = cookie.parse(req.headers.cookie || '')
+  if(!cookie){
+    errRequest("http://oniv.in/error/nodejsErr/admin","cookies",err)
+    res.status(500)
+    res.end()
+  } else {
+  jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+    if(!err){
+      mongo.connect('mongodb://localhost:27018/data',function(err,db){
+        if(err){
+          errRequest("http://oniv.in/error/mongoErr/admin","mongodb",err)
+          db.close()
+          res.status(500)
+          res.end()
+        } else {
+          const form = formidable.IncomingForm()
+          form.uploadDir = __dirname + "/public/student_images"
+          form.parse(req,function(err,fields,forms){
+            if(err){
+              errRequest("http://oniv.in/error/nodejsErr/admin","formidables",err)
+              res.status(500)
+              res.end()
+            }
+          })
+          form.on('file',function(name,file){
+            mongo.connect('mongodb://localhost:27018/data',function(err,db){
+              if(!err){
+                db.collection('classes').update({_id:req.params.sc + "/" + req.params.b + "/" + req.params.se,"students.enroll_number": req.params.en},{$set:{"students.$.image":path.basename(file.path)}})
+                db.collection('classes').update({_id:req.params.sc + "/" + req.params.b + "/" + req.params.se,"student_data.enroll_number": req.params.en},{$set:{"student_data.$.image":path.basename(file.path)}})
+              } else {
+
+              }
+            })
           })
         }
       })

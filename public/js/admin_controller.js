@@ -164,20 +164,14 @@ var controller = {
     var cp,cl;
     model.selectedBatch.student_data.forEach(function(x,i){
       if(x.name && x.enroll_number){
-        if(x[sn]){
-          if(x[sn].absent){
-            cp = ch - x[sn].absent.length;
+          if(x.cc){
+            cp = Object.keys(x.cc).length;
+            trl = new Date(Number(Object.keys(x.cc)[cp-1])).toLocaleString() || ''
           } else {
-            cp = ch;
+            cp = 0;
+            trl = "--:--";
           }
-        } else {
-          cp = ch
-        }
-        var t = cp/ch*100
-        if(isNaN(t)){
-          t=0;
-        }
-        stdnm += "<tr class='row' style='font-size:12px'><td class='col-xs-4' id='" + model.selectedBatch._id + "/" + x.enroll_number + "' onclick='controller.getStudentData(event)' style='cursor:pointer'>" + x.name + "</td><td class='col-xs-4'>" + cp + "</td><td class='col-xs-4'>" + Math.ceil(t) + "</td></tr>";
+        stdnm += "<tr class='row' style='font-size:12px'><td class='col-xs-3'>" + x.enroll_number + "</td><td class='col-xs-4 text-primary' id='" + model.selectedBatch._id + "/" + x.enroll_number + "' onclick='controller.getStudentData(event)' style='cursor:pointer;text-transform:capitalize'>" + x.name + "</td><td class='col-xs-2'>" + cp + "</td><td class='col-xs-3 text-success'>" + trl + "</td></tr>";
       }
     })
     if(ch === 0){
@@ -186,16 +180,17 @@ var controller = {
       cl = "rgb(0,0,0,.9)";
     }
     if(sch && sch.length!=0){
-      var schdg = "<div class='row' style='margin-top:3px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160)'><h3>Time Table</h3></div><div class='col-xs-12'><div class='row' style='padding-top:5px;padding-bottom:5px'>";
+      var schdg = "<div class='row' style='margin-top:3px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);'><div class='col-xs-12' style='border-bottom:solid 1px rgb(160,160,160);padding-top:10px;padding-bottom:10px;font-size:22px'>Time Table</div><div class='col-xs-12'><div class='row' style='padding-top:5px;padding-bottom:5px'>";
       sch.forEach(function(x,i){
-        schdg += "<div class='col-xs-2'><div class='row'><div class='col-xs-12'><span style='border-bottom: solid 1px rgb(200,200,200)'>" + model.days[i] + "</span></div></div><div class='row'><div class='col-xs-12' style='color:rgb(110,110,110)'>" + x + "</div></div></div>";
+        if(x != "0:0"){
+          schdg += "<div class='col-xs-2'><div class='row'><div class='col-xs-12'><span style='border-bottom: solid 1px rgb(200,200,200)'>" + model.days[i] + "</span></div></div><div class='row'><div class='col-xs-12' style='color:rgb(110,110,110)'>" + x + "</div></div></div>";
+        }
       })
       schdg += "</div></div></div>";
     } else {
       schdg = "<div class='row' style='margin-top:3px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);'><div class='col-xs-12 text-primary' style='margin-top:10px;margin-bottom:10px;font-size:24px;cursor:pointer;text-decoration:underline' onclick='view.setSchedule()'>Set Schedule</div></div></div>";
     }
-    document.getElementById('classStudentData').innerHTML = "<div class='col-xs-10 col-xs-offset-2'><div class='row'><div class='col-xs-12'><div class='row' style='font-size:14px'><div class='col-xs-4' style='color:rgb(70,70,70);padding-top:5px;padding-bottom:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160)'><span>Classes Held</span> - <span style='font-size:14px'>" + ch + "</span></div><div class='col-xs-8' style='color:rgb(70,70,70);padding-top:5px;padding-bottom:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);'><span>Faculty - </span><span style='font-size:14px'>" + model.SF.name + "</span></div></div></div></div><div class='row' style='margin-top:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);color:" + cl + "'><div class='col-xs-12'><div class='row' style='color:rgba(0,0,0,.7);font-weight:bold;border-bottom:solid 1px rgba(160,160,160,.5)'><div class='col-xs-4'><h4>Name</h4></div><div class='col-xs-4'><h4>Present</h4></div><div class='col-xs-4'><h4>Attendance</h4></div></div><div class='row' style='max-height:200px;overflow-y:auto'><table class='col-xs-12 table table-striped text-center'>" + stdnm + "</table></div></div></div>" + schdg + "</div>";
-    graph.pastSevenDays();
+    document.getElementById('classStudentData').innerHTML = "<div class='col-xs-10 col-xs-offset-2'><div class='row'><div class='col-xs-12'><div class='row' style='font-size:14px'><div class='col-xs-4' style='color:rgb(70,70,70);padding-top:5px;padding-bottom:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160)'><span>Av. Check In's</span> - <span style='font-size:14px'>" + ch + "</span></div><div class='col-xs-8' style='color:rgb(70,70,70);padding-top:5px;padding-bottom:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);'><span>Faculty - </span><span style='font-size:14px'>" + model.SF.name + "</span></div></div></div></div><div class='row' style='margin-top:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);color:" + cl + "'><div class='col-xs-12'><div class='row' style='color:rgba(0,0,0,.7);font-weight:bold;border-bottom:solid 1px rgba(160,160,160,.5)'><div class='col-xs-3'><h4>Enroll No.</h4></div><div class='col-xs-4'><h4>Name</h4></div><div class='col-xs-2'><h4>Checks</h4></div><div class='col-xs-3'><h4>Last Check In</h4></div></div><div class='row' style='max-height:250px;overflow-y:auto'><table class='col-xs-12 table table-striped text-center'>" + stdnm + "</table></div></div></div>" + schdg + "</div>";
   },
 
   addNewFaculty: function(){
@@ -404,6 +399,7 @@ var controller = {
           model.selectedMobiles = [];
           model.selectedNames = [];
           view.notifyUser("Message sent",1);
+          controller.getBatchData(1);
         } else if(xhr.status === 500){
           model.selectedMobiles = [];
           model.selectedNames = [];
@@ -450,12 +446,20 @@ var controller = {
     let el = document.getElementsByClassName('showRequiredError');
     let tl = document.getElementsByClassName('required');
     let er=0;
-    if(n!="2"){
+    if(n!="2" & n!=3){
       for(let i=0;i<tl.length;i++){
         if(tl[i].value.length===0){
           el[i].style.color = "red";
           er++;
         }
+      }
+    } else if(n == 3){
+      if(!document.getElementById('file').files[0]){
+        document.getElementById('fileErr2').style.display = "block";
+        er++;
+      } else if(document.getElementById('file').files[0].size > 100*1024){
+        document.getElementById('fileErr').style.display = "block";
+        er++;
       }
     } else {
         for(let i=0;i<tl.length;i++){
@@ -485,6 +489,10 @@ var controller = {
 
         case 2:
           controller.batchOptions(m);
+          break;
+
+        case 3:
+          controller.addStudentImage();
           break;
       }
     }
@@ -602,25 +610,30 @@ var controller = {
       document.getElementById('name').focus();
     })
 
-    if(m == 0){
-      let xhr = new XMLHttpRequest()
-      xhr.onreadystatechange = function(){
-        if(xhr.readyState === 4){
-          if(xhr.status === 200){
+    let xhr = new XMLHttpRequest()
+    xhr.onreadystatechange = function(){
+      if(xhr.readyState === 4){
+        if(xhr.status === 200){
+          if(m == 1){
+            const ip = document.getElementsByTagName('input');
+            Array.prototype.forEach.call(ip,function(x,i){
+              x.value = "";
+            })
+          } else {
             view.closeBatchOptions();
             view.notifyUser('New Student Added',1);
-          } else {
-            if(xhr.status === 500){
-              view.closeBatchOptions();
-              view.notifyUser('Internal Server Error<br>Unable to add new student',0);
-            }
+          }
+        } else {
+          if(xhr.status === 500){
+            view.closeBatchOptions();
+            view.notifyUser('Internal Server Error<br>Unable to add new student',0);
           }
         }
       }
-      xhr.open('POST',url + str,true);
-      xhr.setRequestHeader('Content-type','application/octet-stream');
-      xhr.send(file);
     }
+    xhr.open('POST',url + str,true);
+    xhr.setRequestHeader('Content-type','application/octet-stream');
+    xhr.send(file);
   },
 
   setSchedule: function(){
@@ -640,18 +653,24 @@ var controller = {
     let xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function(){
       if(xhr.readyState === 4 && xhr.status === 200){
-        view.closeBatchOptions();
-        view.notifyUser('Students will be informed',0);
+        view.closeScheduleModal();
+        view.notifyUser('Students will be informed about changes',1);
       } else if(xhr.readyState === 4 && xhr.status === 500){
-        view.closeBatchOptions();
-        view.notifyUser('Internal Server Error<br>Unable to set Schedule',1);
-      } else if(readyState != 4){
-
+        view.closeScheduleModal();
+        view.notifyUser('Internal Server Error<br>Unable to set Schedule',0);
       }
     }
     xhr.open('POST','http://localhost:80/admin/setSchedule',true);
     xhr.setRequestHeader('Content-type','application/json');
     xhr.send(JSON.stringify(o));
+  },
+
+  addStudentImage: function(){
+    const file = document.getElementById('file').files[0];
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST','http://localhost:80/student/addStudentImage/' + model.selectedBatch._id + "/" + model.selectedStudent.enroll_number,true);
+    xhr.setRequestHeader('Content-type','application/octet-stream');
+    xhr.send(file);
   }
 
 };
