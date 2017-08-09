@@ -33,7 +33,7 @@ function smsFaculties(req,res){
 		jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
 			if(!err){
 				serverRequest.call({
-					url: 'http://oniv.in/sendsms/smsFaculties',
+					url: 'http://ec2-13-126-212-231.ap-south-1.compute.amazonaws.com/sendsms/smsFaculties',
 					method: 'post',
 					body: req.body,
 					json:true
@@ -67,7 +67,7 @@ function smsClass(req,res){
 				})
 				o.text = req.body.text
 				serverRequest.call({
-					url: 'http://oniv.in/sendsms/smsClass',
+					url: 'http://ec2-13-126-212-231.ap-south-1.compute.amazonaws.com/sendsms/smsClass',
 					method: 'post',
 					body: o,
 					json:true
@@ -104,7 +104,7 @@ function setSchedule(req,res){
 							req.body.sch = o
 							delete req.body.schedule
 							serverRequest.call({
-								url: 'http://oniv.in/sendsms/informschedule',
+								url: 'http://ec2-13-126-212-231.ap-south-1.compute.amazonaws.com/sendsms/informschedule',
 								method: 'post',
 								body: req.body,
 								json:true

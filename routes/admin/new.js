@@ -150,7 +150,7 @@ function addNewFaculty(req,res){
           db.collection('faculty').insert(req.body)
           db.collection('admin').update({_id:decoded.name},{$addToSet:{"faculties":{"id": req.body._id,"name": req.body.name,"recent_messages":{},"total_messages":{}}}})
           request({
-            url:'http://oniv.in/sendsms/facultyotp',
+            url:'http://ec2-13-126-212-231.ap-south-1.compute.amazonaws.com/sendsms/facultyotp',
             body: {name:req.body.name,username:req.body._id,mobile:req.body.mobile,otp:req.body.otp,school:req.body.school},
             json:true,
             method:'POST'

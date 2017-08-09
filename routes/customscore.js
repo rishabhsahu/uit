@@ -33,7 +33,7 @@ router.post('/add-test-score-manually/',function(req,res){
             db.collection("classes").update({_id:req.body.selectedBatch},{$addToSet:onj})
             db.close()
             request({
-              url:"http://oniv.in/sendsms/scorereport",
+              url:"http://ec2-13-126-212-231.ap-south-1.compute.amazonaws.com/sendsms/scorereport",
               method:'POST',
               body:req.body,
               json: true

@@ -20,7 +20,7 @@ router.post('/notifyclass',function(req,res){
                 })
           var api_url = "http://api.msg91.com/api/sendhttp.php?"
           api_url += "authkey=" + authkey + "&"
-          api_url += "mobiles=" + mobile + "&message=" + encodeURIComponent(req.body.text + "\nsent via oniv.in") + "&sender=onivin&route=4"
+          api_url += "mobiles=" + mobile + "&message=" + encodeURIComponent(req.body.text + "\nsent via ec2-13-126-212-231.ap-south-1.compute.amazonaws.com") + "&sender=onivin&route=4"
           request({
             method:'get',
             url: api_url

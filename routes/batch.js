@@ -68,7 +68,7 @@ router.post('/status/:cc',function(req,res){
   console.log(req.body)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("http://oniv.in/error/nodejsErr/admin","cookies",err)
+    errRequest("http://ec2-13-126-212-231.ap-south-1.compute.amazonaws.com/error/nodejsErr/admin","cookies",err)
     res.status(500)
     res.end()
   } else {
@@ -76,13 +76,13 @@ router.post('/status/:cc',function(req,res){
     if(!err){
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(err){
-          errRequest("http://oniv.in/error/mongoErr/admin","mongodb",err)
+          errRequest("http://ec2-13-126-212-231.ap-south-1.compute.amazonaws.com/error/mongoErr/admin","mongodb",err)
           db.close()
           res.status(500)
           res.end()
         } else {
           serverRequest.call({
-            url: "http://oniv.in/sendsms/informparents/" + req.params.cc,
+            url: "http://ec2-13-126-212-231.ap-south-1.compute.amazonaws.com/sendsms/informparents/" + req.params.cc,
             method: 'POST',
             body: req.body,
             json: true
@@ -110,7 +110,7 @@ router.post('/status/:cc',function(req,res){
         }
       })
     } else {
-      errRequest("http://oniv.in/error/nodejsErr/admin","jwt",err)
+      errRequest("http://ec2-13-126-212-231.ap-south-1.compute.amazonaws.com/error/nodejsErr/admin","jwt",err)
       res.status(401)
       res.end()
     }
@@ -122,7 +122,7 @@ router.post('/addStudentImage/:sc/:b/:se/:en',function(req,res){
   console.log(req.body)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("http://oniv.in/error/nodejsErr/admin","cookies",err)
+    errRequest("http://ec2-13-126-212-231.ap-south-1.compute.amazonaws.com/error/nodejsErr/admin","cookies",err)
     res.status(500)
     res.end()
   } else {
@@ -130,7 +130,7 @@ router.post('/addStudentImage/:sc/:b/:se/:en',function(req,res){
     if(!err){
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(err){
-          errRequest("http://oniv.in/error/mongoErr/admin","mongodb",err)
+          errRequest("http://ec2-13-126-212-231.ap-south-1.compute.amazonaws.com/error/mongoErr/admin","mongodb",err)
           db.close()
           res.status(500)
           res.end()
@@ -139,7 +139,7 @@ router.post('/addStudentImage/:sc/:b/:se/:en',function(req,res){
           form.uploadDir = __dirname + "/public/student_images"
           form.parse(req,function(err,fields,forms){
             if(err){
-              errRequest("http://oniv.in/error/nodejsErr/admin","formidables",err)
+              errRequest("http://ec2-13-126-212-231.ap-south-1.compute.amazonaws.com/error/nodejsErr/admin","formidables",err)
               res.status(500)
               res.end()
             }
@@ -157,7 +157,7 @@ router.post('/addStudentImage/:sc/:b/:se/:en',function(req,res){
         }
       })
     } else {
-      errRequest("http://oniv.in/error/nodejsErr/admin","jwt",err)
+      errRequest("http://ec2-13-126-212-231.ap-south-1.compute.amazonaws.com/error/nodejsErr/admin","jwt",err)
       res.status(401)
       res.end()
     }
