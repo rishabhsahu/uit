@@ -9,7 +9,7 @@ router.post('/add-test-score-manually/',function(req,res){
   console.log(req.body);
   var cookies = cookie.parse(req.headers.cookie || "")
   if(!cookies){
-    errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
+    errRequest("http://13.126.16.198:80/error/nodejsErr/admin","cookies",err)
     res.status(401)
     res.end()
   } else {
@@ -17,14 +17,13 @@ router.post('/add-test-score-manually/',function(req,res){
       if(!err){
         mongo.connect("mongodb://localhost:27018/data",function(err,db){
           if(!err){
-            var testid = req.body.selectedBatch + "/" + req.body.testdate + "/" + req.body.testname
             for(var std in req.body.scores){
               var obj = {}
               obj["student_data.$." + req.body.subject + ".scores"] = {
                 test_name: req.body.testname,
                 score: req.body.scores[std],
                 max_score : req.body.maxscore,
-                test_id : testid
+                testdate : req.body.testdate
               }
               db.collection("classes").update({_id:req.body.selectedBatch,"student_data.enroll_number":std},{$addToSet:obj})
             }
@@ -33,7 +32,7 @@ router.post('/add-test-score-manually/',function(req,res){
             db.collection("classes").update({_id:req.body.selectedBatch},{$addToSet:onj})
             db.close()
             request({
-              url:"http://ec2-13-126-212-231.ap-south-1.compute.amazonaws.com/sendsms/scorereport",
+              url:"http://13.126.16.198:80/sendsms/scorereport",
               method:'POST',
               body:req.body,
               json: true
@@ -61,13 +60,13 @@ router.post('/add-test-score-manually/',function(req,res){
             */
           } else {
             db.close()
-            errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
+            errRequest("http://13.126.16.198:80/error/mongoErr/admin","mongodb",err)
             res.status(500)
             res.end()
           }
         })
       } else {
-        errRequest("http://localhost:80/error/nodejsErr/admin","jwt",err)
+        errRequest("http://13.126.16.198:80/error/nodejsErr/admin","jwt",err)
         res.status(401)
         res.end()
       }
