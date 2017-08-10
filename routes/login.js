@@ -3,6 +3,30 @@ var router = require('express').Router()
 var mongo = require('mongodb').MongoClient
 var cookie = require('cookie')
 var jwt = require('jsonwebtoken')
+const request = require('request');
+const serverRequest = function(res){
+  request(this,function(err,resp,body){
+		console.log(body,"body")
+		if(!err && resp.statusCode === 200){
+			res.status(200)
+      res.setHeader('Cache-Control','public, max-age=31557600')
+			res.end(body)
+		} else {
+			console.log(err)
+			res.status(504)
+			res.end()
+		}
+	})
+}
+
+const errRequest = function(u,m,e){
+  serverRequest.call({
+    url:u + "/" + m,
+    method: 'post',
+    body: e,
+    json: true
+  },res)
+}
 
 //router logic
 router.post('/',function(req,res){
@@ -11,7 +35,7 @@ router.post('/',function(req,res){
   var password = req.body.password
   mongo.connect('mongodb://localhost:27018/data',function(err,db){
     if(err){
-      errRequest("http://localhost:4000/errors/mongoErr","mongodb",err)
+      errRequest("http://13.126.16.198:80/errors/mongoErr","mongodb",err)
     } else {
       console.log("connected to mongodb for authentication")
       if(req.body.password.indexOf("T-") > -1){
@@ -19,7 +43,10 @@ router.post('/',function(req,res){
           if(!err){
             res.status(200)
             res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
-            res.render('faculty_mobile')
+            serverRequest.call({
+              url: 'http://localhost:4000/coaching/faculty_mobile',
+              method: 'GET'
+            },res)
           } else {
             db.close()
             res.status(401)
@@ -30,7 +57,7 @@ router.post('/',function(req,res){
         if(req.body.username.indexOf(".admin") === -1){
           db.collection("faculty").findOne({_id:username},function(err,item){
             if(err){
-              errRequest("http://localhost:4000/errors/mongoErr","mongodb",err)
+              errRequest("http://13.126.16.198:80/errors/mongoErr","mongodb",err)
               db.close()
             } else {
               if(item == null || item == undefined){
@@ -42,7 +69,10 @@ router.post('/',function(req,res){
                 if(item.password == req.body.password){
                   res.status(200)
                   res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
-                  res.render('faculty_mobile')
+                  serverRequest.call({
+                    url: 'http://localhost:4000/coaching/faculty_mobile',
+                    method: 'GET'
+                  },res)
                   db.close()
                 } else {
                   db.close()
@@ -55,7 +85,7 @@ router.post('/',function(req,res){
         } else {
           db.collection("admin").findOne({_id:username},function(err,item){
             if(err){
-              errRequest("http://localhost:4000/errors/mongoErr","mongodb",err)
+              errRequest("http://13.126.16.198:80/errors/mongoErr","mongodb",err)
               db.close()
             } else {
               if(item == null || item == undefined){
@@ -66,7 +96,10 @@ router.post('/',function(req,res){
                 if(item.password == req.body.password){
                   res.status(200)
                   res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
-                  res.render('admin_home',{title:"",user:username})
+                  serverRequest.call({
+                    url: 'http://localhost:4000/coaching/admin_home/' + username,
+                    method: 'GET'
+                  },res)
                   db.close()
                 } else {
                   db.close()
@@ -83,7 +116,6 @@ router.post('/',function(req,res){
   })
 })
 
-function errRequest(){}
 
 
 module.exports = router

@@ -3,6 +3,21 @@ var router = require('express').Router()
 var cookie = require('cookie')
 var jwt = require('jsonwebtoken')
 var mongo = require('mongodb').MongoClient
+const request = require('request');
+const serverRequest = function(res){
+  request(this,function(err,resp,body){
+		console.log(body,"body")
+		if(!err && resp.statusCode === 200){
+			res.status(200)
+      res.setHeader('Cache-Control','public, max-age=31557600')
+			res.end(body)
+		} else {
+			console.log(err)
+			res.status(504)
+			res.end()
+		}
+	})
+}
 
 //main logic of the route//
 router.get('/',function(req,res){
@@ -29,8 +44,10 @@ router.get('/',function(req,res){
                   res.render('index',{message:"Interval Server Error"})
                   db.close()
                 } else {
-                  res.render('faculty_mobile')
-
+                  serverRequest.call({
+                    url: 'http://localhost:4000/coaching/faculty_mobile',
+                    method: 'GET'
+                  },res)
                   db.close()
                 }
               })
@@ -40,7 +57,10 @@ router.get('/',function(req,res){
                   res.render('index',{message:"Interval Server Error"})
                   db.close()
                 } else {
-                  res.render('admin_home',{title:"",user:decoded.name})
+                  serverRequest.call({
+                    url: 'http://localhost:4000/coaching/admin_home/' + decoded.name,
+                    method: 'GET'
+                  },res)
                   console.log("admin verified")
                   db.close()
                 }
