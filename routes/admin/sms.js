@@ -9,18 +9,27 @@ const root = __dirname
 const request = require('request')
 const router = require('express').Router();
 
-let serverRequest = function(res){
-	request(this,function(err,resp,body){
+const serverRequest = function(res){
+  request(this,function(err,resp,body){
 		console.log(body,"body")
 		if(!err && resp.statusCode === 200){
 			res.status(200)
 			res.end()
 		} else {
 			console.log(err)
-			res.status(500)
+			res.status(504)
 			res.end()
 		}
 	})
+}
+
+const errRequest = function(u,m,e){
+  serverRequest.call({
+    url:u + "/" + m,
+    method: 'post',
+    body: e,
+    json: true
+  },res)
 }
 
 function smsFaculties(req,res){
@@ -33,7 +42,7 @@ function smsFaculties(req,res){
 		jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
 			if(!err){
 				serverRequest.call({
-					url: 'http://ec2-13-126-212-231.ap-south-1.compute.amazonaws.com/sendsms/smsFaculties',
+					url: 'http://13.126.16.198:80/sendsms/smsFaculties',
 					method: 'post',
 					body: req.body,
 					json:true
@@ -67,7 +76,7 @@ function smsClass(req,res){
 				})
 				o.text = req.body.text
 				serverRequest.call({
-					url: 'http://ec2-13-126-212-231.ap-south-1.compute.amazonaws.com/sendsms/smsClass',
+					url: 'http://13.126.16.198:80/sendsms/smsClass',
 					method: 'post',
 					body: o,
 					json:true
@@ -104,7 +113,7 @@ function setSchedule(req,res){
 							req.body.sch = o
 							delete req.body.schedule
 							serverRequest.call({
-								url: 'http://ec2-13-126-212-231.ap-south-1.compute.amazonaws.com/sendsms/informschedule',
+								url: 'http://13.126.16.198:80/sendsms/informschedule',
 								method: 'post',
 								body: req.body,
 								json:true
