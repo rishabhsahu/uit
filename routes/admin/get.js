@@ -8,12 +8,35 @@ const path = require('path')
 const root = __dirname
 const request = require('request')
 
+const serverRequest = function(res){
+  request(this,function(err,resp,body){
+		console.log(body,"body")
+		if(!err && resp.statusCode === 200){
+			res.status(200)
+			res.end()
+		} else {
+			console.log(err)
+			res.status(504)
+			res.end()
+		}
+	})
+}
+
+const errRequest = function(u,m,e){
+  serverRequest.call({
+    url:u + "/" + m,
+    method: 'post',
+    body: e,
+    json: true
+  },res)
+}
+
 function getDepartmentData(req,res){
   console.log("admin connected")
   var cookies = cookie.parse(req.headers.cookie || '')
   console.log(cookies)
   if(!cookie){
-    errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
+    errRequest("http://13.126.16.198:80/error/nodejsErr/admin","cookies",err,res)
     res.status(500)
     res.end()
   } else {
@@ -25,7 +48,7 @@ function getDepartmentData(req,res){
             db.collection('admin').update({_id:decoded.name},{$inc:{"access":1}})
             db.collection('admin').findOne({_id:decoded.name},function(err,item){
               if(err){
-                errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
+                errRequest("http://13.126.16.198:80/error/mongoErr/admin","mongodb",err,res)
                 db.close()
                 res.status(404)
                 res.end()
@@ -37,13 +60,13 @@ function getDepartmentData(req,res){
               }
             })
           } else {
-            errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
+            errRequest("http://13.126.16.198:80/error/mongoErr/admin","mongodb",err,res)
             res.status(404)
             res.end()
           }
         })
       } else {
-        errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
+        errRequest("http://13.126.16.198:80/error/nodejsErr/admin","cookies",err,res)
         res.status(401)
         res.end()
       }
@@ -55,7 +78,7 @@ function getFacultyData(req,res){
   console.log('ajax request');
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
+    errRequest("http://13.126.16.198:80/error/nodejsErr/admin","cookies",err,res)
     res.status(500)
     res.end()
   } else {
@@ -68,14 +91,14 @@ function getFacultyData(req,res){
             if(!err){
               res.json(item)
             } else {
-              errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
+              errRequest("http://13.126.16.198:80/error/mongoErr/admin","mongodb",err,res)
               res.status(404)
               res.end()
             }
           })
           db.close()
         } else {
-          errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
+          errRequest("http://13.126.16.198:80/error/mongoErr/admin","mongodb",err,res)
           db.close()
           db.close()
           res.status(500)
@@ -83,7 +106,7 @@ function getFacultyData(req,res){
         }
       })
     } else {
-      errRequest("http://localhost:80/error/nodejsErr/admin","jwt",err)
+      errRequest("http://13.126.16.198:80/error/nodejsErr/admin","jwt",err,res)
       res.status(401)
       res.end()
     }
@@ -95,20 +118,20 @@ function classesheld(req,res){
   console.log(req.device)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
-    errRequest("http://localhost:80/error/nodejsErr/faculty","cookies",err)
+    errRequest("http://13.126.16.198:80/error/nodejsErr/faculty","cookies",err,res)
     res.status(401)
     res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
-        errRequest("http://localhost:80/error/nodejsErr/faculty","jwt",err)
+        errRequest("http://13.126.16.198:80/error/nodejsErr/faculty","jwt",err,res)
         res.status(401)
         res.end()
       } else {
         console.log(decoded.name)
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
-            errRequest("http://localhost:80/error/mongoErr/faculty","mongodb",err)
+            errRequest("http://13.126.16.198:80/error/mongoErr/faculty","mongodb",err,res)
             db.close()
             res.status(500)
             res.end()
@@ -133,7 +156,7 @@ function classesheld(req,res){
 function getBatchData(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
+    errRequest("http://13.126.16.198:80/error/nodejsErr/admin","cookies",err,res)
     res.status(500)
     res.end()
   } else {
@@ -147,7 +170,7 @@ function getBatchData(req,res){
               res.json(item)
               db.close()
             } else {
-              errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
+              errRequest("http://13.126.16.198:80/error/mongoErr/admin","mongodb",err,res)
               db.close()
               res.status(404)
               res.end()
@@ -162,7 +185,7 @@ function getBatchData(req,res){
         }
       })
     } else {
-      errRequest("http://localhost:80/error/nodejsErr/admin","jwt",err)
+      errRequest("http://13.126.16.198:80/error/nodejsErr/admin","jwt",err,res)
       res.status(401)
       res.end()
     }
@@ -173,7 +196,7 @@ function getBatchData(req,res){
 function getAllStudents(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("http://localhost:80/error/nodejsErr/admin","cookies",err)
+    errRequest("http://13.126.16.198:80/error/nodejsErr/admin","cookies",err,res)
     res.status(500)
     res.end()
   } else {
@@ -190,7 +213,7 @@ function getAllStudents(req,res){
               res.json(item)
               db.close()
             } else {
-              errRequest("http://localhost:80/error/mongoErr/admin","mongodb",err)
+              errRequest("http://13.126.16.198:80/error/mongoErr/admin","mongodb",err,res)
               db.close()
               res.status(404)
               res.end()
@@ -204,27 +227,12 @@ function getAllStudents(req,res){
         }
       })
     } else {
-      errRequest("http://localhost:80/error/nodejsErr/admin","jwt",err)
+      errRequest("http://13.126.16.198:80/error/nodejsErr/admin","jwt",err,res)
       res.status(401)
       res.end()
     }
   })
 }
-}
-
-function errRequest(u,m,o){
-  var ed = (new Date()).toString()
-  o.time = ed;
-  o.module = m;
-  request({
-    method:"post",
-    url: u,
-    json:true,
-    body: o
-  },function(err,resp,body){
-
-  })
-
 }
 
 module.exports.getDepartmentData = getDepartmentData
