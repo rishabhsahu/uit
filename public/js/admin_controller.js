@@ -162,18 +162,22 @@ var controller = {
     })
     var stdnm = "";
     var cp,cl;
-    model.selectedBatch.student_data.forEach(function(x,i){
-      if(x.name && x.enroll_number){
-          if(x.cc){
-            cp = Object.keys(x.cc).length;
-            trl = new Date(Number(Object.keys(x.cc)[cp-1])).toLocaleString() || ''
-          } else {
-            cp = 0;
-            trl = "--:--";
-          }
-        stdnm += "<tr class='row' style='font-size:12px'><td class='col-xs-3'>" + x.enroll_number + "</td><td class='col-xs-4 text-primary' id='" + model.selectedBatch._id + "/" + x.enroll_number + "' onclick='controller.getStudentData(event)' style='cursor:pointer;text-transform:capitalize'>" + x.name + "</td><td class='col-xs-2'>" + cp + "</td><td class='col-xs-3 text-success'>" + trl + "</td></tr>";
-      }
-    })
+    if(model.selectedBatch.student_data.length === 0){
+      stdnm = "<div class='row' style='margin-top:20px'><div class='col-xs-12'>There are no Students in this Batch. <span id='addNewStudent' style='text-decoration:underline;cursor:pointer;color:dodgerblue' onclick='view.batchOptions(event)'>Add Students</span></div></div>";
+    } else {
+      model.selectedBatch.student_data.forEach(function(x,i){
+        if(x.name && x.enroll_number){
+            if(x.cc){
+              cp = Object.keys(x.cc).length;
+              trl = Object.keys(x.cc)[cp-1];
+            } else {
+              cp = 0;
+              trl = "--:--";
+            }
+          stdnm += "<tr class='row' style='font-size:12px'><td class='col-xs-3'>" + x.enroll_number + "</td><td class='col-xs-4 text-primary' id='" + model.selectedBatch._id + "/" + x.enroll_number + "' onclick='controller.getStudentData(event)' style='cursor:pointer;text-transform:capitalize'>" + x.name + "</td><td class='col-xs-2'>" + cp + "</td><td class='col-xs-3 text-success'>" + trl + "</td></tr>";
+        }
+      })
+    }
     if(ch === 0){
       cl = "rgb(160,160,160)"
     } else {
@@ -190,7 +194,7 @@ var controller = {
     } else {
       schdg = "<div class='row' style='margin-top:3px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);'><div class='col-xs-12 text-primary' style='margin-top:10px;margin-bottom:10px;font-size:24px;cursor:pointer;text-decoration:underline' onclick='view.setSchedule()'>Set Schedule</div></div></div>";
     }
-    document.getElementById('classStudentData').innerHTML = "<div class='col-xs-10 col-xs-offset-2'><div class='row'><div class='col-xs-12'><div class='row' style='font-size:14px'><div class='col-xs-4' style='color:rgb(70,70,70);padding-top:5px;padding-bottom:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160)'><span>Av. Check In's</span> - <span style='font-size:14px'>" + ch + "</span></div><div class='col-xs-8' style='color:rgb(70,70,70);padding-top:5px;padding-bottom:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);'><span>Faculty - </span><span style='font-size:14px'>" + model.SF.name + "</span></div></div></div></div><div class='row' style='margin-top:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);color:" + cl + "'><div class='col-xs-12'><div class='row' style='color:rgba(0,0,0,.7);font-weight:bold;border-bottom:solid 1px rgba(160,160,160,.5)'><div class='col-xs-3'><h4>Enroll No.</h4></div><div class='col-xs-4'><h4>Name</h4></div><div class='col-xs-2'><h4>Checks</h4></div><div class='col-xs-3'><h4>Last Check In</h4></div></div><div class='row' style='max-height:250px;overflow-y:auto'><table class='col-xs-12 table table-striped text-center'>" + stdnm + "</table></div></div></div>" + schdg + "</div>";
+    document.getElementById('classStudentData').innerHTML = "<div class='col-xs-10 col-xs-offset-2'><div class='row'><div class='col-xs-12'><div class='row' style='font-size:14px'><div class='col-xs-offset-4 col-xs-8' style='color:rgb(70,70,70);padding-top:5px;padding-bottom:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);'><span>Faculty - </span><span style='font-size:14px'>" + model.SF.name + "</span></div></div></div></div><div class='row' style='margin-top:5px;background-color:white;border-radius:3px;border: solid 1px rgb(190,190,190);box-shadow: 0px 1px 10px rgb(160,160,160);color:" + cl + "'><div class='col-xs-12'><div class='row' style='color:rgba(0,0,0,.7);font-weight:bold;border-bottom:solid 1px rgba(160,160,160,.5)'><div class='col-xs-3'><h4>Enroll No.</h4></div><div class='col-xs-4'><h4>Name</h4></div><div class='col-xs-2'><h4>Checks</h4></div><div class='col-xs-3'><h4>Last Check In</h4></div></div><div class='row' style='max-height:250px;overflow-y:auto'><table class='col-xs-12 table table-striped text-center'>" + stdnm + "</table></div></div></div>" + schdg + "</div>";
   },
 
   addNewFaculty: function(){
@@ -225,12 +229,11 @@ var controller = {
   },
 
   addNewBatch: function(){
-    var file = document.getElementById('student_list').files[0];
-    var batch = document.getElementById('year').value
-    var cls = document.getElementById('class').value
-    var sc = document.getElementById('section').value
+    const batch = document.getElementById('year').value
+    const cls = document.getElementById('class').value
+    const sc = document.getElementById('section').value
     console.log(batch);
-    var newBatchData = new XMLHttpRequest();
+    const newBatchData = new XMLHttpRequest();
 
     newBatchData.onreadystatechange = function(){
       if(newBatchData.status === 200 && newBatchData.readyState === 4 ){
@@ -247,10 +250,18 @@ var controller = {
         controller.sectionData();
       }
     }
-
-    newBatchData.open('POST','http://localhost:80/admin/addnewbatch/' + model.info.domain_name + '/' + batch + '/' + sc + '/' + cls + '/' + model.info.school,true);
-    newBatchData.setRequestHeader('Content-type','application/octet-stream');
-    newBatchData.send(file);
+    var file;
+    if(document.getElementById('student_list').files[0]){
+      console.log(true);
+      file = document.getElementById('student_list').files[0];
+      newBatchData.open('POST','http://localhost:80/admin/addnewbatch/' + model.info.domain_name + '/' + batch + '/' + sc + '/' + cls + '/' + model.info.school + "/1",true);
+      newBatchData.setRequestHeader('Content-type','application/octet-stream');
+      newBatchData.send(file);
+    } else {
+      console.log(false);
+      newBatchData.open('POST','http://localhost:80/admin/addnewbatch/' + model.info.domain_name + '/' + batch + '/' + sc + '/' + cls + '/' + model.info.school + "/0",true);
+      newBatchData.send(null)
+    }
   },
 
   assignFacultyNewBatch: function(n){
@@ -446,7 +457,7 @@ var controller = {
     let el = document.getElementsByClassName('showRequiredError');
     let tl = document.getElementsByClassName('required');
     let er=0;
-    if(n!="2" & n!=3){
+    if(n!="2" || n === 1){
       for(let i=0;i<tl.length;i++){
         if(tl[i].value.length===0){
           el[i].style.color = "red";
@@ -510,12 +521,12 @@ var controller = {
       obj.mobiles[el.id] = el.getAttribute("mobile");
       console.log(el.getAttribute("mobile"));
     })
+    obj.testdate = (new Date(Number(document.getElementById('testYear').value),Number(document.getElementById('testMonth').value - 1),Number(document.getElementById('testDate').value))).toDateString();
     obj.testname = document.getElementById('testname').value;
     obj.maxscore = document.getElementById('maxscore').value;
     obj.subject = document.getElementById('subject').value;
     obj.selectedBatch = model.selectedBatch._id;
     obj.school = model.info.school;
-    obj.testdate = (new Date(Number(document.getElementById('testYear').value),Number(document.getElementById('testMonth').value - 1),Number(document.getElementById('testDate').value))).valueOf()
     console.log(obj);
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function(){
@@ -536,7 +547,7 @@ var controller = {
   submitIssue: function(){
     let obj = {}
     obj.issue = document.getElementById('issue').value;
-    obj._id = (new Date()).valueOf();
+    obj._id = (new Date()).toLocaleString();
     obj.user = model.info._id;
     obj.domain_name = model.info.school;
 
@@ -555,6 +566,7 @@ var controller = {
   },
 
   getStudentData: function(e){
+    model.xe = e;
     model.selectedStudent = {};
     model.selectedStudent._id = e.target.id.split('/')[3];
 
@@ -668,6 +680,17 @@ var controller = {
   addStudentImage: function(){
     const file = document.getElementById('file').files[0];
     const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function(){
+      if(xhr.readyState === 4){
+        if(xhr.status === 200){
+          view.closeAddImageModal();
+          view.notifyUser('Student Image Changed',1);
+        } else {
+          view.closeAddImageModal();
+          view.notifyUser("Failed to change Student's Image",1);
+        }
+      }
+    }
     xhr.open('POST','http://localhost:80/student/addStudentImage/' + model.selectedBatch._id + "/" + model.selectedStudent.enroll_number,true);
     xhr.setRequestHeader('Content-type','application/octet-stream');
     xhr.send(file);
