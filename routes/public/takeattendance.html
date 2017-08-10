@@ -159,9 +159,9 @@
 								co.innerHTML = "checked out";
 							}
 							if(model.selectedStudent.cc[x] == 'ci'){
-								str += "<tr class='row text-success xdts' style='border-bottom:solid 1px rgb(180,180,180)'><td class='col-xs-8'>" + new Date(Number(x)).toString().replace(' GMT+0530 (IST)','') + "</td><td class='col-xs-4'>" + "checked in" + "</td></tr>";
+								str += "<tr class='row text-success xdts' style='border-bottom:solid 1px rgb(180,180,180)'><td class='col-xs-8'>" + x + "</td><td class='col-xs-4'>" + "checked in" + "</td></tr>";
 							} else {
-								str += "<tr class='row text-danger xdts' style='border-bottom:solid 1px rgb(180,180,180)'><td class='col-xs-8'>" + new Date(Number(x)).toString().replace(' GMT+0530 (IST)','') + "</td><td class='col-xs-4'>" + "checked out" + "</td></tr>";
+								str += "<tr class='row text-danger xdts' style='border-bottom:solid 1px rgb(180,180,180)'><td class='col-xs-8'>" + x + "</td><td class='col-xs-4'>" + "checked out" + "</td></tr>";
 							}
 						})
 					} else {
@@ -203,7 +203,7 @@
 
 					case "ck":
 							if(e.target.attributes.class.nodeValue.indexOf('disabled')<0){
-								let ctm = new Date().setMilliseconds(0)
+								let ctm = new Date().toLocaleString();
 										{
 											let o = {
 												batch:model.studentsBatch,
@@ -297,7 +297,7 @@
 						</div></div>
 						<div class="col-xs-3 col-xs-offset-1" id="student-info" style='padding-right:50px'>
 							<div class="row text-center">
-								<div class="col-xs-10 col-xs-offset-1" id="sm" style="padding-bottom:10px;border-bottom: solid 1px rgb(200,200,200)">
+								<div class="col-xs-12" id="sm" style="padding-bottom:10px;">
 								</div>
 								<div class="col-xs-10 col-xs-offset-1" id="xfs" style="margin-top:10px;display:none">
 									<div class="row">
