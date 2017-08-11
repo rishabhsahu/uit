@@ -3,13 +3,10 @@ var router = require('express').Router()
 var cookie = require('cookie')
 var jwt = require('jsonwebtoken')
 var mongo = require('mongodb').MongoClient
-const request = require('request');
 const serverRequest = function(res){
   request(this,function(err,resp,body){
-		console.log(body,"body")
 		if(!err && resp.statusCode === 200){
 			res.status(200)
-      res.setHeader('Cache-Control','public, max-age=31557600')
 			res.end(body)
 		} else {
 			console.log(err)
@@ -17,6 +14,15 @@ const serverRequest = function(res){
 			res.end()
 		}
 	})
+}
+
+const errRequest = function(u,m,e){
+  serverRequest.call({
+    url:u + "/" + m,
+    method: 'post',
+    body: e,
+    json: true
+  },res)
 }
 
 //main logic of the route//
@@ -45,9 +51,10 @@ router.get('/',function(req,res){
                   db.close()
                 } else {
                   serverRequest.call({
-                    url: 'http://localhost:4000/coaching/faculty_mobile',
-                    method: 'GET'
+                    url:'http://oniv.in/api/view/index/coaching/faculty_mobile',
+                    method: 'get'
                   },res)
+
                   db.close()
                 }
               })
@@ -58,8 +65,8 @@ router.get('/',function(req,res){
                   db.close()
                 } else {
                   serverRequest.call({
-                    url: 'http://localhost:4000/coaching/admin_home/' + decoded.name,
-                    method: 'GET'
+                    url:'http://oniv.in/api/view/index/coaching/admin_home/' + decoded.name,
+                    method: 'get'
                   },res)
                   console.log("admin verified")
                   db.close()
