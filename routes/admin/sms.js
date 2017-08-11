@@ -42,7 +42,7 @@ function smsFaculties(req,res){
 		jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
 			if(!err){
 				serverRequest.call({
-					url: 'http://13.126.16.198:80/sendsms/smsFaculties',
+					url: 'oniv.in/api/sendsms/smsFaculties',
 					method: 'post',
 					body: req.body,
 					json:true
@@ -76,7 +76,7 @@ function smsClass(req,res){
 				})
 				o.text = req.body.text
 				serverRequest.call({
-					url: 'http://13.126.16.198:80/sendsms/smsClass',
+					url: 'oniv.in/api/sendsms/smsClass',
 					method: 'post',
 					body: o,
 					json:true
@@ -113,7 +113,7 @@ function setSchedule(req,res){
 							req.body.sch = o
 							delete req.body.schedule
 							serverRequest.call({
-								url: 'http://13.126.16.198:80/sendsms/informschedule',
+								url: 'oniv.in/api/sendsms/informschedule',
 								method: 'post',
 								body: req.body,
 								json:true

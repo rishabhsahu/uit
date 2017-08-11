@@ -34,11 +34,6 @@ app.get('/logout',function(req,res){
   res.end()
 })
 
-app.use(express.static('public'))
-app.use('/login',express.static('public'))
-app.use('/login/faculty',express.static('public'))
-app.use('/login/admin',express.static('public'))
-
 app.listen(process.env.PORT || 80,function(){
   console.log("listening on port 80")
 })

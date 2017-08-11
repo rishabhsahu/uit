@@ -9,7 +9,7 @@ router.post('/add-test-score-manually/',function(req,res){
   console.log(req.body);
   var cookies = cookie.parse(req.headers.cookie || "")
   if(!cookies){
-    errRequest("http://13.126.16.198:80/error/nodejsErr/admin","cookies",err)
+    errRequest("oniv.in/report/error/nodejsErr/admin","cookies",err)
     res.status(401)
     res.end()
   } else {
@@ -32,7 +32,7 @@ router.post('/add-test-score-manually/',function(req,res){
             db.collection("classes").update({_id:req.body.selectedBatch},{$addToSet:onj})
             db.close()
             request({
-              url:"http://13.126.16.198:80/sendsms/scorereport",
+              url:"oniv.in/api/sendsms/scorereport",
               method:'POST',
               body:req.body,
               json: true
@@ -60,13 +60,13 @@ router.post('/add-test-score-manually/',function(req,res){
             */
           } else {
             db.close()
-            errRequest("http://13.126.16.198:80/error/mongoErr/admin","mongodb",err)
+            errRequest("oniv.in/report/error/mongoErr/admin","mongodb",err)
             res.status(500)
             res.end()
           }
         })
       } else {
-        errRequest("http://13.126.16.198:80/error/nodejsErr/admin","jwt",err)
+        errRequest("oniv.in/report/error/nodejsErr/admin","jwt",err)
         res.status(401)
         res.end()
       }
