@@ -22,7 +22,7 @@ const serverRequest = function(res){
 	})
 }
 
-const errRequest = function(u,m,e){
+const errRequest = function(u,m,e,res){
   serverRequest.call({
     url:u + "/" + m,
     method: 'post',
@@ -32,11 +32,12 @@ const errRequest = function(u,m,e){
 }
 
 function getDepartmentData(req,res){
+  console.log(req.headers);
   console.log("admin connected")
   var cookies = cookie.parse(req.headers.cookie || '')
   console.log(cookies)
   if(!cookie){
-    errRequest("oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
     res.status(500)
     res.end()
   } else {
@@ -48,7 +49,7 @@ function getDepartmentData(req,res){
             db.collection('admin').update({_id:decoded.name},{$inc:{"access":1}})
             db.collection('admin').findOne({_id:decoded.name},function(err,item){
               if(err){
-                errRequest("oniv.in/report/error/mongoErr/admin","mongodb",err,res)
+                errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
                 db.close()
                 res.status(404)
                 res.end()
@@ -60,13 +61,13 @@ function getDepartmentData(req,res){
               }
             })
           } else {
-            errRequest("oniv.in/report/error/mongoErr/admin","mongodb",err,res)
+            errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
             res.status(404)
             res.end()
           }
         })
       } else {
-        errRequest("oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+        errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
         res.status(401)
         res.end()
       }
@@ -78,7 +79,7 @@ function getFacultyData(req,res){
   console.log('ajax request');
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
     res.status(500)
     res.end()
   } else {
@@ -91,14 +92,14 @@ function getFacultyData(req,res){
             if(!err){
               res.json(item)
             } else {
-              errRequest("oniv.in/report/error/mongoErr/admin","mongodb",err,res)
+              errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
               res.status(404)
               res.end()
             }
           })
           db.close()
         } else {
-          errRequest("oniv.in/report/error/mongoErr/admin","mongodb",err,res)
+          errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
           db.close()
           db.close()
           res.status(500)
@@ -106,7 +107,7 @@ function getFacultyData(req,res){
         }
       })
     } else {
-      errRequest("oniv.in/report/error/nodejsErr/admin","jwt",err,res)
+      errRequest("http://oniv.in/report/error/nodejsErr/admin","jwt",err,res)
       res.status(401)
       res.end()
     }
@@ -118,20 +119,20 @@ function classesheld(req,res){
   console.log(req.device)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
-    errRequest("oniv.in/report/error/nodejsErr/faculty","cookies",err,res)
+    errRequest("http://oniv.in/report/error/nodejsErr/faculty","cookies",err,res)
     res.status(401)
     res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
-        errRequest("oniv.in/report/error/nodejsErr/faculty","jwt",err,res)
+        errRequest("http://oniv.in/report/error/nodejsErr/faculty","jwt",err,res)
         res.status(401)
         res.end()
       } else {
         console.log(decoded.name)
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
-            errRequest("oniv.in/report/error/mongoErr/faculty","mongodb",err,res)
+            errRequest("http://oniv.in/report/error/mongoErr/faculty","mongodb",err,res)
             db.close()
             res.status(500)
             res.end()
@@ -156,7 +157,7 @@ function classesheld(req,res){
 function getBatchData(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
     res.status(500)
     res.end()
   } else {
@@ -170,7 +171,7 @@ function getBatchData(req,res){
               res.json(item)
               db.close()
             } else {
-              errRequest("oniv.in/report/error/mongoErr/admin","mongodb",err,res)
+              errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
               db.close()
               res.status(404)
               res.end()
@@ -185,7 +186,7 @@ function getBatchData(req,res){
         }
       })
     } else {
-      errRequest("oniv.in/report/error/nodejsErr/admin","jwt",err,res)
+      errRequest("http://oniv.in/report/error/nodejsErr/admin","jwt",err,res)
       res.status(401)
       res.end()
     }
@@ -196,7 +197,7 @@ function getBatchData(req,res){
 function getAllStudents(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
     res.status(500)
     res.end()
   } else {
@@ -213,7 +214,7 @@ function getAllStudents(req,res){
               res.json(item)
               db.close()
             } else {
-              errRequest("oniv.in/report/error/mongoErr/admin","mongodb",err,res)
+              errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
               db.close()
               res.status(404)
               res.end()
@@ -227,7 +228,7 @@ function getAllStudents(req,res){
         }
       })
     } else {
-      errRequest("oniv.in/report/error/nodejsErr/admin","jwt",err,res)
+      errRequest("http://oniv.in/report/error/nodejsErr/admin","jwt",err,res)
       res.status(401)
       res.end()
     }

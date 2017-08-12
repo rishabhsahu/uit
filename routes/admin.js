@@ -33,12 +33,12 @@ router.get('/getallstudents',getAllStudents)
 router.post('/smsFaculties',smsFaculties)
 router.post('/smsClass',smsClass)
 router.post('/setSchedule',setSchedule)
-const serverRequest = function(){
+const serverRequest = function(res){
   request(this,function(err,resp,body){
 		console.log(body,"body")
 		if(!err && resp.statusCode === 200){
 			res.status(200)
-			res.end()
+			res.end(body)
 		} else {
 			console.log(err)
 			res.status(500)
@@ -59,7 +59,7 @@ let errRequest = function(u,m,e,res){
 router.get('/student_images/:image',function getStudentImage(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
     res.status(500)
     res.end()
   } else {
@@ -77,7 +77,7 @@ router.get('/student_images/:image',function getStudentImage(req,res){
         }
       })
     } else {
-      errRequest("oniv.in/report/error/nodejsErr/admin","jwt",err,res)
+      errRequest("http://oniv.in/report/error/nodejsErr/admin","jwt",err,res)
       res.status(401)
       res.end()
     }
@@ -93,7 +93,7 @@ router.post('/batchsettings',function(req,res){
   console.log(req.body)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
     res.status(500)
     res.end()
   } else {
@@ -101,7 +101,7 @@ router.post('/batchsettings',function(req,res){
     if(!err){
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(err){
-          errRequest("oniv.in/report/error/mongoErr/admin","mongodb",err,res)
+          errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
           db.close()
           res.status(500)
           res.end()
@@ -113,7 +113,7 @@ router.post('/batchsettings',function(req,res){
         }
       })
     } else {
-      errRequest("oniv.in/report/error/nodejsErr/admin","jwt",err,res)
+      errRequest("http://oniv.in/report/error/nodejsErr/admin","jwt",err,res)
       res.status(401)
       res.end()
     }
@@ -125,7 +125,7 @@ router.post('/assignFacultyNewBatch/:faculty_id',function(req,res){
   console.log('assignFacultyNewBatch request');
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
     res.status(500)
     res.end()
   } else {
@@ -154,21 +154,21 @@ router.post('/assignFacultyNewBatch/:faculty_id',function(req,res){
                 res.end()
               }
             } else {
-              errRequest("oniv.in/report/error/mongoErr/admin","mongodb",err,res)
+              errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
               db.close()
               res.status(404)
               res.end()
             }
           })
         } else {
-          errRequest("oniv.in/report/error/mongoErr/admin","mongodb",err,res)
+          errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
           db.close()
           res.status(500)
           res.end()
         }
       })
     } else {
-      errRequest("oniv.in/report/error/nodejsErr/admin","jwt",err,res)
+      errRequest("http://oniv.in/report/error/nodejsErr/admin","jwt",err,res)
       res.status(401)
       res.end()
     }
@@ -179,7 +179,7 @@ router.post('/assignFacultyNewBatch/:faculty_id',function(req,res){
 router.get('/takeattendance/all',function(req,res){
   let cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
     res.status(500)
     res.end()
   } else {
@@ -187,23 +187,26 @@ router.get('/takeattendance/all',function(req,res){
       if(!err){
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
-            errRequest("oniv.in/report/error/mongoErr/admin","mongodb",err,res)
+            errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
             db.close()
             res.status(500)
             res.end()
           } else {
             db.collection('batches').findOne({_id:req.params.school + "/" + req.params.batch + "/" + req.params.section},{"students":1},function(err,item){
               if(err){
-                errRequest("oniv.in/report/error/nodejsErr/admin","mongodb",err,res)
+                errRequest("http://oniv.in/report/error/nodejsErr/admin","mongodb",err,res)
               } else {
                 res.status(200)
-                fs.createReadStream(root + "/public/takeattendance.html").pipe(res)
+                serverRequest.call({
+                  url:"http://oniv.in/api/static/coaching/takeattendance.html",
+                  method: 'get'
+                },res)
               }
             })
           }
         })
       } else {
-        errRequest("oniv.in/report/error/nodejsErr/admin","jwt",err,res)
+        errRequest("http://oniv.in/report/error/nodejsErr/admin","jwt",err,res)
         res.status(401)
         res.end()
       }
@@ -215,7 +218,7 @@ router.delete('/deassignbatch/:id/:domain_name/:section/:batch',function(req,res
   console.log('De-Assign Faculty Batch request');
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
     res.status(500)
     res.end()
   } else {
@@ -249,21 +252,21 @@ router.delete('/deassignbatch/:id/:domain_name/:section/:batch',function(req,res
                 }
               })
             } else {
-              errRequest("oniv.in/report/error/mongoErr/admin","mongodb",err,res)
+              errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
               db.close()
               res.status(404)
               res.end()
             }
           })
         } else {
-          errRequest("oniv.in/report/error/mongoErr/admin","mongodb",err,res)
+          errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
           db.close()
           res.status(500)
           res.end()
         }
       })
     } else {
-      errRequest("oniv.in/report/error/nodejsErr/admin","jwt",err,res)
+      errRequest("http://oniv.in/report/error/nodejsErr/admin","jwt",err,res)
       res.status(401)
       res.end()
     }
@@ -274,7 +277,7 @@ router.delete('/deassignbatch/:id/:domain_name/:section/:batch',function(req,res
 router.delete('/removefaculty/:id',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
     res.status(500)
     res.end()
   } else {
@@ -290,14 +293,14 @@ router.delete('/removefaculty/:id',function(req,res){
           res.status(200)
           res.end()
         } else {
-          errRequest("oniv.in/report/error/mongoErr/admin","mongodb",err,res)
+          errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
           db.close()
           res.status(500)
           res.end()
         }
       })
     } else {
-      errRequest("oniv.in/report/error/nodejsErr/admin","jwt",err,res)
+      errRequest("http://oniv.in/report/error/nodejsErr/admin","jwt",err,res)
       res.status(401)
       res.end()
     }
@@ -308,7 +311,7 @@ router.delete('/removefaculty/:id',function(req,res){
 router.delete('/removebatch/:domain_name/:section/:batch',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
     res.status(500)
     res.end()
   } else {
@@ -324,14 +327,14 @@ router.delete('/removebatch/:domain_name/:section/:batch',function(req,res){
           res.end()
           db.close()
         } else {
-          errRequest("oniv.in/report/error/mongoErr/admin","mongodb",err,res)
+          errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
           db.close()
           res.status(500)
           res.end()
         }
       })
     } else {
-      errRequest("oniv.in/report/error/nodejsErr/admin","jwt",err,res)
+      errRequest("http://oniv.in/report/error/nodejsErr/admin","jwt",err,res)
       res.status(401)
       res.end()
     }

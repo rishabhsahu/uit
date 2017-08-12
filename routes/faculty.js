@@ -11,20 +11,20 @@ var dt = new Date()
 router.get('/requestFacultyData',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
-    errRequest("oniv.in/report/error/nodejsErr/faculty","cookies",err)
+    errRequest("http://oniv.in/report/error/nodejsErr/faculty","cookies",err)
     res.status(401)
     res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
-        errRequest("oniv.in/report/error/nodejsErr/faculty","jwt",err)
+        errRequest("http://oniv.in/report/error/nodejsErr/faculty","jwt",err)
         res.status(401)
         res.end()
       } else {
         console.log(decoded.name)
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
-            errRequest("oniv.in/report/error/mongoErr/faculty","mongodb",err)
+            errRequest("http://oniv.in/report/error/mongoErr/faculty","mongodb",err)
             db.close()
             res.status(500)
             res.end()
@@ -43,20 +43,20 @@ router.get('/classesheld/:college/:department/:batch',function(req,res){
   console.log(req.device)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
-    errRequest("oniv.in/report/error/nodejsErr/faculty","cookies",err)
+    errRequest("http://oniv.in/report/error/nodejsErr/faculty","cookies",err)
     res.status(401)
     res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
-        errRequest("oniv.in/report/error/nodejsErr/faculty","jwt",err)
+        errRequest("http://oniv.in/report/error/nodejsErr/faculty","jwt",err)
         res.status(401)
         res.end()
       } else {
         console.log(decoded.name)
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
-            errRequest("oniv.in/report/error/mongoErr/faculty","mongodb",err)
+            errRequest("http://oniv.in/report/error/mongoErr/faculty","mongodb",err)
             db.close()
             res.status(500)
             res.end()
@@ -82,26 +82,26 @@ router.get('/classesheld/:college/:department/:batch',function(req,res){
 router.get('/getStudentList/:college/:department/:batch',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
-    errRequest("oniv.in/report/error/nodejsErr/faculty","cookies",err)
+    errRequest("http://oniv.in/report/error/nodejsErr/faculty","cookies",err)
     res.status(401)
     res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
-        errRequest("oniv.in/report/error/nodejsErr/faculty","jwt",err)
+        errRequest("http://oniv.in/report/error/nodejsErr/faculty","jwt",err)
         res.status(401)
         res.end()
       } else {
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
-            errRequest("oniv.in/report/error/mongoErr/faculty","mongodb",err)
+            errRequest("http://oniv.in/report/error/mongoErr/faculty","mongodb",err)
             db.close()
             res.status(500)
             res.end()
           } else {
             db.collection("classes").findOne({_id:req.params.college + '/' + req.params.department + '/' + req.params.batch},function(err,item){
               if(err){
-                errRequest("oniv.in/report/error/mongoErr/faculty","mongodb",err)
+                errRequest("http://oniv.in/report/error/mongoErr/faculty","mongodb",err)
                 db.close()
                 res.status(404)
                 res.end()
@@ -123,13 +123,13 @@ router.post('/submitData/:college/:department/:batch',function(req,res){
   console.log(d)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
-    errRequest("oniv.in/report/error/nodejsErr/faculty","cookies",err)
+    errRequest("http://oniv.in/report/error/nodejsErr/faculty","cookies",err)
     res.status(401)
     res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
-        errRequest("oniv.in/report/error/mongoErr/faculty","mongodb",err)
+        errRequest("http://oniv.in/report/error/mongoErr/faculty","mongodb",err)
         res.status(401)
         res.end()
       } else {
@@ -172,7 +172,7 @@ router.post('/submitData/:college/:department/:batch',function(req,res){
                 url: api_link
               },function(err,resp,body){
                 if(err){
-                  errRequest("oniv.in/report/error/nodejsErr/faculty","request",err)
+                  errRequest("http://oniv.in/report/error/nodejsErr/faculty","request",err)
                   db.collection('SMS_failed').insert({_id:(new Date()).valueOf(),"url":api_link})
                   db.close()
                   res.status(504)
@@ -203,19 +203,19 @@ router.post('/submitData/:college/:department/:batch',function(req,res){
 router.get('/report/:college/:department/:batch/:subject',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
-    errRequest("oniv.in/report/error/nodejsErr/faculty","cookies",err)
+    errRequest("http://oniv.in/report/error/nodejsErr/faculty","cookies",err)
     res.status(401)
     res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
-        errRequest("oniv.in/report/error/nodejsErr/faculty","jwt",err)
+        errRequest("http://oniv.in/report/error/nodejsErr/faculty","jwt",err)
         res.status(401)
         res.end()
       } else {
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
-            errRequest("oniv.in/report/error/mongoErr/faculty","mongodb",err)
+            errRequest("http://oniv.in/report/error/mongoErr/faculty","mongodb",err)
             db.close()
             res.status(500)
             res.end()
@@ -242,13 +242,13 @@ router.post('/submitscores/:school/:batch/:section/:subject',function(req,res){
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
-        errRequest("oniv.in/report/error/nodejsErr/faculty","jwt",err)
+        errRequest("http://oniv.in/report/error/nodejsErr/faculty","jwt",err)
         res.status(401)
         res.end()
       } else {
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
-            errRequest("oniv.in/report/error/nodejsErr/faculty","mongodb",err)
+            errRequest("http://oniv.in/report/error/nodejsErr/faculty","mongodb",err)
             db.close()
             res.status(500)
             res.end()
@@ -286,19 +286,19 @@ router.post('/markabsent',function(req,res){
   console.log(req.body)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookies){
-    errRequest("oniv.in/report/error/nodejsErr/faculty","cookies",err)
+    errRequest("http://oniv.in/report/error/nodejsErr/faculty","cookies",err)
     res.status(401)
     res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
-        errRequest("oniv.in/report/error/nodejsErr/faculty","jwt",err)
+        errRequest("http://oniv.in/report/error/nodejsErr/faculty","jwt",err)
         res.status(401)
         res.end()
       } else {
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
-            errRequest("oniv.in/report/error/nodejsErr/faculty","mongodb",err)
+            errRequest("http://oniv.in/report/error/nodejsErr/faculty","mongodb",err)
             db.close()
             res.status(500)
             res.end()
@@ -333,7 +333,7 @@ router.post('/setupprofile',function(req,res){
   console.log(req.body)
   var cookies = cookie.parse(req.headers.cookie || "")
   if(!cookies){
-    errRequest("oniv.in/report/error/nodejsErr/faculty","cookies",err)
+    errRequest("http://oniv.in/report/error/nodejsErr/faculty","cookies",err)
     res.status(401)
     res.end()
   } else {
@@ -346,7 +346,7 @@ router.post('/setupprofile',function(req,res){
         console.log(decoded.name)
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
-            errRequest("oniv.in/report/error/mongoErr/faculty","mongodb",err)
+            errRequest("http://oniv.in/report/error/mongoErr/faculty","mongodb",err)
             res.status(500)
             res.end()
           } else {
@@ -379,20 +379,20 @@ router.post('/setschedule',function(req,res){
   console.log(req.body)
   var cookies = cookie.parse(req.headers.cookie || "")
   if(!cookies){
-    errRequest("oniv.in/report/error/nodejsErr/faculty","cookies",err)
+    errRequest("http://oniv.in/report/error/nodejsErr/faculty","cookies",err)
     res.status(401)
     res.end()
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
       if(err){
-        errRequest("oniv.in/report/error/nodejsErr/faculty","jwt",err)
+        errRequest("http://oniv.in/report/error/nodejsErr/faculty","jwt",err)
         res.status(401)
         res.end()
       } else {
         console.log(decoded.name)
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
-            errRequest("oniv.in/report/error/mongoErr/faculty","mongodb",err)
+            errRequest("http://oniv.in/report/error/mongoErr/faculty","mongodb",err)
             res.status(500)
             res.end()
           } else {
