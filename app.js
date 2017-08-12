@@ -12,26 +12,41 @@ const faculty = require('./routes/faculty')
 const admin = require('./routes/admin')
 const batch = require('./routes/batch')
 const customscore = require('./routes/customscore.js')
-const sendsms = require('./routes/sendsms')
 const download = require('./routes/download')
-const errorRecorder = require('./routes/era')
+const ips = require('child_process').execSync("ifconfig | grep inet | grep -v inet6 | awk '{gsub(/addr:/,\"\");print $2}'").toString().trim().split("\n");
+const serverRequest = function(res){
+  request(this,function(err,resp,body){
+		if(!err && resp.statusCode === 200){
+			res.status(200)
+			res.end(body)
+		} else {
+			console.log(err)
+			res.status(504)
+			res.end()
+		}
+	})
+}
 
-app.set('views','./views')
-app.set('view engine','ejs')
 app.use(device.capture())
 app.use(authentication)
-app.use('/',bp.json(),login)
-app.use('/sendsms',bp.json(),sendsms)
+app.use('/login',bp.json(),login)
 app.use('/admin',bp.json(),admin)
 app.use('/custom-testscore',bp.json(),customscore)
 app.use('/faculty',bp.json(),faculty)
 app.use('/student',bp.json(),batch)
 app.use('/download',download)
-app.get('/logout',function(req,res){
+app.use('/logout',function(req,res){
   console.log('logout')
   res.setHeader('Set-cookie',cookie.serialize('user','',{expires: new Date(1),httpOnly:true}))
   res.status(200)
   res.end()
+})
+
+app.get('/',function(req,res){
+  serverRequest.call({
+    url:'http://oniv.in/public/index.html',
+    methid: 'get',
+  },res)
 })
 
 app.listen(process.env.PORT || 80,function(){
