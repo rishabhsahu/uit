@@ -121,7 +121,7 @@
 								}
 							}
 						}
-						xhr.open('GET',"http://localhost:80/admin/getBatchData/" + x._id,true);
+						xhr.open('GET',"http://127.0.0.1/admin/getBatchData/" + x._id,true);
 						xhr.send(null);
 					})
 				},
@@ -132,7 +132,7 @@
 					} else if(!model.selectedStudent.image || model.selectedStudent.image.length===0){
 						im = "flat-face-icon-23.png";
 					}
-					document.getElementById('sm').innerHTML = "<img class='img-responsive img-thumbnail' id='student_image' style='z-index:1;max-height:250px' src='http://localhost:80/admin/student_images/" + im + "'>";
+					document.getElementById('sm').innerHTML = "<img class='img-responsive img-thumbnail' id='student_image' style='z-index:1;max-height:250px' src='http://127.0.0.1/admin/student_images/" + im + "'>";
 					document.getElementById('xfs').style.display = "block";
 					document.getElementById('xns').style.display = "block";
 					let str = "<table class='table col-xs-12'>";
@@ -184,7 +184,7 @@
 							view.lH();
 						}
 					}
-					xhr.open('GET',"http://localhost:80/student/" + b + "/" + s,true);
+					xhr.open('GET',"http://127.0.0.1/student/" + b + "/" + s,true);
 					xhr.send(null);
 				}
 			}
@@ -219,7 +219,7 @@
 													view.lH();
 												}
 											}
-											xhr.open('POST',"http://localhost:80/student/status/" + e.target.attributes.cc.nodeValue,true);
+											xhr.open('POST',"http://127.0.0.1/student/status/" + e.target.attributes.cc.nodeValue,true);
 											xhr.setRequestHeader('Content-type','application/json')
 											xhr.send(JSON.stringify(o));
 										}
@@ -263,7 +263,7 @@
 						view.getAllBatchesData();
 					}
 				}
-				xhr.open('GET',"http://localhost:80/admin/getallstudents",true);
+				xhr.open('GET',"http://127.0.0.1/admin/getallstudents",true);
 				xhr.send(null);
 			}
 		</script>

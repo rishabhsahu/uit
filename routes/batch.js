@@ -68,7 +68,7 @@ router.post('/status/:cc',function(req,res){
   console.log(req.body)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
     res.status(500)
     res.end()
   } else {
@@ -76,13 +76,13 @@ router.post('/status/:cc',function(req,res){
     if(!err){
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(err){
-          errRequest("oniv.in/report/error/mongoErr/admin","mongodb",err,res)
+          errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
           db.close()
           res.status(500)
           res.end()
         } else {
           serverRequest.call({
-            url: "oniv.in/sendsms/informparents/" + req.params.cc,
+            url: "http://oniv.in/api/sendsms/informparents/" + req.params.cc,
             method: 'POST',
             body: req.body,
             json: true
@@ -110,7 +110,7 @@ router.post('/status/:cc',function(req,res){
         }
       })
     } else {
-      errRequest("oniv.in/report/error/nodejsErr/admin","jwt",err,res)
+      errRequest("http://oniv.in/report/error/nodejsErr/admin","jwt",err,res)
       res.status(401)
       res.end()
     }
@@ -122,7 +122,7 @@ router.post('/addStudentImage/:sc/:b/:se/:en',function(req,res){
   console.log(req.body)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
     res.status(500)
     res.end()
   } else {
@@ -130,7 +130,7 @@ router.post('/addStudentImage/:sc/:b/:se/:en',function(req,res){
     if(!err){
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(err){
-          errRequest("oniv.in/report/error/mongoErr/admin","mongodb",err,res)
+          errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
           db.close()
           res.status(500)
           res.end()
@@ -139,7 +139,7 @@ router.post('/addStudentImage/:sc/:b/:se/:en',function(req,res){
           form.uploadDir = __dirname + "/public/student_images"
           form.parse(req,function(err,fields,forms){
             if(err){
-              errRequest("oniv.in/report/error/nodejsErr/admin","formidables",err,res)
+              errRequest("http://oniv.in/report/error/nodejsErr/admin","formidables",err,res)
               res.status(500)
               res.end()
             }
@@ -160,7 +160,7 @@ router.post('/addStudentImage/:sc/:b/:se/:en',function(req,res){
         }
       })
     } else {
-      errRequest("oniv.in/report/error/nodejsErr/admin","jwt",err,res)
+      errRequest("http://oniv.in/report/error/nodejsErr/admin","jwt",err,res)
       res.status(401)
       res.end()
     }
