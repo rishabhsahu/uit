@@ -1,9 +1,10 @@
 //importing modules
-var router = require('express').Router()
-var mongo = require('mongodb').MongoClient
-var cookie = require('cookie')
-var jwt = require('jsonwebtoken')
+const router = require('express').Router()
+const mongo = require('mongodb').MongoClient
+const cookie = require('cookie')
+const jwt = require('jsonwebtoken')
 const request = require('request');
+const ips = require('child_process').execSync("ifconfig | grep inet | grep -v inet6 | awk '{gsub(/addr:/,\"\");print $2}'").toString().trim().split("\n");
 const serverRequest = function(res){
   request(this,function(err,resp,body){
 		if(!err && resp.statusCode === 200){
@@ -17,7 +18,7 @@ const serverRequest = function(res){
 	})
 }
 
-const errRequest = function(u,m,e){
+const errRequest = function(u,m,e,res){
   serverRequest.call({
     url:u + "/" + m,
     method: 'post',
@@ -33,7 +34,7 @@ router.post('/',function(req,res){
   var password = req.body.password
   mongo.connect('mongodb://localhost:27018/data',function(err,db){
     if(err){
-      errRequest("http://oniv.in/report/errors/mongoErr","mongodb",err)
+      errRequest("http://oniv.in/report/errors/mongoErr","mongodb",err,res)
     } else {
       console.log("connected to mongodb for authentication")
       if(req.body.password.indexOf("T-") > -1){
@@ -42,7 +43,7 @@ router.post('/',function(req,res){
             res.status(200)
             res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
             serverRequest.call({
-              url:'http://oniv.in/api/view/index/coaching/faculty_mobile',
+              url:'http://oniv.in/api/view/index/coaching/faculty_mobile/' + username + "/" + ips,
               method: 'get'
             },res)
           } else {
@@ -55,7 +56,7 @@ router.post('/',function(req,res){
         if(req.body.username.indexOf(".admin") === -1){
           db.collection("faculty").findOne({_id:username},function(err,item){
             if(err){
-              errRequest("http://13.126.16.198:80/errors/mongoErr","mongodb",err)
+              errRequest("http://oniv.in/errors/mongoErr","mongodb",err,res)
               db.close()
             } else {
               if(item == null || item == undefined){
@@ -68,7 +69,7 @@ router.post('/',function(req,res){
                   res.status(200)
                   res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
                   serverRequest.call({
-                    url:'http://oniv.in/api/view/index/coaching/faculty_mobile',
+                    url:'http://oniv.in/api/view/index/coaching/faculty_mobile/' + username + "/" + ips,
                     method: 'get'
                   },res)
                   db.close()
@@ -83,7 +84,7 @@ router.post('/',function(req,res){
         } else {
           db.collection("admin").findOne({_id:username},function(err,item){
             if(err){
-              errRequest("http://oniv.in/report/errors/mongoErr","mongodb",err)
+              errRequest("http://oniv.in/report/errors/mongoErr","mongodb",err,res)
               db.close()
             } else {
               if(item == null || item == undefined){
@@ -95,7 +96,7 @@ router.post('/',function(req,res){
                   res.status(200)
                   res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
                   serverRequest.call({
-                    url:'http://oniv.in/api/view/index/coaching/admin_home',
+                    url:'http://oniv.in/api/view/index/coaching/admin_home/' + username + "/" + ips,
                     method: 'get'
                   },res)
                   db.close()
