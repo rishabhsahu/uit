@@ -126,11 +126,11 @@ function addNewBatch(req,res){
   									if(ent[ni]){
   										switch(ni){
   											case 6:
-  												obj.mobiles.parent2 = ent[ni]
+                          obj.mobiles.sn = ent[ni]
   												break;
 
   											case 7:
-  												obj.mobiles.sn = ent[ni]
+  												obj.mobiles.parent2 = ent[ni]
   												break;
 
   											case 8:
@@ -202,7 +202,7 @@ function addNewFaculty(req,res){
           db.collection('faculty').insert(req.body)
           db.collection('admin').update({_id:decoded.name},{$addToSet:{"faculties":{"id": req.body._id,"name": req.body.name,"recent_messages":{},"total_messages":{}}}})
           request({
-            url:'oniv.in/api/sendsms/facultyotp',
+            url:'http://oniv.in/api/sendsms/facultyotp',
             body: {name:req.body.name,username:req.body._id,mobile:req.body.mobile,otp:req.body.otp,school:req.body.school},
             json:true,
             method:'POST'
