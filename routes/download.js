@@ -270,7 +270,7 @@ router.get('/examscores/all/:school/:batch/:section',function(req,res){
                           s[sb].scores.forEach(function(dl,dt){
                             ws[sb].cell(1,4+dt).string("Test - " + dl.test_name).style(styleh)
                             tnames.push(dl.test_name)
-                            ws[sb].cell(2,4+dt).string((new Date(Number(dl.test_id.split('/')[3]))).toDateString()).style(styled)
+                            ws[sb].cell(2,4+dt).string(dl.testdate).style(styled)
                             ws[sb].cell(3,4+dt).string(dl.max_score).style(style2)
                             ws[sb].column(4+dt).setWidth(15)
                           })
