@@ -42,12 +42,6 @@ app.use('/logout',function(req,res){
   res.end()
 })
 
-app.get('/',function(req,res){
-  serverRequest.call({
-    url:'http://oniv.in/public/index.html',
-    methid: 'get',
-  },res)
-})
 
 app.listen(process.env.PORT || 80,function(){
   console.log("listening on port 80")

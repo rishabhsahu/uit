@@ -35,16 +35,16 @@ router.get('/',function(req,res){
   console.log(cookies)
   if(!cookies){
     serverRequest.call({
-  url:'http://oniv.in/index.html',
-  methid: 'get',
-},res)
+      url:'http://oniv.in/api/static/index.html',
+      methid: 'get',
+    },res)
   } else {
     jwt.verify(cookies.user,'uit attendance login',function(err,decoded){ //JWT is verified. If verified and true, then its decoded
       if(err){
         serverRequest.call({
-  url:'http://oniv.in/index.html',
-  methid: 'get',
-},res)
+          url:'http://oniv.in/api/static/index.html',
+          methid: 'get',
+        },res)
       } else {
         console.log("JWT decoded:" + decoded.name) //decoded is Object with one key "name" whose value is "username" of client user
         mongo.connect("mongodb://localhost:27018/uit",function(err,db){
@@ -58,13 +58,13 @@ router.get('/',function(req,res){
               db.collection("faculty").findOne({_id:decoded.name},function(err,item){
                 if(err){
                     serverRequest.call({
-                      url:'http://oniv.in/api/public/index.html',
+                      url:'http://oniv.in/api/static/index.html',
                       methid: 'get',
                     },res)
                   db.close()
                 } else {
                   serverRequest.call({
-                    url:'http://oniv.in/api/view/index/coaching/faculty_mobile' + decoded.name + "/" + ips,
+                    url:'http://oniv.in/api/static/coaching/faculty_mobile/' + decoded.name + "/" + ips,
                     method: 'get'
                   },res)
 
@@ -75,14 +75,14 @@ router.get('/',function(req,res){
               db.collection("admin").findOne({_id:decoded.name},function(err,item){
                 if(err){
                   serverRequest.call({
-                    url:'http://oniv.in/api/public/index.html',
+                    url:'http://oniv.in/api/static/index.html',
                     methid: 'get',
                   },res)
                   db.close()
                 } else {
                   console.log(true);
                   serverRequest.call({
-                    url:'http://oniv.in/api/view/index/coaching/admin_home/' + decoded.name + "/" + ips,
+                    url:'http://oniv.in/api/static/coaching/admin_home/' + decoded.name + "/" + ips,
                     method: 'get'
                   },res)
                   console.log("admin verified")
