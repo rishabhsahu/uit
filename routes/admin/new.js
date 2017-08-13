@@ -83,7 +83,7 @@ function addNewBatch(req,res){
         })
         form.on('file',function(name,file){
           const nme = path.basename(file.path)
-          const data = fs.readFileSync(root + "/data/" + nme)
+          let data = fs.readFileSync(root + "/data/" + nme)
           data = data.toString()
           const list = data.split("\n")
   				const class_data = {}
