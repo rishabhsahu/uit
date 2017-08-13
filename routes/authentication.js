@@ -47,7 +47,7 @@ router.get('/',function(req,res){
         },res)
       } else {
         console.log("JWT decoded:" + decoded.name) //decoded is Object with one key "name" whose value is "username" of client user
-        mongo.connect("mongodb://localhost:27018/uit",function(err,db){
+        mongo.connect("mongodb://localhost:27018/data",function(err,db){
           if(err){
             console.log(err)
             res.render('index',{message:"Internal Server Error"})
