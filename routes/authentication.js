@@ -58,7 +58,7 @@ router.get('/',function(req,res){
               db.collection("faculty").findOne({_id:decoded.name},function(err,item){
                 if(err){
                     serverRequest.call({
-                      url:'http://oniv.in/api/view/home/index.html',
+                      url:'http://oniv.in/api/public/index.html',
                       methid: 'get',
                     },res)
                   db.close()
@@ -75,7 +75,7 @@ router.get('/',function(req,res){
               db.collection("admin").findOne({_id:decoded.name},function(err,item){
                 if(err){
                   serverRequest.call({
-                    url:'http://oniv.in/api/view/home/index.html',
+                    url:'http://oniv.in/api/public/index.html',
                     methid: 'get',
                   },res)
                   db.close()
