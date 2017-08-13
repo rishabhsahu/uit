@@ -64,7 +64,7 @@ router.get('/',function(req,res){
                   db.close()
                 } else {
                   serverRequest.call({
-                    url:'http://oniv.in/api/static/coaching/faculty_mobile/' + decoded.name + "/" + ips,
+                    url:'http://oniv.in/api/static/coaching/faculty_mobile.html',
                     method: 'get'
                   },res)
 
@@ -82,7 +82,7 @@ router.get('/',function(req,res){
                 } else {
                   console.log(true);
                   serverRequest.call({
-                    url:'http://oniv.in/api/static/coaching/admin_home/' + decoded.name + "/" + ips,
+                    url:'http://oniv.in/api/static/coaching/admin_home.html',
                     method: 'get'
                   },res)
                   console.log("admin verified")
