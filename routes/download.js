@@ -1,11 +1,11 @@
-var router = require('express').Router()
-var mongo = require('mongodb').MongoClient
-var jwt = require('jsonwebtoken')
-var cookie = require('cookie')
-var fs = require('fs')
-var xl = require('excel4node')
-var dayName = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
-var months = ["January","February","March","April","May","June","July","Augut","September","October","November","December"]
+const router = require('express').Router()
+const mongo = require('mongodb').MongoClient
+const jwt = require('jsonwebtoken')
+const cookie = require('cookie')
+const fs = require('fs')
+const xl = require('excel4node')
+const dayName = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+const months = ["January","February","March","April","May","June","July","Augut","September","October","November","December"]
 
 router.get('/attendanceOverview/:school/:batch/:section/:faculty_id/:subject',function(req,res){
   console.log(req.url)
@@ -14,7 +14,7 @@ router.get('/attendanceOverview/:school/:batch/:section/:faculty_id/:subject',fu
     if(!err){
       console.log("Excell sheet requested")
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
-        var classes_held=[];
+        const classes_held=[];
         if(!err){
           db.collection('faculty').findOne({_id:req.params.faculty_id},{"current_classes":1},function(err,item){
             if(!err){
@@ -27,10 +27,10 @@ router.get('/attendanceOverview/:school/:batch/:section/:faculty_id/:subject',fu
             })
           db.collection('classes').findOne({_id:req.params.school + '/' + req.params.batch + '/' + req.params.section},function(err,itm){
             if(!err){
-                    var data = itm.student_data
-                    var wb = new xl.Workbook()
-                    var ws = wb.addWorksheet('attendance-sheet')
-                    var style = wb.createStyle({font: {color: '#FF0800',size: 12},numberFormat: '$#,##0.00; ($#,##0.00); -'})
+                    const data = itm.student_data
+                    const wb = new xl.Workbook()
+                    const ws = wb.addWorksheet('attendance-sheet')
+                    const style = wb.createStyle({font: {color: '#FF0800',size: 12},numberFormat: '$#,##0.00; ($#,##0.00); -'})
                     ws.cell(1,1).string('Enrollment Number').style(style)
                     ws.column(1).setWidth(25)
                     ws.cell(1,2).string('Name').style(style)
