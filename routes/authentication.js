@@ -58,7 +58,7 @@ router.get('/',function(req,res){
               db.collection("faculty").findOne({_id:decoded.name},function(err,item){
                 if(err){
                     serverRequest.call({
-                      url:'http://oniv.in/index.html',
+                      url:'http://oniv.in/api/view/home/index.html',
                       methid: 'get',
                     },res)
                   db.close()
@@ -74,7 +74,10 @@ router.get('/',function(req,res){
             } else {
               db.collection("admin").findOne({_id:decoded.name},function(err,item){
                 if(err){
-                  res.render('index',{message:"Interval Server Error"})
+                  serverRequest.call({
+                    url:'http://oniv.in/api/view/home/index.html',
+                    methid: 'get',
+                  },res)
                   db.close()
                 } else {
                   console.log(true);
