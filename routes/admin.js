@@ -63,7 +63,7 @@ router.get('/student_images/:image',function getStudentImage(req,res){
     res.status(500)
     res.end()
   } else {
-  jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+  jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
     if(!err){
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(!err){
@@ -97,7 +97,7 @@ router.post('/batchsettings',function(req,res){
     res.status(500)
     res.end()
   } else {
-  jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+  jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
     if(!err){
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(err){
@@ -129,7 +129,7 @@ router.post('/assignFacultyNewBatch/:faculty_id',function(req,res){
     res.status(500)
     res.end()
   } else {
-  jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+  jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
     if(!err){
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(!err){
@@ -183,7 +183,7 @@ router.get('/takeattendance/all',function(req,res){
     res.status(500)
     res.end()
   } else {
-    jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+    jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
       if(!err){
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
@@ -222,7 +222,7 @@ router.delete('/deassignbatch/:id/:domain_name/:section/:batch',function(req,res
     res.status(500)
     res.end()
   } else {
-  jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+  jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
     if(!err){
       console.log("faculty data requested.")
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
@@ -281,7 +281,7 @@ router.delete('/removefaculty/:id',function(req,res){
     res.status(500)
     res.end()
   } else {
-  jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+  jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
     if(!err){
       console.log("delete faculty requested.")
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
@@ -315,7 +315,7 @@ router.delete('/removebatch/:domain_name/:section/:batch',function(req,res){
     res.status(500)
     res.end()
   } else {
-  jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+  jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
     if(!err){
       console.log("delete faculty requested.")
       mongo.connect('mongodb://localhost:27018/data',function(err,db){

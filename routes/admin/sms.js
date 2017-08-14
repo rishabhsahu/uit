@@ -39,7 +39,7 @@ function smsFaculties(req,res){
 		res.status(401)
 		res.end()
 	} else {
-		jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+		jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
 			if(!err){
 				serverRequest.call({
 					url: 'http://oniv.in/api/sendsms/smsFaculties',
@@ -61,7 +61,7 @@ function smsClass(req,res){
 		res.status(401)
 		res.end()
 	} else {
-		jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+		jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
 			if(!err){
 				const o = {}
 				o.mobiles = []
@@ -95,7 +95,7 @@ function setSchedule(req,res){
 		res.status(401)
 		res.end()
 	} else {
-		jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+		jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
 			if(!err){
 				const o = []
 				Object.keys(req.body.sch).forEach((x,i)=>{

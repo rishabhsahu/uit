@@ -41,7 +41,7 @@ router.post('/',function(req,res){
         db.collection('faculty').findOne({_id:username,otp:password},{username:1},function(err,item){
           if(!err){
             res.status(200)
-            res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
+            res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU')),{expiresIn: '1hr',httpOnly:true})
             serverRequest.call({
               url:'http://oniv.in/api/view/index/coaching/faculty_mobile/' + username + "/" + ips,
               method: 'get'
@@ -53,7 +53,7 @@ router.post('/',function(req,res){
           }
         })
       } else {
-        if(req.body.username.indexOf(".admin") === -1){
+        if(req.body.username.indexOf("admin") === -1){
           db.collection("faculty").findOne({_id:username},function(err,item){
             if(err){
               errRequest("http://oniv.in/errors/mongoErr","mongodb",err,res)
@@ -67,7 +67,7 @@ router.post('/',function(req,res){
                 console.log(item)
                 if(item.password == req.body.password){
                   res.status(200)
-                  res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
+                  res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU')),{expiresIn: '1hr',httpOnly:true})
                   serverRequest.call({
                     url:'http://oniv.in/api/view/index/coaching/faculty_mobile/' + username + "/" + ips,
                     method: 'get'
@@ -94,7 +94,7 @@ router.post('/',function(req,res){
                 console.log(item)
                 if(item.password == req.body.password){
                   res.status(200)
-                  res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'uit attendance login')),{expiresIn: '1hr',httpOnly:true})
+                  res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU')),{expiresIn: '1hr',httpOnly:true})
                   serverRequest.call({
                     url:'http://oniv.in/api/view/index/coaching/admin_home/' + username + "/" + ips,
                     method: 'get'

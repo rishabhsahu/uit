@@ -8,7 +8,7 @@ let months = ["january","february","march","april","may","june","july","august",
 
 router.post('/notifyclass',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
-  jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+  jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
     if(!err){
       var mobile = ""
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
@@ -114,7 +114,7 @@ router.post("/facultyotp",function(req,res){
 
 router.post('/messageselected',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
-  jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+  jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
     if(!err){
       var mobile = ""
       req.body.mobiles.forEach(function(x,i){
@@ -158,7 +158,7 @@ router.post('/messageselected',function(req,res){
 
 router.post('/sendsmstoclass',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
-  jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+  jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
     if(!err){
       var mobile = ""
       req.body.mobiles.forEach(function(x,i){
@@ -236,7 +236,7 @@ router.post('/scorereport-admin',function(req,res){
 
 router.post('/sendsmstofaculties',function(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
-  jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+  jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
     if(!err){
       var mobile = ""
       req.body.mobiles.forEach(function(x,i){

@@ -40,7 +40,7 @@ function addNewBatch(req,res){
     res.status(500)
     res.end()
   } else {
-  jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+  jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
     if(!err){
       if(req.params.m == 0){
         const class_data = {}
@@ -188,7 +188,7 @@ function addNewFaculty(req,res){
     res.end()
   } else {
   var cookies = cookie.parse(req.headers.cookie || '')
-  jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+  jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
     if(!err){
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(err){
@@ -238,7 +238,7 @@ function addNewStudent(req,res){
     res.status(500)
     res.end()
   } else {
-    jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+    jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
       if(!err){
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){

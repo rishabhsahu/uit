@@ -15,7 +15,7 @@ router.get('/requestFacultyData',function(req,res){
     res.status(401)
     res.end()
   } else {
-    jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+    jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
       if(err){
         errRequest("http://oniv.in/report/error/nodejsErr/faculty","jwt",err)
         res.status(401)
@@ -47,7 +47,7 @@ router.get('/classesheld/:college/:department/:batch',function(req,res){
     res.status(401)
     res.end()
   } else {
-    jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+    jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
       if(err){
         errRequest("http://oniv.in/report/error/nodejsErr/faculty","jwt",err)
         res.status(401)
@@ -86,7 +86,7 @@ router.get('/getStudentList/:college/:department/:batch',function(req,res){
     res.status(401)
     res.end()
   } else {
-    jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+    jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
       if(err){
         errRequest("http://oniv.in/report/error/nodejsErr/faculty","jwt",err)
         res.status(401)
@@ -127,7 +127,7 @@ router.post('/submitData/:college/:department/:batch',function(req,res){
     res.status(401)
     res.end()
   } else {
-    jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+    jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
       if(err){
         errRequest("http://oniv.in/report/error/mongoErr/faculty","mongodb",err)
         res.status(401)
@@ -207,7 +207,7 @@ router.get('/report/:college/:department/:batch/:subject',function(req,res){
     res.status(401)
     res.end()
   } else {
-    jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+    jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
       if(err){
         errRequest("http://oniv.in/report/error/nodejsErr/faculty","jwt",err)
         res.status(401)
@@ -240,7 +240,7 @@ router.post('/submitscores/:school/:batch/:section/:subject',function(req,res){
     res.status(401)
     res.end()
   } else {
-    jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+    jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
       if(err){
         errRequest("http://oniv.in/report/error/nodejsErr/faculty","jwt",err)
         res.status(401)
@@ -290,7 +290,7 @@ router.post('/markabsent',function(req,res){
     res.status(401)
     res.end()
   } else {
-    jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+    jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
       if(err){
         errRequest("http://oniv.in/report/error/nodejsErr/faculty","jwt",err)
         res.status(401)
@@ -337,7 +337,7 @@ router.post('/setupprofile',function(req,res){
     res.status(401)
     res.end()
   } else {
-    jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+    jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
       if(err){
         console.log(err)
         res.status(401)
@@ -383,7 +383,7 @@ router.post('/setschedule',function(req,res){
     res.status(401)
     res.end()
   } else {
-    jwt.verify(cookies.user,'uit attendance login',function(err,decoded){
+    jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
       if(err){
         errRequest("http://oniv.in/report/error/nodejsErr/faculty","jwt",err)
         res.status(401)

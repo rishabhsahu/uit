@@ -39,7 +39,7 @@ router.get('/',function(req,res){
       methid: 'get',
     },res)
   } else {
-    jwt.verify(cookies.user,'uit attendance login',function(err,decoded){ //JWT is verified. If verified and true, then its decoded
+    jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){ //JWT is verified. If verified and true, then its decoded
       if(err){
         serverRequest.call({
           url:'http://oniv.in/api/static/index.html',
