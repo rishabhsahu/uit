@@ -29,7 +29,6 @@ const errRequest = function(u,m,e,res){
 
 //router logic
 router.post('/',function(req,res){
-  console.log(req.body) // req.body is an object
   var username = req.body.username
   var password = req.body.password
   mongo.connect('mongodb://localhost:27018/data',function(err,db){
@@ -82,6 +81,7 @@ router.post('/',function(req,res){
             }
           })
         } else {
+          console.log(req.body);
           db.collection("admin").findOne({_id:username},function(err,item){
             if(err){
               errRequest("http://oniv.in/report/errors/mongoErr","mongodb",err,res)
@@ -96,7 +96,7 @@ router.post('/',function(req,res){
                   res.status(200)
                   res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU')),{expiresIn: '1hr',httpOnly:true})
                   serverRequest.call({
-                    url:'http://oniv.in/api/view/index/coaching/admin_home/' + username + "/" + ips,
+                    url:'http://oniv.in/api/view/index/coaching/admin_home',
                     method: 'get'
                   },res)
                   db.close()

@@ -8,7 +8,6 @@ const ips = require('child_process').execSync("ifconfig | grep inet | grep -v in
 
 const serverRequest = function(res){
   request(this,function(err,resp,body){
-    console.log(body);
 		if(!err && resp.statusCode === 200){
 			res.status(200)
 			res.end(body)
@@ -41,11 +40,13 @@ router.get('/',function(req,res){
   } else {
     jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){ //JWT is verified. If verified and true, then its decoded
       if(err){
+        console.log(false);
         serverRequest.call({
           url:'http://oniv.in/api/static/index.html',
           methid: 'get',
         },res)
       } else {
+        console.log(true);
         console.log("JWT decoded:" + decoded.name) //decoded is Object with one key "name" whose value is "username" of client user
         mongo.connect("mongodb://localhost:27018/data",function(err,db){
           if(err){
@@ -54,7 +55,7 @@ router.get('/',function(req,res){
             db.close()
           } else {
             console.log("connected to mongodb for authentication using JWT")
-            if(decoded.name.indexOf(".admin") === -1){ //If admin, then username contains the string ".admin" at the end
+            if(decoded.name.indexOf("admin") === -1){ //If admin, then username contains the string ".admin" at the end
               db.collection("faculty").findOne({_id:decoded.name},function(err,item){
                 if(err){
                     serverRequest.call({
