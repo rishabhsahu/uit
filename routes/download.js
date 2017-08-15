@@ -277,7 +277,11 @@ router.get('/examscores/all/:school/:batch/:section',function(req,res){
                         }
                         s[sb].scores.forEach(function(ts,tn){
                           if(tnames.indexOf(ts.test_name)>-1){
-                            ws[sb].cell(5+n,4+tnames.indexOf(ts.test_name)).string(ts.score + " ( " + Math.ceil((ts.score*100)/ts.max_score) + "% )").style(stylep)
+                            if(ts.score != "A"){
+                              ws[sb].cell(5+n,4+tnames.indexOf(ts.test_name)).string(ts.score + " ( " + Math.ceil((ts.score*100)/ts.max_score) + "% )").style(stylep)
+                            } else {
+                              ws[sb].cell(5+n,4+tnames.indexOf(ts.test_name)).string(ts.score).style(stylep)
+                            }
                           }
                         })
                       }
