@@ -280,7 +280,7 @@ router.get('/examscores/all/:school/:batch/:section',function(req,res){
                             if(ts.score != "A"){
                               ws[sb].cell(5+n,4+tnames.indexOf(ts.test_name)).string(ts.score + " ( " + Math.ceil((ts.score*100)/ts.max_score) + "% )").style(stylep)
                             } else {
-                              ws[sb].cell(5+n,4+tnames.indexOf(ts.test_name)).string(ts.score).style(stylep)
+                              ws[sb].cell(5+n,4+tnames.indexOf(ts.test_name)).string(ts.score).style(style2)
                             }
                           }
                         })
