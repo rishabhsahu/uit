@@ -12,7 +12,7 @@ const serverRequest = function(res){
 			res.status(200)
 			res.end()
 		} else {
-			console.log(err)
+      console.error(err)
 			res.status(504)
 			res.end()
 		}
@@ -46,18 +46,21 @@ router.get("/:school/:batch/:section/:er",function(req,res){
                 }
               })
             } else {
+              console.error(err)
               db.close()
               res.status(404)
               res.end()
             }
           })
         } else {
+          console.error(err)
           db.close()
           res.status(500)
           res.end()
         }
       })
     } else {
+      console.error(err)
       res.status(500)
       res.end()
     }
@@ -68,7 +71,7 @@ router.post('/status/:cc',function(req,res){
   console.log(req.body)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+
     res.status(500)
     res.end()
   } else {
@@ -122,7 +125,7 @@ router.post('/addStudentImage/:sc/:b/:se/:en',function(req,res){
   console.log(req.body)
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+
     res.status(500)
     res.end()
   } else {

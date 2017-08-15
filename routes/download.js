@@ -78,21 +78,21 @@ router.get('/attendanceOverview/:school/:batch/:section/:faculty_id/:subject',fu
                       }
                     })
                   } else {
-                    console.log("document not found")
+                    console.error(err)
                     db.close()
                     res.status(404)
                     res.end()
                   }
           })
         } else {
-          console.log("failed to connect to db")
+          console.error(err)
           db.close()
           res.status(500)
           res.end()
         }
       })
     } else {
-      console.log("failed to verify")
+      console.error(err)
       res.status(500)
       res.end()
     }
@@ -310,10 +310,15 @@ router.get('/examscores/all/:school/:batch/:section',function(req,res){
             }
           })
         } else {
+          console.error(err)
           res.status(500)
           res.end()
         }
       })
+    } else {
+      console.error(err)
+      res.status(500)
+      res.end()
     }
   })
 })

@@ -48,6 +48,7 @@ function smsFaculties(req,res){
 					json:true
 				},res)
 			} else {
+        console.error(err)
 				res.status(401)
 				res.end()
 			}
@@ -82,6 +83,7 @@ function smsClass(req,res){
 					json:true
 				},res)
 			} else {
+        console.error(err)
 				res.status(401)
 				res.end()
 			}
@@ -121,11 +123,13 @@ function setSchedule(req,res){
 						})
 						db.close()
 					} else {
+            console.error(err)
 						res.status(500)
 						res.end()
 					}
 				})
 			} else {
+        console.error(err)
 				res.status(401)
 				res.end()
 			}

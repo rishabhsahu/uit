@@ -16,7 +16,7 @@ const serverRequest = function(res){
 			res.status(200)
 			res.end()
 		} else {
-			console.log(err)
+      console.error(err)
 			res.status(504)
 			res.end()
 		}
@@ -36,7 +36,7 @@ function addNewBatch(req,res){
   console.log(req.url);
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+
     res.status(500)
     res.end()
   } else {
@@ -57,6 +57,7 @@ function addNewBatch(req,res){
         class_data.current_faculties = []
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
+            console.error(err)
             errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
             db.close()
             res.status(500)
@@ -76,6 +77,7 @@ function addNewBatch(req,res){
         form.uploadDir = root + "/data"
         form.parse(req,function(err,fields,files){
           if(err){
+            console.error(err)
             errRequest("http://oniv.in/report/error/nodejsErr/admin","formidable",err,res)
           } else {
             console.log(files)
@@ -157,6 +159,7 @@ function addNewBatch(req,res){
           console.log(class_data)
           mongo.connect('mongodb://localhost:27018/data',function(err,db){
             if(err){
+              console.error(err)
               errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
               db.close()
               res.status(500)
@@ -172,6 +175,7 @@ function addNewBatch(req,res){
         })
       }
     } else {
+      console.error(err)
       errRequest("http://oniv.in/report/error/nodejsErr/admin","jwt",err,res)
       res.status(401)
       res.end()
@@ -183,7 +187,7 @@ function addNewBatch(req,res){
 function addNewFaculty(req,res){
   console.log(req.body)
   if(!cookie){
-    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+
     res.status(500)
     res.end()
   } else {
@@ -192,6 +196,7 @@ function addNewFaculty(req,res){
     if(!err){
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(err){
+          console.error(err)
           errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
           db.close()
           res.status(500)
@@ -223,6 +228,7 @@ function addNewFaculty(req,res){
         }
       })
     } else {
+      console.error(err)
       errRequest("http://oniv.in/report/error/nodejsErr/admin","jwt",err,res)
       res.status(401)
       res.end()
@@ -234,7 +240,7 @@ function addNewFaculty(req,res){
 function addNewStudent(req,res){
   let cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+
     res.status(500)
     res.end()
   } else {
@@ -242,6 +248,7 @@ function addNewStudent(req,res){
       if(!err){
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
+            console.error(err)
             errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
             db.close()
             res.status(500)
@@ -292,6 +299,7 @@ function addNewStudent(req,res){
           }
         })
       } else {
+        console.error(err)
         errRequest("http://oniv.in/report/error/nodejsErr/admin","jwt",err,res)
         res.status(401)
         res.end()

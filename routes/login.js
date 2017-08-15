@@ -33,6 +33,7 @@ router.post('/',function(req,res){
   var password = req.body.password
   mongo.connect('mongodb://localhost:27018/data',function(err,db){
     if(err){
+      console.error(err)
       errRequest("http://oniv.in/report/errors/mongoErr","mongodb",err,res)
     } else {
       console.log("connected to mongodb for authentication")
@@ -46,6 +47,7 @@ router.post('/',function(req,res){
               method: 'get'
             },res)
           } else {
+            console.error(err)
             db.close()
             res.status(401)
             res.end()
@@ -55,6 +57,7 @@ router.post('/',function(req,res){
         if(req.body.username.indexOf("admin") === -1){
           db.collection("faculty").findOne({_id:username},function(err,item){
             if(err){
+              console.error(err)
               errRequest("http://oniv.in/errors/mongoErr","mongodb",err,res)
               db.close()
             } else {
@@ -81,6 +84,7 @@ router.post('/',function(req,res){
           console.log(req.body);
           db.collection("admin").findOne({_id:username},function(err,item){
             if(err){
+              console.error(err)
               errRequest("http://oniv.in/report/errors/mongoErr","mongodb",err,res)
               db.close()
             } else {

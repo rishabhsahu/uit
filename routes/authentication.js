@@ -40,7 +40,7 @@ router.get('/',function(req,res){
   } else {
     jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){ //JWT is verified. If verified and true, then its decoded
       if(err){
-        console.log(false);
+        console.error(err)
         serverRequest.call({
           url:'http://oniv.in/api/static/index.html',
           methid: 'get',
@@ -50,6 +50,7 @@ router.get('/',function(req,res){
         console.log("JWT decoded:" + decoded.name) //decoded is Object with one key "name" whose value is "username" of client user
         mongo.connect("mongodb://localhost:27018/data",function(err,db){
           if(err){
+            console.error(err)
             console.log(err)
             res.render('index',{message:"Internal Server Error"})
             db.close()
@@ -58,6 +59,7 @@ router.get('/',function(req,res){
             if(decoded.name.indexOf("admin") === -1){ //If admin, then username contains the string ".admin" at the end
               db.collection("faculty").findOne({_id:decoded.name},function(err,item){
                 if(err){
+                  console.error(err)
                     serverRequest.call({
                       url:'http://oniv.in/api/static/index.html',
                       methid: 'get',
@@ -75,6 +77,7 @@ router.get('/',function(req,res){
             } else {
               db.collection("admin").findOne({_id:decoded.name},function(err,item){
                 if(err){
+                  console.error(err)
                   serverRequest.call({
                     url:'http://oniv.in/api/static/index.html',
                     methid: 'get',

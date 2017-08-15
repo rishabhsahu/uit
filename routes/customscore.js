@@ -9,7 +9,6 @@ router.post('/add-test-score-manually/',function(req,res){
   console.log(req.body);
   var cookies = cookie.parse(req.headers.cookie || "")
   if(!cookies){
-    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err)
     res.status(401)
     res.end()
   } else {
@@ -59,6 +58,7 @@ router.post('/add-test-score-manually/',function(req,res){
             })
             */
           } else {
+            console.error(err)
             db.close()
             errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err)
             res.status(500)
@@ -66,6 +66,7 @@ router.post('/add-test-score-manually/',function(req,res){
           }
         })
       } else {
+        console.error(err)
         errRequest("http://oniv.in/report/error/nodejsErr/admin","jwt",err)
         res.status(401)
         res.end()

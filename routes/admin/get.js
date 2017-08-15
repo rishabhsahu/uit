@@ -15,7 +15,7 @@ const serverRequest = function(res){
 			res.status(200)
 			res.end()
 		} else {
-			console.log(err)
+			console.error(err)
 			res.status(504)
 			res.end()
 		}
@@ -37,7 +37,6 @@ function getDepartmentData(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   console.log(cookies)
   if(!cookie){
-    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
     res.status(500)
     res.end()
   } else {
@@ -61,13 +60,15 @@ function getDepartmentData(req,res){
               }
             })
           } else {
+            console.error(err)
             errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
             res.status(404)
             res.end()
           }
         })
       } else {
-        errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+        console.error(err);
+        errRequest("http://oniv.in/report/error/nodejsErr/admin","jwt",err,res)
         res.status(401)
         res.end()
       }
@@ -79,7 +80,7 @@ function getFacultyData(req,res){
   console.log('ajax request');
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+
     res.status(500)
     res.end()
   } else {
@@ -92,6 +93,7 @@ function getFacultyData(req,res){
             if(!err){
               res.json(item)
             } else {
+              console.error(err)
               errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
               res.status(404)
               res.end()
@@ -99,14 +101,15 @@ function getFacultyData(req,res){
           })
           db.close()
         } else {
+          console.error(err)
           errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
-          db.close()
           db.close()
           res.status(500)
           res.end()
         }
       })
     } else {
+      console.error(err);
       errRequest("http://oniv.in/report/error/nodejsErr/admin","jwt",err,res)
       res.status(401)
       res.end()
@@ -125,6 +128,7 @@ function classesheld(req,res){
   } else {
     jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
       if(err){
+        console.error(err);
         errRequest("http://oniv.in/report/error/nodejsErr/faculty","jwt",err,res)
         res.status(401)
         res.end()
@@ -132,6 +136,7 @@ function classesheld(req,res){
         console.log(decoded.name)
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
+            console.error(err)
             errRequest("http://oniv.in/report/error/mongoErr/faculty","mongodb",err,res)
             db.close()
             res.status(500)
@@ -157,7 +162,7 @@ function classesheld(req,res){
 function getBatchData(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+
     res.status(500)
     res.end()
   } else {
@@ -171,6 +176,7 @@ function getBatchData(req,res){
               res.json(item)
               db.close()
             } else {
+              console.error(err)
               errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
               db.close()
               res.status(404)
@@ -179,13 +185,14 @@ function getBatchData(req,res){
           })
           db.close()
         } else {
-          console.log("failed to connect to db")
+          console.error(err)
           db.close()
           res.status(500)
           res.end()
         }
       })
     } else {
+      console.error(err);
       errRequest("http://oniv.in/report/error/nodejsErr/admin","jwt",err,res)
       res.status(401)
       res.end()
@@ -197,7 +204,7 @@ function getBatchData(req,res){
 function getAllStudents(req,res){
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
-    errRequest("http://oniv.in/report/error/nodejsErr/admin","cookies",err,res)
+
     res.status(500)
     res.end()
   } else {
@@ -221,13 +228,14 @@ function getAllStudents(req,res){
             }
           })
         } else {
-          console.log("failed to connect to db")
+          console.error(err)
           db.close()
           res.status(500)
           res.end()
         }
       })
     } else {
+      console.error(err);
       errRequest("http://oniv.in/report/error/nodejsErr/admin","jwt",err,res)
       res.status(401)
       res.end()
