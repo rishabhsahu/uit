@@ -67,10 +67,7 @@ router.post('/',function(req,res){
                 if(item.password == req.body.password){
                   res.status(200)
                   res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU')),{expiresIn: '1hr',httpOnly:true})
-                  serverRequest.call({
-                    url:'http://oniv.in/api/view/index/coaching/faculty_mobile/' + username + "/" + ips,
-                    method: 'get'
-                  },res)
+                  res.end()
                   db.close()
                 } else {
                   db.close()
@@ -95,10 +92,7 @@ router.post('/',function(req,res){
                 if(item.password == req.body.password){
                   res.status(200)
                   res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU')),{expiresIn: '1hr',httpOnly:true})
-                  serverRequest.call({
-                    url:'http://oniv.in/api/view/index/coaching/admin_home',
-                    method: 'get'
-                  },res)
+                  res.end()
                   db.close()
                 } else {
                   db.close()
