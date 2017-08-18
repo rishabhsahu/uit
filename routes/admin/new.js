@@ -246,57 +246,46 @@ function addNewStudent(req,res){
   } else {
     jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
       if(!err){
-        mongo.connect('mongodb://localhost:27018/data',function(err,db){
+        const o = {}
+        const form = formidable.IncomingForm()
+        form.uploadDir = root + "/../public/student_images"
+        form.parse(req,function(err,fields,files){
           if(err){
-            console.error(err)
-            errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
-            db.close()
             res.status(500)
             res.end()
-          } else {
-            let form = formidable.IncomingForm()
-            console.log(root);
-            form.uploadDir = root + "/../public/student_images"
-            form.parse(req,function(err,fields,files){
-              if(err){
-                res.status(500)
-                res.end()
-              }
-            })
+          }
+        })
 
-            form.on('file',function(name,file){
-              const o = qs.parse(req.params.expath)
-              const bt = o.batch
-              delete o.batch
-              o.image = path.basename(file.path)
-              o.mobiles = {}
-              if(o.parent1.length>0){
-                o.mobiles.parent1 = o.parent1
-              }
-              if(o.parent2 && o.parent2.length>0){
-                o.mobiles.parent2 = o.parent2
-              }
-              if(o.parent1 && o.parent1.length>0){
-                o.mobiles.sn = o.sn
-              }
-              if(o.parent1 && o.parent1.length>0){
-                o.mobiles.other = o.other
-              }
-              delete o.parent1
-              delete o.parent2
-              delete o.sn
-              delete o.other
-              db.collection('classes').update({_id:bt},{$addToSet:{"students":o}})
-              db.collection('classes').update({_id:bt},{$addToSet:{"student_data":o}})
-              res.status(200)
-              res.end()
-            })
+        form.on('field',function(name,value){
+          o[name] = value
+        })
 
-            form.on('error',function(){
+        form.on('file',function(name,file){
+          const qstr = qs.parse(req.params.expath)
+          const bt = qstr.batch
+          o.image = path.basename(file.path)
+          res.status(200)
+          res.end()
+        })
+
+        form.on('end',function(){
+          mongo.connect('mongodb://localhost:27018/data',function(err,db){
+            if(err){
+              console.error(err)
+              errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
+              db.close()
               res.status(500)
               res.end()
-            })
-          }
+            } else {
+              db.collection('classes').update({_id:bt},{$addToSet:{"students":o}})
+              db.collection('classes').update({_id:bt},{$addToSet:{"student_data":o}})
+            }
+          })
+        })
+
+        form.on('error',function(){
+          res.status(500)
+          res.end()
         })
       } else {
         console.error(err)
