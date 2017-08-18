@@ -88,7 +88,7 @@ router.get('/student_images/:image',function getStudentImage(req,res){
 
 router.post('/addnewbatch/:domain_name/:batch/:section/:cls/:school/:m',addNewBatch)
 router.post('/addnewfaculty',addNewFaculty)
-router.post('/batchsettings/addNewStudent/:expath',addNewStudent)
+router.post('/batchsettings/addNewStudent/:sh/:bt/:sc',addNewStudent)
 
 router.post('/batchsettings',function(req,res){
   console.log(req.body)

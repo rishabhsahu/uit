@@ -277,8 +277,8 @@ function addNewStudent(req,res){
               res.status(500)
               res.end()
             } else {
-              db.collection('classes').update({_id:bt},{$addToSet:{"students":o}})
-              db.collection('classes').update({_id:bt},{$addToSet:{"student_data":o}})
+              db.collection('classes').update({_id:req.params.sh + "/" + req.params.bt + "/" + req.params.sc},{$addToSet:{"students":o}})
+              db.collection('classes').update({_id:req.params.sh + "/" + req.params.bt + "/" + req.params.sc},{$addToSet:{"student_data":o}})
             }
           })
         })
