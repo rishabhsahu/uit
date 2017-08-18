@@ -257,7 +257,9 @@ function addNewStudent(req,res){
         })
 
         form.on('field',function(name,value){
-          o[name] = value
+          if(value.length>0){
+            o[name] = value.toLowerCase()
+          }
         })
 
         form.on('file',function(name,file){
