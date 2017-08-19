@@ -55,6 +55,7 @@ function addNewBatch(req,res){
         class_data.prev_faculties = {}
         class_data.tests = {}
         class_data.current_faculties = []
+        class_data.tt_students = 0
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
             console.error(err)
@@ -156,7 +157,6 @@ function addNewBatch(req,res){
           class_data.prev_faculties = {}
           class_data.tests = {}
           class_data.current_faculties = []
-          console.log(class_data)
           mongo.connect('mongodb://localhost:27018/data',function(err,db){
             if(err){
               console.error(err)
@@ -167,6 +167,7 @@ function addNewBatch(req,res){
             } else {
               db.collection('classes').insert(class_data)
               db.collection('admin').update({_id:decoded.name},{$addToSet:{"batches":{"batch":class_data.batch,"_id":class_data._id,"class":req.params.cls}}})
+              db.collection('admin').update({_id:decoded.name},{$inc:{"tt_students":class_data.students.length}})
               db.close()
               res.status(200)
               res.end()
@@ -281,6 +282,7 @@ function addNewStudent(req,res){
             } else {
               db.collection('classes').update({_id:req.params.sh + "/" + req.params.bt + "/" + req.params.sc},{$addToSet:{"students":o}})
               db.collection('classes').update({_id:req.params.sh + "/" + req.params.bt + "/" + req.params.sc},{$addToSet:{"student_data":o}})
+              db.collection('admin').update({_id:decoded.name},{$inc:{"tt_students":1}})
             }
           })
         })
