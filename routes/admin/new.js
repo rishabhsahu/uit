@@ -156,7 +156,7 @@ function addNewBatch(req,res){
           class_data.section = req.params.section
           class_data.prev_faculties = {}
           class_data.tests = {}
-          class_data.current_faculties = []
+          class_data.current_faculties = [{"combined":"combined"}]
           mongo.connect('mongodb://localhost:27018/data',function(err,db){
             if(err){
               console.error(err)

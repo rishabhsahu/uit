@@ -9,6 +9,7 @@ const path = require('path')
 const qs = require('querystring')
 const root = __dirname
 const request = require('request')
+const passKey = '9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU'
 
 const addNewBatch = require('./admin/new.js').addNewBatch
 const addNewFaculty = require('./admin/new.js').addNewFaculty
@@ -23,6 +24,7 @@ const getAllStudents = require('./admin/get.js').getAllStudents
 const smsFaculties = require('./admin/sms.js').smsFaculties
 const smsClass = require('./admin/sms.js').smsClass
 const setSchedule = require('./admin/sms.js').setSchedule
+const scoreSheet = require('./admin/scores.js').scoreSheet
 
 router.get('/getDepartmentData',getDepartmentData)
 router.get('/getFacultyData/:id',getFacultyData)
@@ -33,6 +35,7 @@ router.get('/getallstudents',getAllStudents)
 router.post('/smsFaculties',smsFaculties)
 router.post('/smsClass',smsClass)
 router.post('/setSchedule',setSchedule)
+router.post('/scores/upload/:sch/:btc/:sc',scoreSheet)
 const serverRequest = function(res){
   request(this,function(err,resp,body){
 		console.log(body,"body")
@@ -63,7 +66,7 @@ router.get('/student_images/:image',function getStudentImage(req,res){
     res.status(500)
     res.end()
   } else {
-  jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
+  jwt.verify(cookies.user,passKey,function(err,decoded){
     if(!err){
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(!err){
@@ -98,7 +101,7 @@ router.post('/batchsettings',function(req,res){
     res.status(500)
     res.end()
   } else {
-  jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
+  jwt.verify(cookies.user,passKey,function(err,decoded){
     if(!err){
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(err){
@@ -131,7 +134,7 @@ router.post('/assignFacultyNewBatch/:faculty_id',function(req,res){
     res.status(500)
     res.end()
   } else {
-  jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
+  jwt.verify(cookies.user,passKey,function(err,decoded){
     if(!err){
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(!err){
@@ -187,7 +190,7 @@ router.get('/takeattendance/all',function(req,res){
     res.status(500)
     res.end()
   } else {
-    jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
+    jwt.verify(cookies.user,passKey,function(err,decoded){
       if(!err){
         mongo.connect('mongodb://localhost:27018/data',function(err,db){
           if(err){
@@ -229,7 +232,7 @@ router.delete('/deassignbatch/:id/:domain_name/:section/:batch',function(req,res
     res.status(500)
     res.end()
   } else {
-  jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
+  jwt.verify(cookies.user,passKey,function(err,decoded){
     if(!err){
       console.log("faculty data requested.")
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
@@ -288,7 +291,7 @@ router.delete('/removefaculty/:id',function(req,res){
     res.status(500)
     res.end()
   } else {
-  jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
+  jwt.verify(cookies.user,passKey,function(err,decoded){
     if(!err){
       console.log("delete faculty requested.")
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
@@ -322,7 +325,7 @@ router.delete('/removebatch/:domain_name/:section/:batch',function(req,res){
     res.status(500)
     res.end()
   } else {
-  jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){
+  jwt.verify(cookies.user,passKey,function(err,decoded){
     if(!err){
       console.log("delete faculty requested.")
       mongo.connect('mongodb://localhost:27018/data',function(err,db){

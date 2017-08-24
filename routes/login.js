@@ -4,7 +4,7 @@ const mongo = require('mongodb').MongoClient
 const cookie = require('cookie')
 const jwt = require('jsonwebtoken')
 const request = require('request');
-const ips = require('child_process').execSync("ifconfig | grep inet | grep -v inet6 | awk '{gsub(/addr:/,\"\");print $2}'").toString().trim().split("\n");
+
 const serverRequest = function(res){
   request(this,function(err,resp,body){
 		if(!err && resp.statusCode === 200){
@@ -41,7 +41,7 @@ router.post('/',function(req,res){
         db.collection('faculty').findOne({_id:username,otp:password},{username:1},function(err,item){
           if(!err){
             res.status(200)
-            res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU')),{expiresIn: '1hr',httpOnly:true})
+            res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},passKey)),{expiresIn: '1hr',httpOnly:true})
             serverRequest.call({
               url:'http://oniv.in/api/view/index/coaching/faculty_mobile/' + username + "/" + ips,
               method: 'get'
@@ -69,7 +69,7 @@ router.post('/',function(req,res){
                 console.log(item)
                 if(item.password == req.body.password){
                   res.status(200)
-                  res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU')),{expiresIn: '1hr',httpOnly:true})
+                  res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},passKey)),{expiresIn: '1hr',httpOnly:true})
                   res.end()
                   db.close()
                 } else {
@@ -95,7 +95,7 @@ router.post('/',function(req,res){
                 console.log(item)
                 if(item.password == req.body.password){
                   res.status(200)
-                  res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU')),{expiresIn: '1hr',httpOnly:true})
+                  res.setHeader('Set-cookie',cookie.serialize('user',jwt.sign({name:username},passKey)),{expiresIn: '1hr',httpOnly:true})
                   res.end()
                   db.close()
                 } else {

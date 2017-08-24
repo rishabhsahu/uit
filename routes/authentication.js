@@ -4,7 +4,7 @@ var cookie = require('cookie')
 var jwt = require('jsonwebtoken')
 var mongo = require('mongodb').MongoClient
 const request = require('request');
-const ips = require('child_process').execSync("ifconfig | grep inet | grep -v inet6 | awk '{gsub(/addr:/,\"\");print $2}'").toString().trim().split("\n")[0];
+const passKey = '9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU'
 
 const serverRequest = function(res){
   request(this,function(err,resp,body){
@@ -38,7 +38,7 @@ router.get('/',function(req,res){
       methid: 'get',
     },res)
   } else {
-    jwt.verify(cookies.user,'9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU',function(err,decoded){ //JWT is verified. If verified and true, then its decoded
+    jwt.verify(cookies.user,passKey,function(err,decoded){ //JWT is verified. If verified and true, then its decoded
       if(err){
         console.error(err)
         serverRequest.call({
