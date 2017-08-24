@@ -35,7 +35,7 @@ router.get('/',function(req,res){
   if(!cookies){
     serverRequest.call({
       url:'http://oniv.in/api/static/index.html',
-      methid: 'get',
+      method: 'get',
     },res)
   } else {
     jwt.verify(cookies.user,passKey,function(err,decoded){ //JWT is verified. If verified and true, then its decoded
@@ -43,7 +43,7 @@ router.get('/',function(req,res){
         console.error(err)
         serverRequest.call({
           url:'http://oniv.in/api/static/index.html',
-          methid: 'get',
+          method: 'get',
         },res)
       } else {
         console.log(true);
@@ -62,7 +62,7 @@ router.get('/',function(req,res){
                   console.error(err)
                     serverRequest.call({
                       url:'http://oniv.in/api/static/index.html',
-                      methid: 'get',
+                      method: 'get',
                     },res)
                   db.close()
                 } else {
@@ -80,7 +80,7 @@ router.get('/',function(req,res){
                   console.error(err)
                   serverRequest.call({
                     url:'http://oniv.in/api/static/index.html',
-                    methid: 'get',
+                    method: 'get',
                   },res)
                   db.close()
                 } else {

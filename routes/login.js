@@ -4,6 +4,7 @@ const mongo = require('mongodb').MongoClient
 const cookie = require('cookie')
 const jwt = require('jsonwebtoken')
 const request = require('request');
+const passKey = '9aIkpJ5UdL+V73h9zoVNPb5LAEeRMiPVucw0q+cYJXK6wyOO+0VzkXR+w6mmU'
 
 const serverRequest = function(res){
   request(this,function(err,resp,body){
