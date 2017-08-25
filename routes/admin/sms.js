@@ -17,7 +17,7 @@ const serverRequest = function(res){
 			res.end()
 		} else {
 			console.log(err)
-			res.status(504)
+			res.status(503)
 			res.end()
 		}
 	})

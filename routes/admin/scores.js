@@ -75,7 +75,7 @@ function scoreSheet(req,res){
 							db.collection('classes').update({_id:req.params.sch + "/" + req.params.btc + "/" + req.params.sc,"student_data.enroll_number":o.enroll_number},{$set:dtob})
 							console.log(o);
 						})
-						db.collection('classes').update({_id:req.params.sch + "/" + req.params.btc + "/" + req.params.sc},{$set:{['exams.' + cls.inp.subject + '.' + cls.inp.name]:{'testdate':cls.inp.testdate},maxscore:cls.inp.maxscore}})
+						db.collection('classes').update({_id:req.params.sch + "/" + req.params.btc + "/" + req.params.sc},{$set:{['exams.' + cls.inp.subject + '.' + cls.inp.name]:{'testdate':cls.inp.testdate,maxscore:cls.inp.maxscore}}})
 						db.collection('classes').findOne({_id:req.params.sch + "/" + req.params.btc + "/" + req.params.sc},{'students':1},function(err,item){
 							item.students.forEach((s,n)=>{
 								cls.mo[s.enroll_number]=[s.parent1,s.parent2]

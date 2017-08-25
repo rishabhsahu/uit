@@ -36,8 +36,6 @@ router.get("/:school/:batch/:section/:er",function(req,res){
         if(!err){
           db.collection('classes').findOne({_id:req.params.school + "/" + req.params.batch + "/" + req.params.section},{"student_data":1,"current_faculties":1,"exams":1},function(err,item){
             if(!err){
-              db.close()
-              res.status(200)
               item.student_data.forEach((x,i)=>{
                 if(x.enroll_number === req.params.er){
                   const o = x
@@ -46,6 +44,7 @@ router.get("/:school/:batch/:section/:er",function(req,res){
                   res.json(o)
                 }
               })
+              db.close()
             } else {
               console.error(err)
               db.close()
