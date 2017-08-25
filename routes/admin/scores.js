@@ -38,6 +38,7 @@ function scoreSheet(req,res){
 	const cookies = cookie.parse(req.headers.cookie || '')
 	jwt.verify(cookies.user,passKey,(err,decoded)=>{
 		if(!err){
+      let nm
 			const cls = {inp:{},dt:{},mo:{}}
 			const form = formidable.IncomingForm()
 			form.encoding = "utf-8"
@@ -48,8 +49,10 @@ function scoreSheet(req,res){
 				cls.inp = fields;
 			})
 			form.on('file',(name,file)=>{
-				const nm = path.basename(file.path)
-				const arr = []
+				nm = path.basename(file.path)
+			})
+			form.on('error',(err)=>{console.log(err)})
+			form.on('end',()=>{
 				ep(root + "/data/scores/" + nm,function(err,data){
 					if(err) console.error(err);
 					const flds = data.shift()
@@ -73,7 +76,7 @@ function scoreSheet(req,res){
 							o.type = "upload"
 							dtob = {['student_data.$.' + cls.inp['subject'] + '.exams.' + cls.inp.name] : o}
 							db.collection('classes').update({_id:req.params.sch + "/" + req.params.btc + "/" + req.params.sc,"student_data.enroll_number":o.enroll_number},{$set:dtob})
-							console.log(o);
+							console.log(dtob);
 						})
 						db.collection('classes').update({_id:req.params.sch + "/" + req.params.btc + "/" + req.params.sc},{$set:{['exams.' + cls.inp.subject + '.' + cls.inp.name]:{'testdate':cls.inp.testdate,maxscore:cls.inp.maxscore}}})
 						db.collection('classes').findOne({_id:req.params.sch + "/" + req.params.btc + "/" + req.params.sc},{'students':1},function(err,item){
@@ -90,9 +93,6 @@ function scoreSheet(req,res){
 						})
 					})
 				})
-			})
-			form.on('error',(err)=>{console.log(err)})
-			form.on('end',()=>{
 			})
 		}
 	})
