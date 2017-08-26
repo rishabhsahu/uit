@@ -46,8 +46,10 @@ function scoreSheet(req,res){
 			form.uploadDir = root + "/data/scores"
 			form.parse(req,(err,fields,value)=>{
 				if(err) throw err
-				cls.inp = fields;
 			})
+      form.on('field',(name,value)=>{
+        cls.inp[name] = value
+      })
 			form.on('file',(name,file)=>{
 				nm = path.basename(file.path)
 			})
@@ -55,6 +57,7 @@ function scoreSheet(req,res){
 			form.on('end',()=>{
 				ep(root + "/data/scores/" + nm,function(err,data){
 					if(err) console.error(err);
+          console.log(data);
 					const flds = data.shift()
 					class Std {
 						constructor(keys,values) {
@@ -76,7 +79,6 @@ function scoreSheet(req,res){
 							o.type = "upload"
 							dtob = {['student_data.$.' + cls.inp['subject'] + '.exams.' + cls.inp.name] : o}
 							db.collection('classes').update({_id:req.params.sch + "/" + req.params.btc + "/" + req.params.sc,"student_data.enroll_number":o.enroll_number},{$set:dtob})
-							console.log(dtob);
 						})
 						db.collection('classes').update({_id:req.params.sch + "/" + req.params.btc + "/" + req.params.sc},{$set:{['exams.' + cls.inp.subject + '.' + cls.inp.name]:{'testdate':cls.inp.testdate,maxscore:cls.inp.maxscore}}})
 						db.collection('classes').findOne({_id:req.params.sch + "/" + req.params.btc + "/" + req.params.sc},{'students':1},function(err,item){
