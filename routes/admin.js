@@ -127,7 +127,7 @@ router.post('/batchsettings',function(req,res){
 })
 
 router.post('/assignFacultyNewBatch/:faculty_id',function(req,res){
-  console.log('assignFacultyNewBatch request');
+  console.log(req.body);
   var cookies = cookie.parse(req.headers.cookie || '')
   if(!cookie){
 
@@ -138,33 +138,14 @@ router.post('/assignFacultyNewBatch/:faculty_id',function(req,res){
     if(!err){
       mongo.connect('mongodb://localhost:27018/data',function(err,db){
         if(!err){
-          db.collection('classes').findOne({_id:req.body._id},{"prev_faculties":1},function(err,item){
-            var obj = {}
-            if(!err){
-              console.log(item)
-              if(item.prev_faculties.hasOwnProperty(req.params.faculty_id) && item.prev_faculties[req.params.faculty_id].subject === req.body.subject){
-                  db.collection('faculty').update({_id:req.params.faculty_id},{$addToSet:{"current_classes":{"_id":req.body._id,"batch":req.body.batch,"class":req.body.class,"subject":req.body.subject,"classes_held":item.prev_faculties[req.params.faculty_id]["classes_held"]}}})
-                  console.log("Faculty Re-assigned")
-                  db.close()
-                  res.status(200)
-                  res.end()
-              } else {
-                db.collection('faculty').update({_id:req.params.faculty_id},{$addToSet:{"current_classes":{"_id":req.body._id,"class":req.body.class,"subject":req.body.subject,"classes_held":[]}}})
-                console.log("added")
-                var o1 = {}
-                o1[req.body.subject] = req.params.faculty_id
-                db.collection('classes').update({_id:req.body._id},{$addToSet:{"current_faculties":o1}})
-                db.close()
-                res.status(200)
-                res.end()
-              }
-            } else {
-              errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)
-              db.close()
-              res.status(404)
-              res.end()
-            }
-          })
+          db.collection('faculty').update({_id:req.params.faculty_id},{$addToSet:{"current_classes":{"_id":req.body._id,"class":req.body.class,"subject":req.body.subject,"classes_held":[]}}})
+          console.log("added")
+          var o1 = {}
+          o1[req.body.subject] = req.params.faculty_id
+          db.collection('classes').update({_id:req.body._id},{$addToSet:{"current_faculties":o1}})
+          db.close()
+          res.status(200)
+          res.end()
         } else {
           console.error(err)
           errRequest("http://oniv.in/report/error/mongoErr/admin","mongodb",err,res)

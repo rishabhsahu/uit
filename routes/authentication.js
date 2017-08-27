@@ -34,7 +34,7 @@ router.get('/',function(req,res){
   console.log(cookies)
   if(!cookies){
     serverRequest.call({
-      url:'http://localhost:80/api/static/index.html',
+      url:'http://oniv.in/api/static/index.html',
       method: 'get',
     },res)
   } else {
@@ -42,7 +42,7 @@ router.get('/',function(req,res){
       if(err){
         console.error(err)
         serverRequest.call({
-          url:'http://localhost:80/api/static/index.html',
+          url:'http://oniv.in/api/static/index.html',
           method: 'get',
         },res)
       } else {
@@ -61,13 +61,13 @@ router.get('/',function(req,res){
                 if(err){
                   console.error(err)
                     serverRequest.call({
-                      url:'http://localhost:80/api/static/index.html',
+                      url:'http://oniv.in/api/static/index.html',
                       method: 'get',
                     },res)
                   db.close()
                 } else {
                   serverRequest.call({
-                    url:'http://localhost:80/api/static/coaching/faculty_mobile.html',
+                    url:'http://oniv.in/api/static/coaching/faculty_mobile.html',
                     method: 'get'
                   },res)
 
@@ -79,14 +79,14 @@ router.get('/',function(req,res){
                 if(err){
                   console.error(err)
                   serverRequest.call({
-                    url:'http://localhost:80/api/static/index.html',
+                    url:'http://oniv.in/api/static/index.html',
                     method: 'get',
                   },res)
                   db.close()
                 } else {
                   console.log(true);
                   serverRequest.call({
-                    url:'http://localhost:80/api/static/coaching/admin_home.html',
+                    url:'http://oniv.in/api/static/coaching/admin_home.html',
                     method: 'get'
                   },res)
                   console.log("admin verified")
